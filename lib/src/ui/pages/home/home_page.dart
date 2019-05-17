@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,7 +44,8 @@ class _HomePageState extends State<HomePage> {
               buildInvoice(),
               buildSynchronize(),
               buildChangePassword(),
-              buildLogout()
+              buildLogout(),
+              buildExit()
             ],
           ),
         ),
@@ -301,6 +303,65 @@ class _HomePageState extends State<HomePage> {
             ),
             leading: Icon(
               Icons.input,
+              size: 35,
+              color: Colors.blueAccent,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+            ),
+          )),
+    );
+  }
+
+  Widget buildExit() {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: Colors.white,
+      ),
+      height: 60,
+      child: FlatButton(
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          onPressed: () async {
+            final bool accepted = await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Xác nhận'),
+                    content: Text('Bạn có chắc chắn muốn thoát khỏi ứng dụng?'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('Đóng lại'),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                      FlatButton(
+                        child: Text('Thoát'),
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                      ),
+                    ],
+                  );
+                });
+            if (accepted) {
+              SystemNavigator.pop();
+            }
+          },
+          child: ListTile(
+            title: Text(
+              'Thoát',
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            leading: Icon(
+              Icons.close,
               size: 35,
               color: Colors.blueAccent,
             ),

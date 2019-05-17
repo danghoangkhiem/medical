@@ -12,32 +12,57 @@ class AuthenticationFailurePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthenticationBloc bloc =
         BlocProvider.of<AuthenticationBloc>(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialog<void>(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Lỗi xác thực'),
-              content: SingleChildScrollView(
-                child: ListBody(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
+        title: Text("Xác thực người dùng"),
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+                flex: 6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(errorMessage.toString()),
+                    Icon(
+                      Icons.error,
+                      color: Colors.redAccent,
+                      size: 100,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 5, top: 20),
+                      child: Text(
+                        errorMessage.toString(),
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Đăng nhập'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    bloc.dispatch(AuthenticationEvent.loggedOut());
-                  },
-                ),
-              ],
-            );
-          });
-    });
-    return Container();
+                )),
+            Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.blueAccent,
+                  ),
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: FlatButton(
+                      onPressed: () {
+                        bloc.dispatch(AuthenticationEvent.loggedOut());
+                      },
+                      child: Text(
+                        'Đăng nhập',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      )),
+                ))
+          ],
+        ),
+      ),
+    );
   }
 }

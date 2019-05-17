@@ -15,6 +15,7 @@ class AuthenticationBloc
       yield AuthenticationState.authenticating();
       yield AuthenticationState.authenticated('');
       //yield AuthenticationState.unauthenticated();
+      //yield AuthenticationState.failure('Phiên làm việc của bạn đã hết hạn');
     }
     if (event.type == AuthenticationEventType.loggedIn) {
       yield AuthenticationState.authenticating();
