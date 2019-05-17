@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/application/application.dart';
+import 'package:medical/src/blocs/authentication/authentication.dart';
 
 import 'package:medical/src/ui/pages/authentication/authentication_page.dart';
+import 'package:medical/src/ui/pages/splash/splash_page.dart';
 
 class App extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class App extends StatefulWidget {
 
 class AppState extends State<App> {
   ApplicationBloc _applicationBloc;
+  AuthenticationBloc _authenticationBloc;
 
   @override
   void initState() {
@@ -21,46 +24,46 @@ class AppState extends State<App> {
   }
 
   @override
+  void didChangeDependencies() {
+    _authenticationBloc = AuthenticationBloc();
+    _authenticationBloc.dispatch(AuthenticationEvent.identified());
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     _applicationBloc?.dispose();
+    _authenticationBloc?.dispose();
     super.dispose();
   }
 
-  Widget buildInitializationPage() {
+  Widget _buildInitializationPage() {
     return Scaffold(
       body: BlocBuilder(
           bloc: _applicationBloc,
           builder: (BuildContext context, ApplicationState state) {
             if (state.isInitialized) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                final predicate =
-                    (Route route) {
-                  print(route);
-                  print(route.settings.name);
-                  print(!route.willHandlePopInternally);
-                  print(route is ModalRoute);
-                  //!route.willHandlePopInternally;
-                      return false;
-                    };
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AuthenticationPage()),
-                    ModalRoute.withName('/s'));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (BuildContext context) => AuthenticationPage()));
               });
             }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return SplashPage();
           }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: buildInitializationPage(),
+    return BlocProviderTree(
+      blocProviders: [
+        BlocProvider<ApplicationBloc>(bloc: _applicationBloc),
+        BlocProvider<AuthenticationBloc>(bloc: _authenticationBloc)
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: _buildInitializationPage(),
+      ),
     );
   }
 }

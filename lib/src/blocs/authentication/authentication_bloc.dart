@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
 import 'authentication.dart';
@@ -12,6 +11,18 @@ class AuthenticationBloc
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
-
+    if (event.type == AuthenticationEventType.identified) {
+      yield AuthenticationState.authenticating();
+      yield AuthenticationState.authenticated('');
+      //yield AuthenticationState.unauthenticated();
+    }
+    if (event.type == AuthenticationEventType.loggedIn) {
+      yield AuthenticationState.authenticating();
+      yield AuthenticationState.authenticated(event.token);
+    }
+    if (event.type == AuthenticationEventType.loggedOut) {
+      yield AuthenticationState.authenticating();
+      yield AuthenticationState.unauthenticated();
+    }
   }
 }
