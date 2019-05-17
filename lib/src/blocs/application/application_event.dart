@@ -1,8 +1,17 @@
-abstract class ApplicationEvent {}
+import 'package:equatable/equatable.dart';
 
-class AppLaunched extends ApplicationEvent {
-  @override
-  String toString() {
-    return 'AppLaunched';
-  }
+class ApplicationEvent extends Equatable {
+  final ApplicationEventType type;
+
+  ApplicationEvent({this.type})
+      : assert(type != null),
+        super([type]);
+
+  factory ApplicationEvent.launched() =>
+      ApplicationEvent(type: ApplicationEventType.launched);
+
+  factory ApplicationEvent.initialized() =>
+      ApplicationEvent(type: ApplicationEventType.initialized);
 }
+
+enum ApplicationEventType { launched, initialized }

@@ -1,5 +1,4 @@
 import 'api_provider.dart';
-
 import 'api_response_error.dart';
 
 class AuthenticationApiProvider extends ApiProvider {

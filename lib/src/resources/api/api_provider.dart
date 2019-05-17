@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 export 'package:dio/dio.dart';
 
 abstract class ApiProvider {
-  static const String apiBaseUrl = 'https://api.iqc.vn';
-  static const String apiVersionName = '1.0';
-  static const String apiVersionPath = 'v1';
+  static const String apiBaseUrl = 'https://virtserver.swaggerhub.com/imark-team/medical';
+  static const String apiVersionName = '1.0.0';
+  static const String apiVersionPath = '1.0.0';
 
   static final _dio = Dio();
 
