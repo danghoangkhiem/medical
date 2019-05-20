@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medical/src/ui/pages/attendance/attendance_history_page.dart';
 
 class AttendancePage extends StatefulWidget {
   @override
@@ -41,6 +42,18 @@ class _AttendancePageState extends State<AttendancePage> {
 // TODO: implement build
     return Scaffold(
       appBar: new AppBar(
+        actions: <Widget>[
+          new IconButton(
+              icon: Icon(Icons.history),
+              onPressed: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => AttendanceHistoryPage(),
+                  ),
+                );
+              }
+          )
+        ],
         title: Text(
           "Chấm công",
           style: new TextStyle(fontWeight: FontWeight.bold),
