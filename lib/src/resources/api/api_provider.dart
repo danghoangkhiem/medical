@@ -8,20 +8,20 @@ abstract class ApiProvider {
 
   static final _dio = Dio();
 
-  static void setBearerAuth(String token) {
-    _dio.options.headers.addAll({'Authorization': 'Bearer $token'});
-  }
+static void setBearerAuth(String token) {
+_dio.options.headers.addAll({'Authorization': 'Bearer $token'});
+}
 
-  final Dio httpClient;
+final Dio httpClient;
 
-  ApiProvider() : httpClient = _dio {
-    _dio.options.baseUrl = '$apiBaseUrl/$apiVersionPath';
-    _dio.options.connectTimeout = 6000;
-    _dio.options.receiveTimeout = 6000;
-    _dio.options.responseType = ResponseType.json;
-    _dio.options.validateStatus = (status) => true;
-    _dio.options.receiveDataWhenStatusError = true;
-    _dio.interceptors.add(
-        LogInterceptor(error: true, requestBody: true, responseBody: true));
-  }
+ApiProvider() : httpClient = _dio {
+_dio.options.baseUrl = '$apiBaseUrl/$apiVersionPath';
+_dio.options.connectTimeout = 6000;
+_dio.options.receiveTimeout = 6000;
+_dio.options.responseType = ResponseType.json;
+_dio.options.validateStatus = (status) => true;
+_dio.options.receiveDataWhenStatusError = true;
+_dio.interceptors.add(
+LogInterceptor(error: true, requestBody: true, responseBody: true));
+}
 }
