@@ -8,11 +8,15 @@ abstract class AttendanceEvent extends Equatable {
 class GetAttendance extends AttendanceEvent {
   final DateTime starDay;
   final DateTime endDay;
+  final int offset;
+  final int limit;
 
   GetAttendance({
     @required this.starDay,
-    @required this.endDay
-  }) : super([starDay, endDay]);
+    @required this.endDay,
+    @required this.offset,
+    @required this.limit,
+  }) : super([starDay, endDay, offset, limit]);
 
   @override
   String toString() {
