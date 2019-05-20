@@ -38,6 +38,33 @@ class AttendanceApiProvider extends ApiProvider {
         },
         "timeIn": 1558344898188 ,
         "timeOut": 1558344914337
+      },
+      {
+        "id": 3,
+        "location": {
+          "id": 16,
+          "name": "Bệnh viện 117"
+        },
+        "timeIn": 1558344898188 ,
+        "timeOut": 1558344914337
+      },
+      {
+        "id": 3,
+        "location": {
+          "id": 16,
+          "name": "Bệnh viện 117"
+        },
+        "timeIn": 1558344898188 ,
+        "timeOut": 1558344914337
+      },
+      {
+        "id": 3,
+        "location": {
+          "id": 16,
+          "name": "Bệnh viện 117"
+        },
+        "timeIn": 1558344898188 ,
+        "timeOut": 1558344914337
       }
     ]);
 

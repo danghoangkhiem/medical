@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
-import 'package:medical/src/blocs/attendence/attendance_bloc.dart';
-import 'package:medical/src/blocs/attendence/attendance_event.dart';
-import 'package:medical/src/blocs/attendence/attendance_state.dart';
+import '../../../blocs/attendence/attendance.dart';
 import 'package:medical/src/models/models.dart';
 import 'package:medical/src/resources/attendance_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +15,8 @@ class AttendanceHistoryPage extends StatefulWidget{
 }
 class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
 
+  ScrollController _scrollController = new ScrollController();
+
   AttendanceBloc _blocAttendance;
 
   AttendanceRepository _attendanceRepository = AttendanceRepository();
@@ -26,12 +26,20 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
   DateTime starDay;
   DateTime endDay;
 
-
+  int offsetAttendance = 0;
 
   @override
   void initState() {
     super.initState();
     _blocAttendance = AttendanceBloc(attendanceRepository: _attendanceRepository);
+    _scrollController.addListener((){
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print("Load thêm đê");
+        offsetAttendance+=10;
+        print("ok" + offsetAttendance.toString());
+      }
+    });
   }
 
   @override
@@ -180,7 +188,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                       );
                     }
 
-                    return Container(child: new Center(child: new Text("thông", style: TextStyle(color: Colors.white),),),);
+                    return Container();
                   }),
                 )
             )
@@ -195,7 +203,9 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
       itemCount: attendance.listAttendance.length,
         itemBuilder: (BuildContext context, int index){
         return buildContainer(attendance.listAttendance[index]);
-    });
+    },
+      controller: _scrollController,
+    );
   }
 
   Widget buildContainer(AttendanceItem item) {
