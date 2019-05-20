@@ -46,7 +46,10 @@ class _LoginFormState extends State<LoginForm> {
           });
         }
         if (state is LoginLoading) {
-          return LoadingIndicator();
+          return LoadingIndicator(
+            opacity: 0,
+            progressIndicatorColor: Colors.white,
+          );
         }
         return Form(
           child: ListView(

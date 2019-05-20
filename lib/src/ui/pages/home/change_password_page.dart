@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:medical/src/blocs/authentication/authentication.dart';
+import 'package:medical/src/blocs/password/password.dart';
+
+import 'change_password_form.dart';
+
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   @override
@@ -6,11 +14,41 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  AuthenticationBloc _authenticationBloc;
+  ChangePasswordBloc _changePasswordBloc;
 
-  TextEditingController _oldPassword = TextEditingController();
-  TextEditingController _newPassword = TextEditingController();
-  TextEditingController _confirmPassword = TextEditingController();
+  TextEditingController _oldPasswordController = TextEditingController();
+  TextEditingController _newPasswordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _changePasswordBloc =
+        ChangePasswordBloc(authenticationBloc: _authenticationBloc);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _changePasswordBloc?.dispose();
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => callback());
+  }
+
+  void _onButtonSubmitted() {
+    if (_newPasswordController.text == _confirmPasswordController.text) {
+      _changePasswordBloc.dispatch(ChangePasswordButtonPressed(
+          oldPassword: _oldPasswordController.text,
+          newPassword: _newPasswordController.text));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,112 +58,57 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         title: Text("Đổi mật khẩu"),
       ),
       body: Container(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 6,
-              child: Form(
-                  key: _formKey,
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: ListView(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              TextFormField(
-                                controller: _oldPassword,
-                                obscureText: true,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.lock_outline),
-                                  hintText: "Mật khẩu cũ",
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.grey[350], width: 1)),
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              TextFormField(
-                                controller: _newPassword,
-                                obscureText: true,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.lock_outline),
-                                  hintText: "Mật khẩu mới",
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.grey[350], width: 1)),
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              TextFormField(
-                                controller: _confirmPassword,
-                                obscureText: true,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.lock_outline),
-                                  hintText: "Nhập lại mật khẩu mới",
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.grey[350], width: 1)),
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
-            ),
-            Expanded(
-                flex: 1,
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.blueAccent,
-                  ),
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: FlatButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Đổi mật khẩu',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      )),
-                ))
-          ],
-        ),
+        child: buildBlocBuilder(),
       ),
     );
+  }
+
+  BlocBuilder<ChangePasswordEvent, ChangePasswordState> buildBlocBuilder() {
+    return BlocBuilder<ChangePasswordEvent, ChangePasswordState>(
+        bloc: _changePasswordBloc,
+        builder: (BuildContext context, ChangePasswordState state) {
+          if (state is ChangePasswordFailure) {
+            _onWidgetDidBuild(() {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${state.error}'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            });
+          }
+          if (state is ChangePasswordLoading) {
+            return LoadingIndicator();
+          }
+          return Column(
+            children: <Widget>[
+              Expanded(
+                flex: 6,
+                child:
+                    ChangePasswordForm(
+                        oldPasswordController: _oldPasswordController,
+                        newPasswordController: _newPasswordController,
+                        confirmPasswordController: _confirmPasswordController,
+                    ),
+              ),
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.blueAccent,
+                    ),
+                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: FlatButton(
+                        onPressed: _onButtonSubmitted,
+                        child: Text(
+                          'Đổi mật khẩu',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        )),
+                  ))
+            ],
+          );
+        });
   }
 }
