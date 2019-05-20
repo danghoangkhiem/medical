@@ -6,6 +6,7 @@ import 'package:medical/src/blocs/authentication/authentication.dart';
 
 import 'change_password_page.dart';
 import 'synchronize_page.dart';
+import '../attendance/attendance_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -94,7 +95,13 @@ class _HomePageState extends State<HomePage> {
       height: 60,
       child: FlatButton(
           padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => AttendancePage(),
+              ),
+            );
+          },
           child: ListTile(
             title: Text(
               'Chấm công',
