@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medical/src/blocs/check_in/check_in.dart';
+import 'package:medical/src/ui/pages/attendance/attendance_location.dart';
+import 'package:medical/src/ui/pages/attendance/attendance_history_page.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 class AttendancePage extends StatefulWidget {
   @override
   _AttendancePageState createState() {
