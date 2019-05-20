@@ -18,6 +18,8 @@ class GetAttendance extends AttendanceEvent {
     @required this.limit,
   }) : super([starDay, endDay, offset, limit]);
 
+
+
   @override
   String toString() {
     return "Get list attendance by day";

@@ -1,5 +1,4 @@
 import 'package:medical/src/resources/api/attendance_api_provider.dart';
-import 'package:meta/meta.dart';
 import '../models/models.dart';
 
 class AttendanceRepository {
@@ -7,7 +6,7 @@ class AttendanceRepository {
 
   final AttendanceApiProvider _attendanceApiProvider = AttendanceApiProvider();
 
-  Future<AttendancesModel> getAttendance() async {
+  Future<AttendancesModel> getAttendance({DateTime startDay, DateTime endDay ,int offset, int limit}) async {
     return await _attendanceApiProvider.getAttendance();
   }
 
