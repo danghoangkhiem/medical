@@ -10,6 +10,10 @@ class AttendanceRepository {
     return await _attendanceApiProvider.getAttendance();
   }
 
+  Future<AttendancesModel> getAttendanceMore({DateTime startDay, DateTime endDay ,int offset, int limit}) async {
+    return await _attendanceApiProvider.getAttendanceMore();
+  }
+
 
 
 

@@ -19,7 +19,9 @@ class AttendanceLoading extends AttendanceState {
 class AttendanceLoaded extends AttendanceState {
   final AttendancesModel attendance;
 
-  AttendanceLoaded({@required this.attendance}) : super([attendance]);
+  bool isLoadingMore;
+
+  AttendanceLoaded({@required this.attendance, this.isLoadingMore = false}) : super([attendance, isLoadingMore]);
 
   @override
   String toString() => 'AttendanceLoaded';

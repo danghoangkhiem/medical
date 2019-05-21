@@ -28,16 +28,23 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
 
   int offsetAttendance = 0;
 
+  AttendancesModel attendancesModelMore;
+
+  bool isLoading;
+
   @override
   void initState() {
     super.initState();
+    isLoading = false;
     _blocAttendance = AttendanceBloc(attendanceRepository: _attendanceRepository);
     _scrollController.addListener((){
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+          _scrollController.position.maxScrollExtent && !isLoading) {
+        isLoading = true;
         print("Load thêm đê");
         offsetAttendance+=10;
         print("ok" + offsetAttendance.toString());
+        _blocAttendance.dispatch(GetAttendanceMore(attendance: attendancesModelMore, starDay: starDay, endDay: endDay, offset: offsetAttendance, limit: 10));
       }
     });
   }
@@ -171,27 +178,54 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
             ),
             new Expanded(
                 flex: 6,
-                child: new Container(
-                  height: double.infinity,
-                  color: Colors.white,
-                  child: BlocBuilder<AttendanceEvent, AttendanceState>(bloc: _blocAttendance, builder: (context, state){
+                child: new Stack(
+                  children: <Widget>[
+                    new Container(
 
-                    if(state is AttendanceLoading){
-                      return LoadingIndicator();
-                    }
-                    if(state is AttendanceLoaded){
-                      return buildListView(state.attendance);
-                    }
-                    if(state is AttendanceFailure){
-                      return Center(
-                        child: new Text(state.error),
-                      );
-                    }
+                      height: double.infinity,
+                      color: Colors.white,
+                      child: BlocBuilder<AttendanceEvent, AttendanceState>(bloc: _blocAttendance, builder: (context, state){
 
-                    return Container();
-                  }),
+                        if(state is AttendanceLoading){
+                          return LoadingIndicator();
+                        }
+                        if(state is AttendanceLoaded){
+                          if (isLoading) {
+                            isLoading = false;
+                          }
+                          return buildListView(state.attendance);
+                        }
+                        if(state is AttendanceFailure){
+                          return Center(
+                            child: new Text(state.error),
+                          );
+                        }
+
+                        return Container();
+                      }),
+                    ),
+                    BlocBuilder(
+                        bloc: _blocAttendance,
+                        builder: (context, state){
+                          if(state is AttendanceLoaded && state.isLoadingMore){
+                            return new Positioned(
+                              bottom: 0,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  color: Colors.transparent,
+                                  child: new Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                            );
+                          }
+                          return Container();
+                        }
+                    ),
+                  ],
                 )
-            )
+            ),
+
           ],
         ),
       ),
@@ -199,6 +233,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
   }
 
   Widget buildListView(AttendancesModel attendance) {
+    attendancesModelMore = attendance;
     return ListView.builder(
       itemCount: attendance.listAttendance.length,
         itemBuilder: (BuildContext context, int index){
@@ -209,8 +244,6 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
   }
 
   Widget buildContainer(AttendanceItem item) {
-    print("ok thong:" );
-    print(item.timeIn);
     return new Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
         height: 100,
