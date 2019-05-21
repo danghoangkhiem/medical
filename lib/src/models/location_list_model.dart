@@ -1,5 +1,6 @@
-import 'location_model.dart';
 import 'dart:collection';
+
+import 'location_model.dart';
 
 class LocationListModel extends ListMixin<LocationModel> {
   final List<LocationModel> _locations = List();
@@ -9,16 +10,16 @@ class LocationListModel extends ListMixin<LocationModel> {
   set length(int length) => _locations.length = length;
 
   @override
-  operator [](int id) {
-    return _locations[id];
+  operator [](int index) {
+    return _locations[index];
   }
 
   @override
-  operator []=(int id, LocationModel value) {
-    if (_locations.length == id) {
+  operator []=(int index, LocationModel value) {
+    if (_locations.length == index) {
       _locations.add(value);
     } else {
-      _locations[id] = value;
+      _locations[index] = value;
     }
   }
 
@@ -33,7 +34,6 @@ class LocationListModel extends ListMixin<LocationModel> {
     List.from(_locations).forEach((item) {
       temp.add(item.toJson());
     });
-
     return temp;
   }
 }
