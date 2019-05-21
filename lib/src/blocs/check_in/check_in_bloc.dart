@@ -1,28 +1,27 @@
 import 'dart:async';
-
+import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
 import 'check_in.dart';
 
-import '../../resources/attendance_repository.dart';
-import '../../resources/location_repository.dart';
+import 'package:medical/src/resources/check_in_repository.dart';
 
 class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
-  final LocationRepository _locationRepository = LocationRepository();
-  final AttendanceRepository _attendanceRepository = AttendanceRepository();
+  final CheckInRepository _checkInRepository = CheckInRepository();
 
   @override
   CheckInState get initialState => CheckInInitial();
 
   @override
   Stream<CheckInState> mapEventToState(CheckInEvent event) async* {
-    if (event is GetLocation) {
-      yield CheckInLocationLoading();
+    if (event is AddCheckIn) {
+      yield CheckInLoading();
       try {
-        final locationList = await _locationRepository.getLocations();
-        yield CheckInLocationLoaded(locationList: locationList);
+        final title = 'OK';
+        await _checkInRepository.addCheckIn(event.newCheckInModel);
+        yield CheckInLoaded(title: title);
       } catch (error) {
-        yield CheckInLocationFailure(error: error.toString());
+        yield CheckInFailure(error: error.toString());
       }
     }
   }
