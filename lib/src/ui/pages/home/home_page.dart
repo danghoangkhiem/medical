@@ -6,7 +6,7 @@ import 'package:medical/src/blocs/authentication/authentication.dart';
 
 import 'change_password_page.dart';
 import 'synchronize_page.dart';
-import '../attendance/attendance_page.dart';
+import 'package:medical/src/ui/pages/check_in/check_in_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (BuildContext context) => AttendancePage(),
+                builder: (BuildContext context) => CheckInPage(),
               ),
             );
           },
