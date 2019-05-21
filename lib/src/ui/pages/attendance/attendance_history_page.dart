@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+import '../../../blocs/attendence/attendance.dart';
+import 'package:medical/src/models/models.dart';
+import 'package:medical/src/resources/attendance_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class AttendanceHistoryPage extends StatefulWidget{
   @override
@@ -9,11 +14,33 @@ class AttendanceHistoryPage extends StatefulWidget{
   }
 }
 class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
+
+  ScrollController _scrollController = new ScrollController();
+
+  AttendanceBloc _blocAttendance;
+
+  AttendanceRepository _attendanceRepository = AttendanceRepository();
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   DateTime starDay;
   DateTime endDay;
 
+  int offsetAttendance = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _blocAttendance = AttendanceBloc(attendanceRepository: _attendanceRepository);
+    _scrollController.addListener((){
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print("Load thêm đê");
+        offsetAttendance+=10;
+        print("ok" + offsetAttendance.toString());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +74,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                       inputType: InputType.date,
                                       format: DateFormat("dd-MM-yyyy"),
                                       initialDate: DateTime.now(),
+                                      lastDate: endDay,
                                       editable: false,
                                       decoration: InputDecoration(
                                         labelText: 'Chọn ngày bắt đầu',
@@ -65,6 +93,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                         if(dt != null){
                                           setState(() {
                                             starDay = dt;
+
                                           });
                                         }
                                       },
@@ -82,6 +111,8 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                       inputType: InputType.date,
                                       format: DateFormat("dd-MM-yyyy"),
                                       initialDate: DateTime.now(),
+                                      lastDate: DateTime.now(),
+                                      firstDate: starDay,
                                       editable: false,
                                       decoration: InputDecoration(
                                         labelText: 'Chọn ngày kết thúc',
@@ -100,6 +131,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                         if(dt != null){
                                           setState(() {
                                             endDay = dt;
+                                            //print(endDay.millisecondsSinceEpoch);
                                           });
                                         }
                                       },
@@ -120,7 +152,8 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                 child: FlatButton(
                                     onPressed: (){
                                       if(starDay !=null && endDay!=null){
-                                        print("tìm $starDay - $endDay");
+                                        //print("tìm $starDay - $endDay");
+                                        _blocAttendance.dispatch(GetAttendance(starDay: starDay, endDay: endDay, offset: 0, limit: 10));
                                       }
                                       else{
                                         print("Chua du dieu kien tim");
@@ -139,271 +172,88 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
             new Expanded(
                 flex: 6,
                 child: new Container(
-                  child: new SingleChildScrollView(
-                    child: new Column(
-                      children: <Widget>[
-                        new Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 100,
-                          color: Colors.white,
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Text("Bệnh viện bình dân", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                              new SizedBox(height: 10,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.green,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              new SizedBox(height: 3,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.deepOrange,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        new Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 100,
-                          color: Colors.white,
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Text("Bệnh viện bình dân", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                              new SizedBox(height: 10,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.green,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              new SizedBox(height: 3,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.deepOrange,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        new Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 100,
-                          color: Colors.white,
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Text("Bệnh viện bình dân", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                              new SizedBox(height: 10,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.green,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              new SizedBox(height: 3,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.deepOrange,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        new Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 100,
-                          color: Colors.white,
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Text("Bệnh viện bình dân", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                              new SizedBox(height: 10,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.green,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              new SizedBox(height: 3,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.deepOrange,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        new Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 100,
-                          color: Colors.white,
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Text("Bệnh viện bình dân", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                              new SizedBox(height: 10,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.green,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              new SizedBox(height: 3,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.deepOrange,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        new Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 100,
-                          color: Colors.white,
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Text("Bệnh viện bình dân", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                              new SizedBox(height: 10,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.green,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              new SizedBox(height: 3,),
-                              new Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: new Icon(Icons.check_circle, color: Colors.deepOrange,),
-                                    ),
-                                    new Container(
-                                      child: new Text("7:29 29/4/2019", style: new TextStyle(fontSize: 16, color: Colors.black54),),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                  height: double.infinity,
+                  color: Colors.white,
+                  child: BlocBuilder<AttendanceEvent, AttendanceState>(bloc: _blocAttendance, builder: (context, state){
 
-                      ],
-                    ),
-                  ),
+                    if(state is AttendanceLoading){
+                      return LoadingIndicator();
+                    }
+                    if(state is AttendanceLoaded){
+                      return buildListView(state.attendance);
+                    }
+                    if(state is AttendanceFailure){
+                      return Center(
+                        child: new Text(state.error),
+                      );
+                    }
+
+                    return Container();
+                  }),
                 )
             )
           ],
         ),
       ),
     );
+  }
+
+  Widget buildListView(AttendancesModel attendance) {
+    return ListView.builder(
+      itemCount: attendance.listAttendance.length,
+        itemBuilder: (BuildContext context, int index){
+        return buildContainer(attendance.listAttendance[index]);
+    },
+      controller: _scrollController,
+    );
+  }
+
+  Widget buildContainer(AttendanceItem item) {
+    print("ok thong:" );
+    print(item.timeIn);
+    return new Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        height: 100,
+        color: Colors.white,
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            new Text(item.location.name, style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+            new SizedBox(height: 10,),
+            new Container(
+              margin: EdgeInsets.only(left: 20),
+              child: new Row(
+                children: <Widget>[
+                  new Container(
+                    margin: EdgeInsets.only(right: 15),
+                    child: new Icon(Icons.check_circle, color: Colors.green,),
+                  ),
+                  new Container(
+                    child: new Text(item.timeIn.toString(), style: new TextStyle(fontSize: 16, color: Colors.black54),),
+                  )
+                ],
+              ),
+            ),
+            new SizedBox(height: 3,),
+            new Container(
+              margin: EdgeInsets.only(left: 20),
+              child: new Row(
+                children: <Widget>[
+                  new Container(
+                    margin: EdgeInsets.only(right: 15),
+                    child: new Icon(Icons.check_circle, color: Colors.deepOrange,),
+                  ),
+                  new Container(
+                    //kiem tra co hay khong
+                    child: new Text(item.timeOut.toString(), style: new TextStyle(fontSize: 16, color: Colors.black54),),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      );
   }
 }
 
