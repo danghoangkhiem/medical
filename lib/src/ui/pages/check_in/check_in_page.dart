@@ -56,7 +56,9 @@ class _CheckInPage extends State<CheckInPage> {
     var image = await ImagePicker.pickImage(
         source: ImageSource.camera, maxWidth: 800, maxHeight: 600);
     setState(() {
-      _image.add(image);
+      if(image != null){
+        _image.add(image);
+      }
     });
   }
 
@@ -69,6 +71,14 @@ class _CheckInPage extends State<CheckInPage> {
 
     initPlatformState();
     super.initState();
+  }
+
+  @override
+  void dispose(){
+    _checkInBloc.dispose();
+    _locationBloc.dispose();
+    _locationSubscription.cancel();
+    super.dispose();
   }
 
   initPlatformState() async {
@@ -314,6 +324,22 @@ class _CheckInPage extends State<CheckInPage> {
                     ),
                     child: new FlatButton(
                       onPressed: () {
+                        if(currentLocation == null){
+                          showDialog(context: context, builder: (context){
+                            return AlertDialog(title: Text("Thông báo"),content: Text("Bạn phải chọn địa điểm!"),actions: <Widget>[
+                              FlatButton(onPressed: (){Navigator.pop(context);}, child: Text("OK"))
+                            ],);
+                          });
+                          return;
+                        }
+                        if(_image.length == 0 || _image.length > 5){
+                          showDialog(context: context, builder: (context){
+                            return AlertDialog(title: Text("Thông báo"),content: Text("Bạn phải chụp hình và không quá 5 tấm hình!"),actions: <Widget>[
+                              FlatButton(onPressed: (){Navigator.pop(context);}, child: Text("OK"))
+                            ],);
+                          });
+                          return;
+                        }
                         CheckInModel newCheckInModel = CheckInModel(
                             locationId: currentLocation, lat: _currentLocation.latitude, lon: _currentLocation.longitude, images: _image);
                         _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
