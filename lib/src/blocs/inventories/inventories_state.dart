@@ -19,7 +19,9 @@ class InventoriesLoading extends InventoriesState {
 class InventoriesLoaded extends InventoriesState {
   final InventoriesModel inventoriesModel;
 
-  InventoriesLoaded({@required this.inventoriesModel}) : super([inventoriesModel]);
+  List<int> listSum;
+
+  InventoriesLoaded({@required this.inventoriesModel, @required this.listSum}) : super([inventoriesModel, listSum]);
 
   @override
   String toString() => 'InventoriesLoaded';
@@ -33,3 +35,8 @@ class InventoriesFailure extends InventoriesState {
   @override
   String toString() => 'InventoriesFailure { error: $error }';
 }
+
+
+
+
+

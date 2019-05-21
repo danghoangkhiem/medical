@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/authentication/authentication.dart';
+import 'package:medical/src/ui/pages/inventories/inventories_page.dart';
 
 import 'package:medical/src/utils.dart';
 
@@ -170,7 +171,10 @@ class _HomePageState extends State<HomePage> {
       height: 60,
       child: FlatButton(
           padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => Inventories()));
+          },
           child: ListTile(
             title: Text(
               'Quản lý xuất nhập tồn',
