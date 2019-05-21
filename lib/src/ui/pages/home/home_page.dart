@@ -1,8 +1,9 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/authentication/authentication.dart';
+
+import 'package:medical/src/utils.dart';
 
 import 'change_password_page.dart';
 import 'synchronize_page.dart';
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage> {
         height: double.infinity,
         color: Colors.grey[300],
         child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 20),
           child: Column(
             children: <Widget>[
               buildUserInfo(),
@@ -43,6 +45,9 @@ class _HomePageState extends State<HomePage> {
               buildConsumer(),
               buildInventory(),
               buildInvoice(),
+              buildSchedule(),
+              buildScheduleCoaching(),
+              buildScheduleLocality(),
               buildSynchronize(),
               buildChangePassword(),
               buildLogout(),
@@ -219,6 +224,111 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget buildSchedule() {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: Colors.white,
+      ),
+      height: 60,
+      child: FlatButton(
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => SynchronizePage()));
+          },
+          child: ListTile(
+            title: Text(
+              'Lên lịch làm việc',
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            leading: Icon(
+              Icons.schedule,
+              size: 35,
+              color: Colors.blueAccent,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+            ),
+          )),
+    );
+  }
+
+  Widget buildScheduleCoaching() {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: Colors.white,
+      ),
+      height: 60,
+      child: FlatButton(
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => SynchronizePage()));
+          },
+          child: ListTile(
+            title: Text(
+              'Lập kế hoạch coaching',
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            leading: Icon(
+              Icons.alarm,
+              size: 35,
+              color: Colors.blueAccent,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+            ),
+          )),
+    );
+  }
+
+  Widget buildScheduleLocality() {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: Colors.white,
+      ),
+      height: 60,
+      child: FlatButton(
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => SynchronizePage()));
+          },
+          child: ListTile(
+            title: Text(
+              'Lập kế hoạch địa bàn',
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            leading: Icon(
+              Icons.landscape,
+              size: 35,
+              color: Colors.blueAccent,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+            ),
+          )),
+    );
+  }
+
   Widget buildSynchronize() {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -331,34 +441,7 @@ class _HomePageState extends State<HomePage> {
       height: 60,
       child: FlatButton(
           padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () async {
-            final bool accepted = await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Xác nhận'),
-                    content: Text('Bạn có chắc chắn muốn thoát khỏi ứng dụng?'),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text('Đóng lại'),
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                      ),
-                      FlatButton(
-                        child: Text('Thoát'),
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                      ),
-                    ],
-                  );
-                });
-            if (accepted) {
-              SystemNavigator.pop();
-            }
-          },
+          onPressed: () => exitApp(context),
           child: ListTile(
             title: Text(
               'Thoát',

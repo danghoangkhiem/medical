@@ -12,7 +12,7 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
       yield ApplicationState.uninitialized();
     }
     if (event.type == ApplicationEventType.launched) {
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 1));
       yield ApplicationState.progressing(100);
     }
     if (event.type == ApplicationEventType.initialized) {

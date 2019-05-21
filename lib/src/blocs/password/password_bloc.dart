@@ -23,13 +23,21 @@ class ChangePasswordBloc extends Bloc<ChangePasswordEvent, ChangePasswordState> 
     if (event is ChangePasswordButtonPressed) {
       yield ChangePasswordLoading();
       try {
+        if (event.oldPassword.isEmpty ||
+            event.newPassword.isEmpty ||
+            event.confirmPassword.isEmpty) {
+          throw 'Hãy nhập đầy đủ thông tin vào các trường phía trên';
+        }
+        if (event.confirmPassword != event.newPassword) {
+          throw 'Mật khẩu xác nhận không đúng với mật khẩu mới';
+        }
         await _userRepository.changePassword(
           oldPassword: event.oldPassword,
           newPassword: event.newPassword,
         );
         _authenticationBloc
             .dispatch(AuthenticationEvent.loggedOut());
-        yield ChangePasswordInitial();
+        yield ChangePasswordSuccess();
       } catch (error) {
         yield ChangePasswordFailure(error: error.toString());
       }

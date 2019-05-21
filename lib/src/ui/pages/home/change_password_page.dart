@@ -38,16 +38,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
-  void _onWidgetDidBuild(Function callback) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => callback());
-  }
-
   void _onButtonSubmitted() {
-    if (_newPasswordController.text == _confirmPasswordController.text) {
-      _changePasswordBloc.dispatch(ChangePasswordButtonPressed(
-          oldPassword: _oldPasswordController.text,
-          newPassword: _newPasswordController.text));
-    }
+    _changePasswordBloc.dispatch(ChangePasswordButtonPressed(
+        oldPassword: _oldPasswordController.text,
+        newPassword: _newPasswordController.text,
+        confirmPassword: _confirmPasswordController.text));
   }
 
   @override
@@ -58,7 +53,52 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         title: Text("Đổi mật khẩu"),
       ),
       body: Container(
-        child: buildBlocBuilder(),
+        child: BlocListener(
+          bloc: _changePasswordBloc,
+          listener: (BuildContext context, ChangePasswordState state) {
+            if (state is ChangePasswordLoading) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      LoadingIndicator(willPop: false));
+            }
+            if (state is! ChangePasswordLoading &&
+                state is! ChangePasswordInitial) {
+              Navigator.of(context).pop();
+            }
+            if (state is ChangePasswordSuccess) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Thành công!'),
+                      content: Text('Cập nhật mật khẩu thành công. '
+                          'Bạn cần phải đăng nhập lại bằng mật khẩu mới '
+                          'để có thể thao tác trên ứng dụng.'),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Đăng nhập'),
+                        )
+                      ],
+                    );
+                  });
+            }
+            if (state is ChangePasswordFailure) {
+              Scaffold.of(context).removeCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${state.error}'),
+                  backgroundColor: Colors.redAccent,
+                ),
+              );
+            }
+          },
+          child: buildBlocBuilder(),
+        ),
       ),
     );
   }
@@ -67,29 +107,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     return BlocBuilder<ChangePasswordEvent, ChangePasswordState>(
         bloc: _changePasswordBloc,
         builder: (BuildContext context, ChangePasswordState state) {
-          if (state is ChangePasswordFailure) {
-            _onWidgetDidBuild(() {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${state.error}'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            });
-          }
-          if (state is ChangePasswordLoading) {
-            return LoadingIndicator();
-          }
           return Column(
             children: <Widget>[
               Expanded(
                 flex: 6,
-                child:
-                    ChangePasswordForm(
-                        oldPasswordController: _oldPasswordController,
-                        newPasswordController: _newPasswordController,
-                        confirmPasswordController: _confirmPasswordController,
-                    ),
+                child: ChangePasswordForm(
+                  oldPasswordController: _oldPasswordController,
+                  newPasswordController: _newPasswordController,
+                  confirmPasswordController: _confirmPasswordController,
+                ),
               ),
               Expanded(
                   flex: 1,

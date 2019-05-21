@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   child: Text(
                     'Version: 1.1',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ))
           ],

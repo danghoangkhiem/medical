@@ -2,6 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:medical/src/utils.dart';
+
 import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'package:medical/src/blocs/login/login.dart';
 
@@ -37,10 +39,11 @@ class _LoginFormState extends State<LoginForm> {
       ) {
         if (state is LoginFailure) {
           _onWidgetDidBuild(() {
+            Scaffold.of(context).removeCurrentSnackBar();
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text('${state.error}'),
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.redAccent,
               ),
             );
           });
@@ -94,7 +97,7 @@ class _LoginFormState extends State<LoginForm> {
             obscureText: true,
             keyboardType: TextInputType.text,
             style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 color: Colors.black54,
                 fontWeight: FontWeight.bold),
             decoration: InputDecoration(
@@ -126,7 +129,7 @@ class _LoginFormState extends State<LoginForm> {
             controller: _usernameController,
             keyboardType: TextInputType.text,
             style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 color: Colors.black54,
                 fontWeight: FontWeight.bold),
             decoration: InputDecoration(
@@ -171,34 +174,7 @@ class _LoginFormState extends State<LoginForm> {
       ),
       child: FlatButton(
           padding: EdgeInsets.symmetric(vertical: 14),
-          onPressed: () async {
-            final bool accepted = await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Xác nhận'),
-                    content: Text('Bạn có chắc chắn muốn thoát khỏi ứng dụng?'),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text('Đóng lại'),
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                      ),
-                      FlatButton(
-                        child: Text('Thoát'),
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                      ),
-                    ],
-                  );
-                });
-            if (accepted) {
-              SystemNavigator.pop();
-            }
-          },
+          onPressed: () => exitApp(context),
           child: Text(
             'HỦY',
             style: TextStyle(

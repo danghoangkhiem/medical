@@ -8,11 +8,13 @@ abstract class ChangePasswordEvent extends Equatable {
 class ChangePasswordButtonPressed extends ChangePasswordEvent {
   final String oldPassword;
   final String newPassword;
+  final String confirmPassword;
 
   ChangePasswordButtonPressed({
     @required this.oldPassword,
     @required this.newPassword,
-  }) : super([oldPassword, oldPassword]);
+    @required this.confirmPassword,
+  }) : super([oldPassword, oldPassword, confirmPassword]);
 
   @override
   String toString() =>

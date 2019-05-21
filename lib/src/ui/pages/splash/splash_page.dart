@@ -11,7 +11,7 @@ class SplashPage extends StatelessWidget {
         ),
         ModalBarrier(
           dismissible: false,
-          color: Colors.blue.withOpacity(0.3),
+          color: Colors.black.withOpacity(0.3),
         ),
       ],
     );

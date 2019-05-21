@@ -23,6 +23,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is LoginButtonPressed) {
       yield LoginLoading();
       try {
+        if (event.username.isEmpty || event.password.isEmpty) {
+          throw 'Tên đăng nhập hoặc mật khẩu không được bỏ trống';
+        }
         final token = await _userRepository.authenticate(
           username: event.username,
           password: event.password,
