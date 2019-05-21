@@ -21,13 +21,36 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   @override
   Stream<AttendanceState> mapEventToState(AttendanceEvent event) async* {
     if (event is GetAttendance) {
+      yield AttendanceLoading();
+
       try {
-        yield AttendanceLoading();
         AttendancesModel attendance = await _attendanceRepository.getAttendance(startDay: event.starDay, endDay: event.endDay, offset: event.offset, limit: event.limit);
         yield AttendanceLoaded(attendance: attendance);
       } catch (error) {
         yield AttendanceFailure(error: error.toString());
       }
     }
+
+    if(event is GetAttendanceMore){
+      yield AttendanceLoaded(attendance: event.attendance, isLoadingMore: true);
+      try{
+        AttendancesModel attendanceMore = await _attendanceRepository.getAttendanceMore(startDay: event.starDay, endDay: event.endDay, offset: event.offset, limit: event.limit);
+        print(attendanceMore.listAttendance.length);
+        AttendancesModel oldAttendanceModel = event.attendance;
+
+        if(attendanceMore !=null){
+          oldAttendanceModel.listAttendance.addAll(attendanceMore.listAttendance);
+          print(oldAttendanceModel.listAttendance.length);
+        }
+
+        print(oldAttendanceModel.listAttendance);
+        yield AttendanceLoaded(attendance: oldAttendanceModel, isLoadingMore: false);
+
+      }catch(error){
+        yield AttendanceFailure(error: error.toString());
+      }
+
+    }
   }
+
 }

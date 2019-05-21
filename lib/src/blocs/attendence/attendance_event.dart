@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:medical/src/models/models.dart';
 import 'package:meta/meta.dart';
 
 abstract class AttendanceEvent extends Equatable {
@@ -17,6 +18,29 @@ class GetAttendance extends AttendanceEvent {
     @required this.offset,
     @required this.limit,
   }) : super([starDay, endDay, offset, limit]);
+
+
+
+  @override
+  String toString() {
+    return "Get list attendance by day";
+  }
+}
+
+class GetAttendanceMore extends AttendanceEvent {
+  final AttendancesModel attendance;
+  final DateTime starDay;
+  final DateTime endDay;
+  final int offset;
+  final int limit;
+
+  GetAttendanceMore({
+    @required this.attendance,
+    @required this.starDay,
+    @required this.endDay,
+    @required this.offset,
+    @required this.limit,
+  }) : super([ attendance,starDay, endDay, offset, limit]);
 
 
 
