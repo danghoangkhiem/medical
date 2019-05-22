@@ -14,12 +14,6 @@ class AttendanceRepository {
     return await _attendanceApiProvider.getAttendanceMore();
   }
 
-
-
-
-
-
-
 //  Future<CatalogModel> getCatalog() async {
 //    return await _userApiProvider.getCatalog();
 //  }
@@ -29,6 +23,5 @@ class AttendanceRepository {
 //    final String accessToken = prefs.getString(_accessTokenKeyName);
 //    return accessToken;
 //  }
-
 
 }
