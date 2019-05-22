@@ -89,7 +89,7 @@ class InventoriesState extends State<Inventories> {
                                       format: DateFormat("dd-MM-yyyy"),
                                       initialDate: DateTime.now(),
                                       editable: false,
-                                      lastDate: endDay,
+                                      lastDate: DateTime.now(),
                                       decoration: InputDecoration(
                                         labelText: 'Chọn ngày bắt đầu',
                                         labelStyle: new TextStyle(
@@ -296,113 +296,230 @@ class InventoriesState extends State<Inventories> {
                   child: new Column(
                     children: <Widget>[
                       new Container(
-                        height: 60,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                        height: 55,
                         color: Colors.grey[200],
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            new Text(
-                              "Tên sản phẩm",
-                              style: new TextStyle(fontSize: 18),
-                            ),
-                            new Text(
-                              "Nhập",
-                              style: new TextStyle(fontSize: 18),
-                            ),
-                            new Text(
-                              "Xuất",
-                              style: new TextStyle(fontSize: 18),
-                            ),
-                            new Text(
-                              "Còn lại",
-                              style: new TextStyle(fontSize: 18),
-                            ),
+                        child: Table(
+                          columnWidths: {0: FractionColumnWidth(0.5)},
+                          children: [
+                            new TableRow(children: [
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  new Text(
+                                    "Tên sản phẩm",
+                                    style: new TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  new Text(
+                                    "Nhập",
+                                    style: new TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  new Text(
+                                    "Xuất",
+                                    style: new TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  new Text(
+                                    "Còn lại",
+                                    style: new TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            ])
                           ],
                         ),
                       ),
 //reach data
                       new Expanded(
+                          child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: SingleChildScrollView(
                           child: BlocBuilder(
                               bloc: _blocInventories,
                               builder: (BuildContext context, state) {
-                                if(state is InventoriesLoading){
-                                  return LoadingIndicator();
+                                if (state is InventoriesLoading) {
+                                  return WillPopScope(
+                                    onWillPop: () async {
+                                      return true;
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.only(top: 30),
+                                      color: Colors.transparent,
+                                      child: new Center(
+                                        child: new CircularProgressIndicator(),
+                                      ),
+                                    ),
+                                  );
                                 }
                                 if (state is InventoriesLoaded) {
-                                  return buildListView(state.inventoriesModel);
+                                  return Table(
+                                    columnWidths: {0: FractionColumnWidth(0.5)},
+                                    children: state
+                                        .inventoriesModel.listInventories
+                                        .map((item) {
+                                      return TableRow(children: [
+                                        new Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
+                                              child: new Text(
+                                                item.label,
+                                                style:
+                                                    new TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        new Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
+                                              child: new Text(
+                                                item.import.toString(),
+                                                style:
+                                                    new TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        new Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
+                                              child: new Text(
+                                                item.export.toString(),
+                                                style:
+                                                    new TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        new Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
+                                              child: new Text(
+                                                item.stock.toString(),
+                                                style:
+                                                    new TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ]);
+                                    }).toList(),
+                                  );
                                 }
-                                if(state is InventoriesFailure){
+                                if (state is InventoriesFailure) {
                                   return Center(
                                     child: new Text(state.error),
                                   );
                                 }
-
                                 return Container();
-                              }))
+                              }),
+                        ),
+                      ))
                     ],
                   ),
                 )),
             new Expanded(
                 flex: 1,
                 child: new Container(
-                  padding: EdgeInsets.symmetric(horizontal: 40),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
                   width: double.infinity,
                   color: Colors.grey[200],
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      new Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: new Text(
-                          "Tổng",
-                          style: new TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      new Expanded(
-                          child: new Container(
+                  child: BlocBuilder(
+                      bloc: _blocInventories,
+                      builder: (BuildContext context, state){
+                        if(state is InventoriesLoading){
+                          return Container();
+                        }
+                        if(state is InventoriesLoaded){
+                          return Table(
+                            columnWidths: {0: FractionColumnWidth(0.5)},
+                            children: [
+                              TableRow(
+                                  children: [
+                                    new Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        new Text(
+                                          "Tổng",
+                                          style: new TextStyle(
+                                              fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        new Text(
+                                          state.listSum[0].toString(),
+                                          style: new TextStyle(
+                                              fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        new Text(
+                                          state.listSum[1].toString(),
+                                          style: new TextStyle(
+                                              fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        new Text(
+                                          state.listSum[2].toString(),
+                                          style: new TextStyle(
+                                              fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ]),
+                            ],
+                          );
+                        }
 
-                            child: new BlocBuilder(
-                                bloc: _blocInventories,
-                                builder: (BuildContext context, state){
-                                  if(state is InventoriesLoaded){
-                                    return new Row(
-                                      children: state.listSum.map((item){
-                                        return Expanded(
-                                            child: new Container(
-                                              margin: EdgeInsets.only(left: 60),
-                                              child: new Text(
-                                                item.toString(),
-                                                style: new TextStyle(
-                                                    fontSize: 18, fontWeight: FontWeight.bold),
-                                              ),
-                                            ));
-                                      }).toList(),
-                                    );
-                                  }
-                                  return Container();
-                                }
-                            ),
-                          )
-                      )
-
-//                      BlocBuilder(
-//                          bloc: _blocInventories,
-//                          builder: (BuildContext context, state){
-//                            if(state is InventoriesLoaded){
-//                              return ;
-//                            }
-//                            return Container();
-//                          }
-//                      ),
-
-//                      new Text(
-//                        "15",
-//                        style: new TextStyle(
-//                            fontSize: 18, fontWeight: FontWeight.bold),
-//                      )
-                    ],
+                        if(state is InventoriesFailure){
+                          return Center(
+                            child: new Text(state.error),
+                          );
+                        }
+                        return Container();
+                      }
                   ),
                 ))
           ],
@@ -412,56 +529,54 @@ class InventoriesState extends State<Inventories> {
   }
 
   ListView buildListView(InventoriesModel inventories) {
-      return ListView.builder(
-          itemCount: inventories.listInventories.length,
-          itemBuilder: (BuildContext context, int index){
-            return buildContainer(inventories.listInventories[index]);
-
-          }
-      );
+    return ListView.builder(
+        itemCount: inventories.listInventories.length,
+        itemBuilder: (BuildContext context, int index) {
+          return buildContainer(inventories.listInventories[index]);
+        });
   }
 
   Widget buildContainer(InventoriesItem item) {
     return Container(
-            height: 60,
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                    bottom: BorderSide(
-                        style: BorderStyle.solid,
-                        width: 1,
-                        color: Colors.grey[200]))),
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                    child: new Text(
-                      item.label,
-                      style: new TextStyle(fontSize: 18),
-                    )),
-                Expanded(
-                    child: new Container(
-                      margin: EdgeInsets.only(left: 35),
-                      child: new Text(
-                        item.import.toString(),
-                        style: new TextStyle(fontSize: 18),
-                      ),
-                    )),
-                Expanded(
-                    child: new Container(
-                      margin: EdgeInsets.only(left: 20),
-                      child: new Text(
-                        item.export.toString(),
-                        style: new TextStyle(fontSize: 18),
-                      ),
-                    )),
-                new Text(
-                  item.stock.toString(),
-                  style: new TextStyle(fontSize: 18),
-                )
-              ],
+      height: 60,
+      padding: EdgeInsets.symmetric(horizontal: 40),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+              bottom: BorderSide(
+                  style: BorderStyle.solid,
+                  width: 1,
+                  color: Colors.grey[200]))),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+              child: new Text(
+            item.label,
+            style: new TextStyle(fontSize: 18),
+          )),
+          Expanded(
+              child: new Container(
+            margin: EdgeInsets.only(left: 35),
+            child: new Text(
+              item.import.toString(),
+              style: new TextStyle(fontSize: 18),
             ),
-          );
+          )),
+          Expanded(
+              child: new Container(
+            margin: EdgeInsets.only(left: 20),
+            child: new Text(
+              item.export.toString(),
+              style: new TextStyle(fontSize: 18),
+            ),
+          )),
+          new Text(
+            item.stock.toString(),
+            style: new TextStyle(fontSize: 18),
+          )
+        ],
+      ),
+    );
   }
 }
