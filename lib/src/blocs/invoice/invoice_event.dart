@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import 'package:medical/src/models/invoice_model.dart';
+
 @immutable
 abstract class InvoiceEvent {}
 
@@ -19,6 +21,9 @@ class InvoiceFilter extends InvoiceEvent {
 
 class LoadMore extends InvoiceEvent {}
 
-class RedButtonPressed extends InvoiceEvent {}
+class ButtonPressed extends InvoiceEvent {
+  final int invoiceId;
+  final InvoiceStatus invoiceStatus;
 
-class GreenButtonPressed extends InvoiceEvent {}
+  ButtonPressed({@required this.invoiceId, @required this.invoiceStatus});
+}

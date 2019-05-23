@@ -27,3 +27,11 @@ class Failure extends InvoiceState {
 }
 
 class ReachMax extends InvoiceState {}
+
+class Submitted extends InvoiceState {
+  final InvoiceStatus invoiceStatus;
+
+  Submitted({@required this.invoiceStatus});
+}
+
+class Submitting extends InvoiceState {}
