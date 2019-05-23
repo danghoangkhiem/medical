@@ -23,8 +23,14 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
       yield ReportKpiDayLoading();
 
       try {
-        ReportKpiDayModel attendance = await _reportKpiDayRepository.getReportKpiDay();
-        yield ReportKpiDayLoaded(reportKpiDayModel: attendance);
+        ReportKpiDayModel listKpiDay = await _reportKpiDayRepository.getReportKpiDay();
+        int count = 0;
+
+        listKpiDay.listKpiDayItem.forEach((item){
+          count+=item.countVisit;
+        });
+
+        yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, countKpi: count);
       } catch (error) {
         yield ReportKpiDayFailure(error: error.toString());
       }
