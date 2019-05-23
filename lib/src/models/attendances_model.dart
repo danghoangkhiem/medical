@@ -8,16 +8,9 @@ class AttendancesModel{
       return AttendanceItem.fromJson(item);
     }));
 
-
     return AttendancesModel(mapAttendance.toList());
 
   }
-
-//  List<dynamic> toJson(){
-//    return listAttendance.map((item){
-//      return item.toJson();
-//    }).toList();
-//  }
 
 }
 
@@ -33,7 +26,6 @@ class Location{
       name: json["name"]
     );
   }
-
 }
 
 class AttendanceItem{
@@ -42,7 +34,6 @@ class AttendanceItem{
   final DateTime timeIn;
   final DateTime timeOut;
 
-  //AttendanceItem({this.location, this.timeIn, this.timeOut});
   AttendanceItem({this.location, this.timeIn, this.timeOut});
 
   factory AttendanceItem.fromJson(Map<String, dynamic> json){
@@ -52,13 +43,5 @@ class AttendanceItem{
         timeOut: json["timeOut"] !=null ? DateTime.fromMillisecondsSinceEpoch(json["timeOut"]) : null
     );
   }
-
-//  Map<String, dynamic> toJson(){
-//    return {
-//      'location' : location,
-//      'timeIn' : timeIn,
-//      'timeOut' : timeOut
-//    };
-//  }
 
 }

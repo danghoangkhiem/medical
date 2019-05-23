@@ -263,7 +263,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                     child: new Icon(Icons.check_circle, color: Colors.green,),
                   ),
                   new Container(
-                    child: new Text(item.timeIn.toString(), style: new TextStyle(fontSize: 16, color: Colors.black54),),
+                    child: new Text(DateFormat('dd-MM-yyyy hh:mm:ss').format(item.timeIn), style: new TextStyle(fontSize: 16, color: Colors.black54),),
                   )
                 ],
               ),
@@ -279,7 +279,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                   ),
                   new Container(
                     //kiem tra co hay khong
-                    child: new Text(item.timeOut.toString(), style: new TextStyle(fontSize: 16, color: Colors.black54),),
+                    child: new Text(DateFormat('dd-MM-yyyy hh:mm:ss').format(item.timeOut), style: new TextStyle(fontSize: 16, color: Colors.black54),),
                   )
                 ],
               ),

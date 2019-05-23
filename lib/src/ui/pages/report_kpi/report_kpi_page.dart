@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_bloc.dart';
+import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_event.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 
 class ReportKpiPage extends StatefulWidget {
@@ -15,6 +16,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
 
   DateTime starDate;
   DateTime endDate;
+  int offsetkpi = 0;
 
   ReportKpiDayBloc _blocReportKpiDay;
 
@@ -149,6 +151,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               onPressed: (){
                                                 if(starDate !=null && endDate!=null){
                                                   //print("tìm $starDay - $endDay");
+                                                  _blocReportKpiDay.dispatch(GetReportKpiDay(starDay: starDate, endDay: endDate, offset: offsetkpi));
 
                                                 }
                                                 else{

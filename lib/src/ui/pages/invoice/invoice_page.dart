@@ -151,7 +151,7 @@ class _InvoicePageState extends State<InvoicePage> {
               style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey,
-                  fontStyle: FontStyle.italic),
+                  ),
             ),
             Text(
               _mapInvoiceStatusToName(invoice.status),
