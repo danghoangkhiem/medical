@@ -3,7 +3,10 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_bloc.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_event.dart';
+import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_state.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medical/src/utils.dart';
 
 class ReportKpiPage extends StatefulWidget {
   @override
@@ -13,6 +16,23 @@ class ReportKpiPage extends StatefulWidget {
 }
 
 class _ReportKpiPageState extends State<ReportKpiPage> {
+
+  final ScrollController _controller = ScrollController();
+  bool _isLoading = false;
+
+
+  //table thi lam meo j co su kien load them ma viet ham nay !!!
+  void _scrollListener() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      throttle(200, () {
+        if (_isLoading != true) {
+          _isLoading = true;
+          print("Load more");
+          //_blocReportKpiDay.dispatch(GetReportKpiDay(starDay: starDate, endDay: endDate, offset: offsetkpi));
+        }
+      });
+    }
+  }
 
   DateTime starDate;
   DateTime endDate;
@@ -29,6 +49,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
 
     super.initState();
     _blocReportKpiDay = ReportKpiDayBloc(reportKpiDayRepository: _reportKpiDayRepository);
+    _controller.addListener(_scrollListener);
   }
 
   @override
@@ -150,7 +171,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                           child: FlatButton(
                                               onPressed: (){
                                                 if(starDate !=null && endDate!=null){
-                                                  //print("tìm $starDay - $endDay");
+                                                  print("Du dieu kien tim");
                                                   _blocReportKpiDay.dispatch(GetReportKpiDay(starDay: starDate, endDay: endDate, offset: offsetkpi));
 
                                                 }
@@ -174,10 +195,11 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                             child: new Column(
                               children: <Widget>[
                                 new Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                                  height: 55,
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                  height: 50,
                                   color: Colors.grey[200],
                                   child: Table(
+
                                     columnWidths: {0: FractionColumnWidth(0.4), 1: FractionColumnWidth(0.4)},
                                     children: [
                                       TableRow(
@@ -209,46 +231,73 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                   child: Container(
                                     padding: EdgeInsets.symmetric(horizontal: 20),
                                     child: SingleChildScrollView(
-                                      child: Table(
-                                        columnWidths: {0: FractionColumnWidth(0.4), 1: FractionColumnWidth(0.4)},
-                                        children: [
-                                          TableRow(
-                                              children: [
-                                                new Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                                      child: new Text("12-12-2019", style: new TextStyle(fontSize: 16),),
-                                                    ),
-                                                  ],
+                                      child: BlocBuilder(
+                                          bloc: _blocReportKpiDay,
+                                          builder: (BuildContext context, state){
+                                            if(state is ReportKpiDayLoading){
+                                              return WillPopScope(
+                                                onWillPop: () async {
+                                                  return true;
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.only(top: 30),
+                                                  color: Colors.transparent,
+                                                  child: new Center(
+                                                    child: new CircularProgressIndicator(),
+                                                  ),
                                                 ),
-                                                new Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                                      child: new Text("15", style: new TextStyle(fontSize: 16),),
-                                                    ),
-                                                  ],
-                                                ),
-                                                new Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                                      child: new InkWell(
-                                                        onTap: (){
-                                                        },
-                                                        child: new Text("chi tiết", style: new TextStyle(fontSize: 16, color: Colors.blueAccent),),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                              );
+                                            }
+                                            if(state is ReportKpiDayLoaded){
+                                              return Table(
+                                                columnWidths: {0: FractionColumnWidth(0.4), 1: FractionColumnWidth(0.4)},
+                                                children: state.reportKpiDayModel.listKpiDayItem.map((item){
+                                                  return TableRow(
+                                                      children: [
+                                                        new Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                                              child:  new Text(DateFormat('dd-MM-yyyy').format(item.date), style: new TextStyle(fontSize: 16),),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        new Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                                              child: new Text(item.countVisit.toString(), style: new TextStyle(fontSize: 16),),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        new Row(
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                                              child: new InkWell(
+                                                                onTap: (){
+                                                                },
+                                                                child: new Text("chi tiết", style: new TextStyle(fontSize: 16, color: Colors.blueAccent),),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
 
-                                              ]
-                                          ),
-                                        ],
+                                                      ]
+                                                  );
+                                                }).toList(),
+                                              );
+                                            }
+                                            if(state is ReportKpiDayFailure){
+                                              return Center(
+                                                child: new Text(state.error),
+                                              );
+                                            }
+                                            return Container();
+                                          }
                                       ),
                                     ),
                                   ),
@@ -264,41 +313,52 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                             alignment: Alignment.center,
                             width: double.infinity,
                             color: Colors.grey[200],
-                            child: Table(
-                              columnWidths: {0: FractionColumnWidth(0.5)},
-                              children: [
-                                TableRow(
-                                    children: [
-                                      new Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          new Text("Tổng", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                        ],
-                                      ),
-                                      new Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          new Padding(
-                                              padding: EdgeInsets.only(left: 15),
-                                            child: new Text("20", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                          )
-                                        ],
-                                      ),
-                                      new Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                        ],
-                                      ),
-                                      new Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                        ],
-                                      ),
-                                    ]
-                                ),
-                              ],
+                            child: BlocBuilder(
+                                bloc: _blocReportKpiDay,
+                                builder: (BuildContext context, state){
+                                  if(state is ReportKpiDayLoaded){
+                                    return Table(
+                                      columnWidths: {0: FractionColumnWidth(0.5)},
+                                      children: [
+                                        TableRow(
+                                            children: [
+                                              new Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  new Text("Tổng", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                                ],
+                                              ),
+                                              new Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  new Padding(
+                                                    padding: EdgeInsets.only(left: 15),
+                                                    child: new Text(state.countKpi.toString(), style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                                  )
+                                                ],
+                                              ),
+                                              new Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                                ],
+                                              ),
+                                              new Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                                ],
+                                              ),
+                                            ]
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                  if(state is ReportKpiDayFailure){
+                                    return new Text("Dữ liệu không hoạt động");
+                                  }
+                                  return Container();
+                                }
                             ),
                           )
                       )

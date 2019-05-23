@@ -18,8 +18,9 @@ class ReportKpiDayLoading extends ReportKpiDayState {
 
 class ReportKpiDayLoaded extends ReportKpiDayState {
   final ReportKpiDayModel reportKpiDayModel;
+  final int countKpi;
 
-  ReportKpiDayLoaded({@required this.reportKpiDayModel}) : super([reportKpiDayModel]);
+  ReportKpiDayLoaded({@required this.reportKpiDayModel, @required this.countKpi}) : super([reportKpiDayModel, countKpi]);
 
   @override
   String toString() => 'ReportKpiDayLoaded';
