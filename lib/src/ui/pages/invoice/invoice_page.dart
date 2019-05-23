@@ -72,12 +72,14 @@ class _InvoicePageState extends State<InvoicePage> {
                   bloc: _invoiceBloc,
                   listener: (BuildContext context, InvoiceState state) {
                     if (state is ReachMax) {
+                      Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('Got all the data!'),
                       ));
                       _controller.removeListener(_scrollListener);
                     }
                     if (state is Failure) {
+                      Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text(state.errorMessage),
                         backgroundColor: Colors.redAccent,
@@ -98,30 +100,28 @@ class _InvoicePageState extends State<InvoicePage> {
                         if (state is Loading && !state.isLoadMore) {
                           return LoadingIndicator();
                         }
-                        return _buildListView();
+                        return ListView.builder(
+                          controller: _controller,
+                          itemCount: _isLoading
+                              ? _invoiceList.length + 1
+                              : _invoiceList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (_isLoading && index == _invoiceList.length) {
+                              return SizedBox(
+                                height: 50,
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator()),
+                              );
+                            }
+                            return _buildRow(_invoiceList[index]);
+                          },
+                        );
                       }),
                 ))
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildListView() {
-    return ListView.builder(
-      controller: _controller,
-      itemCount: _isLoading ? _invoiceList.length + 1 : _invoiceList.length,
-      itemBuilder: (BuildContext context, int index) {
-        if (_isLoading && index == _invoiceList.length) {
-          return SizedBox(
-            height: 50,
-            child: Align(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator()),
-          );
-        }
-        return _buildRow(_invoiceList[index]);
-      },
     );
   }
 
@@ -139,9 +139,7 @@ class _InvoicePageState extends State<InvoicePage> {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => InvoiceDetailPage(
-                    invoice: invoice,
-                    invoiceBloc: _invoiceBloc,
-                  )));
+                    invoice: invoice)));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,7 +149,7 @@ class _InvoicePageState extends State<InvoicePage> {
               style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey,
-                  fontStyle: FontStyle.italic),
+                  ),
             ),
             Text(
               _mapInvoiceStatusToName(invoice.status),

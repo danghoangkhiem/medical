@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'additional.dart';
+import 'additional_type.dart';
 import 'invoice_item_model.dart';
 
 class InvoiceModel {
@@ -8,28 +8,30 @@ class InvoiceModel {
   final InvoiceType type;
   final InvoiceStatus status;
   final DateTime date;
+  final String owner;
   final Map items;
 
-  InvoiceModel({this.id, this.type, this.status, this.date, this.items});
+  InvoiceModel(
+      {this.id, this.type, this.status, this.date, this.owner, this.items});
 
   InvoiceModel.fromJson(Map<String, dynamic> json)
       : assert(json != null),
         id = json['id'] as int,
         type = InvoiceType.from(json['type']),
         date = DateTime.fromMillisecondsSinceEpoch(json['date']),
+        owner = json['owner'],
         status = InvoiceStatus.from(json['status']),
         items = _fromJsonInvoiceItemList(json['items']);
 
-  static Map<Additional, List<InvoiceItemModel>> _fromJsonInvoiceItemList(
+  static Map<AdditionalType, List<InvoiceItemModel>> _fromJsonInvoiceItemList(
       Map<String, List> items) {
-    return <Additional, List<InvoiceItemModel>>{
-      Additional.samples:
-        InvoiceItemListModel.fromJson(items[Additional.samples.value]),
-      Additional.gifts:
-        InvoiceItemListModel.fromJson(items[Additional.gifts.value]),
-      Additional.pointOfSaleMaterials:
-        InvoiceItemListModel.fromJson(
-          items[Additional.pointOfSaleMaterials.value])
+    return <AdditionalType, List<InvoiceItemModel>>{
+      AdditionalType.samples:
+          InvoiceItemListModel.fromJson(items[AdditionalType.samples.value]),
+      AdditionalType.gifts:
+          InvoiceItemListModel.fromJson(items[AdditionalType.gifts.value]),
+      AdditionalType.pointOfSaleMaterials: InvoiceItemListModel.fromJson(
+          items[AdditionalType.pointOfSaleMaterials.value])
     };
   }
 
@@ -38,12 +40,14 @@ class InvoiceModel {
       'id': id,
       'type': type.value,
       'date': date.millisecondsSinceEpoch,
+      'owner': owner,
       'status': status.value,
       'items': {
-        Additional.samples.value: items[Additional.samples].toJson(),
-        Additional.gifts.value: items[Additional.gifts].toJson(),
-        Additional.pointOfSaleMaterials.value:
-          items[Additional.pointOfSaleMaterials].toJson(),
+        AdditionalType.samples.value: items[AdditionalType.samples].toJson(),
+        AdditionalType.gifts.value: items[AdditionalType.gifts].toJson(),
+        AdditionalType.purchases.value: items[AdditionalType.purchases].toJson(),
+        AdditionalType.pointOfSaleMaterials.value:
+            items[AdditionalType.pointOfSaleMaterials].toJson(),
       }
     };
   }

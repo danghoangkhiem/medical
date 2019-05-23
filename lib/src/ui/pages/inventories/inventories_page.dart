@@ -9,10 +9,8 @@ import 'package:medical/src/blocs/type/type_bloc.dart';
 import 'package:medical/src/blocs/type/type_event.dart';
 import 'package:medical/src/blocs/type/type_state.dart';
 import 'package:medical/src/models/models.dart';
-import 'package:medical/src/models/type_model.dart';
 import 'package:medical/src/resources/inventories_repository.dart';
 import 'package:medical/src/resources/type_repository.dart';
-import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class Inventories extends StatefulWidget {
   @override

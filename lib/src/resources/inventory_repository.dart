@@ -14,19 +14,25 @@ class InventoryRepository {
         "id": item,
         "type": "import",
         "date": 1558547173438,
+        "owner": "Nguyễn Văn A",
         "status": "approved",
         "items": {
-          "samples": [
-            {"key": "string", "label": "string", "quantity": 0}
-          ],
-          "gifts": [
-            {"key": "string", "label": "string", "quantity": 0}
-          ],
+          "samples": [],
+          "gifts": [],
           "posm": [
-            {"key": "string", "label": "string", "quantity": 0}
+            {"key": 1, "label": "Túi giấy", "quantity": 10},
+            {"key": 2, "label": "Bút", "quantity": 10},
+            {"key": 3, "label": "Tờ rơi", "quantity": 10},
+            {"key": 4, "label": "Áo mưa", "quantity": 10},
           ]
         }
       };
     }).toList());
+  }
+
+  Future<bool> updateInvoiceStatus(int invoiceId,
+      {@required InvoiceStatus status}) async {
+    await Future.delayed(Duration(seconds: 1));
+    return true;
   }
 }

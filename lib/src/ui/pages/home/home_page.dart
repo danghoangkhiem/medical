@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'package:medical/src/ui/pages/inventories/inventories_page.dart';
+import 'package:medical/src/ui/pages/report_kpi/report_kpi_page.dart';
 
 import 'package:medical/src/utils.dart';
 
@@ -46,6 +47,7 @@ class _HomePageState extends State<HomePage> {
               buildUserInfo(),
               buildAttendance(),
               buildConsumer(),
+              buildReportKpi(),
               buildInventory(),
               buildInvoice(),
               buildSchedule(),
@@ -61,6 +63,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+
 
   Widget buildUserInfo() {
     return Container(
@@ -78,7 +82,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             'Tên: Nguyễn Thùy Trang',
             style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 5,
@@ -86,7 +90,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             'Mã số NV: HCM12345',
             style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -115,7 +119,45 @@ class _HomePageState extends State<HomePage> {
               'Chấm công',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            leading: Icon(
+              Icons.access_alarms,
+              size: 35,
+              color: Colors.blueAccent,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+            ),
+          )),
+    );
+  }
+
+  Container buildReportKpi() {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: Colors.white,
+      ),
+      height: 60,
+      child: FlatButton(
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => ReportKpiPage(),
+              ),
+            );
+          },
+          child: ListTile(
+            title: Text(
+              'Thống kê KPI của MED REP',
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -153,7 +195,7 @@ class _HomePageState extends State<HomePage> {
               'Quản lý khách hàng',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -188,7 +230,7 @@ class _HomePageState extends State<HomePage> {
               'Quản lý xuất nhập tồn',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -223,7 +265,7 @@ class _HomePageState extends State<HomePage> {
               'Phiếu xuất nhập hàng',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -258,7 +300,7 @@ class _HomePageState extends State<HomePage> {
               'Lên lịch làm việc',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -293,7 +335,7 @@ class _HomePageState extends State<HomePage> {
               'Lập kế hoạch coaching',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -328,7 +370,7 @@ class _HomePageState extends State<HomePage> {
               'Lập kế hoạch địa bàn',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -363,7 +405,7 @@ class _HomePageState extends State<HomePage> {
               'Đồng bộ dữ liệu',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -398,7 +440,7 @@ class _HomePageState extends State<HomePage> {
               'Đổi mật khẩu',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -430,7 +472,7 @@ class _HomePageState extends State<HomePage> {
               'Đăng xuất',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
@@ -462,7 +504,7 @@ class _HomePageState extends State<HomePage> {
               'Thoát',
               style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             leading: Icon(
