@@ -10,6 +10,7 @@ import 'change_password_page.dart';
 import 'synchronize_page.dart';
 import 'package:medical/src/ui/pages/check_in/check_in_page.dart';
 import 'package:medical/src/ui/pages/invoice/invoice_page.dart';
+import 'package:medical/src/ui/pages/customer_manage/customer_manager_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -140,7 +141,13 @@ class _HomePageState extends State<HomePage> {
       height: 60,
       child: FlatButton(
           padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => CustomerManagePage(),
+              ),
+            );
+          },
           child: ListTile(
             title: Text(
               'Quản lý khách hàng',
