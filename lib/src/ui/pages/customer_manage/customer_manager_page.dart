@@ -8,6 +8,9 @@ import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/models/customer_manage_model.dart';
 import 'package:medical/src/blocs/customer_manage/customer_manage.dart';
 
+//test
+import 'package:medical/src/ui/pages/day_schedule/day_schedule_page.dart';
+
 class CustomerManagePage extends StatefulWidget {
   @override
   _CustomerManagePageState createState() {
@@ -106,10 +109,12 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                                     value: _customerType,
                                     items: [
                                       DropdownMenuItem(
-                                          value: CustomerType.leadType.toString(),
+                                          value:
+                                              CustomerType.leadType.toString(),
                                           child: new Text('Lead')),
                                       DropdownMenuItem(
-                                          value: CustomerType.userType.toString(),
+                                          value:
+                                              CustomerType.userType.toString(),
                                           child: new Text('User')),
                                     ],
                                     onChanged: (value) {
@@ -158,13 +163,16 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                                     value: _customerStatus,
                                     items: [
                                       DropdownMenuItem(
-                                          value: CustomerStatus.newStatus.toString(),
+                                          value: CustomerStatus.newStatus
+                                              .toString(),
                                           child: new Text('Cũ')),
                                       DropdownMenuItem(
-                                          value: CustomerStatus.oldStatus.toString(),
+                                          value: CustomerStatus.oldStatus
+                                              .toString(),
                                           child: new Text('Mới')),
                                       DropdownMenuItem(
-                                          value: CustomerStatus.receiveStatus.toString(),
+                                          value: CustomerStatus.receiveStatus
+                                              .toString(),
                                           child: new Text('Đã nhận Sampling')),
                                     ],
                                     onChanged: (value) {
@@ -196,7 +204,9 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                           child: FlatButton(
                             onPressed: () {
                               _customerManageBloc.dispatch(
-                                  CustomerManageEventFilter(customerType: _customerType, customerStatus: _customerStatus));
+                                  CustomerManageEventFilter(
+                                      customerType: _customerType,
+                                      customerStatus: _customerStatus));
                             },
                             child: new Text(
                               "Tìm",
@@ -215,7 +225,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               ),
             ),
             Expanded(
-              flex: 6,
+              flex: 8,
               child: BlocListener(
                 bloc: _customerManageBloc,
                 listener: (BuildContext context, CustomerManageState state) {
@@ -273,7 +283,14 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                           ),
                           height: 50,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      DateSchedulePage(date: DateTime.now()),
+                                ),
+                              );
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
