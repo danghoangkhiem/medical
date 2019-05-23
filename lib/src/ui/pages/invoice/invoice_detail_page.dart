@@ -1,25 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import 'package:medical/src/blocs/invoice/invoice.dart';
-
+import 'package:medical/src/blocs/invoice_detail/invoice_detail.dart';
+import 'package:medical/src/models/additional_type.dart';
+import 'package:medical/src/models/invoice_item_model.dart';
 import 'package:medical/src/models/invoice_model.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class InvoiceDetailPage extends StatefulWidget {
   final InvoiceModel invoice;
-  final InvoiceBloc invoiceBloc;
 
-  InvoiceDetailPage(
-      {Key key, @required this.invoice, @required this.invoiceBloc})
-      : super(key: key);
+  InvoiceDetailPage({Key key, @required this.invoice}) : super(key: key);
 
   @override
   _InvoiceDetailPageState createState() => _InvoiceDetailPageState();
 }
 
 class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
+  InvoiceDetailBloc _invoiceDetailBloc;
+
   InvoiceModel get _invoice => widget.invoice;
-  InvoiceBloc get _invoiceBloc => widget.invoiceBloc;
+
+  @override
+  void initState() {
+    _invoiceDetailBloc = InvoiceDetailBloc();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _invoiceDetailBloc?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,191 +45,66 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
         child: Column(
           children: <Widget>[
             Expanded(
-              flex: 6,
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      '${DateFormat('dd-MM-yyyy').format(_invoice.date)}'
+                      ' / '
+                      '${_mapInvoiceTypeToText(_invoice.type)}',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 4,
               child: Container(
                 color: Colors.white,
-                child: Column(
+                child: ListView(
                   children: <Widget>[
+                    _buildRow(
+                        title: _mapAdditionalToName(
+                            AdditionalType.pointOfSaleMaterials),
+                        items: _invoice
+                            .items[AdditionalType.pointOfSaleMaterials]),
+                    _buildRow(
+                        title: _mapAdditionalToName(AdditionalType.gifts),
+                        items: _invoice.items[AdditionalType.gifts]),
+                    _buildRow(
+                        title: _mapAdditionalToName(AdditionalType.samples),
+                        items: _invoice.items[AdditionalType.samples]),
+                    _buildRow(
+                        title: _mapAdditionalToName(AdditionalType.purchases),
+                        items: _invoice.items[AdditionalType.purchases]),
                     SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Ngày '
-                            '${DateFormat('dd-MM-yyyy').format(_invoice.date)}'
-                            ' - '
-                            '${_mapInvoiceTypeToText(_invoice.type)}',
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "POSM",
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueAccent),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: ListView(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 80),
-                              height: 60,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          style: BorderStyle.solid,
-                                          width: 1,
-                                          color: Colors.grey[200]))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    "Túi giấy",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Text(
-                                    "5",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 60,
-                              padding: EdgeInsets.symmetric(horizontal: 80),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          style: BorderStyle.solid,
-                                          width: 1,
-                                          color: Colors.grey[200]))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    "Bút",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Text(
-                                    "20",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 60,
-                              padding: EdgeInsets.symmetric(horizontal: 80),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          style: BorderStyle.solid,
-                                          width: 1,
-                                          color: Colors.grey[200]))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    "Bút",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Text(
-                                    "20",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 80),
-                              height: 60,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          style: BorderStyle.solid,
-                                          width: 1,
-                                          color: Colors.grey[200]))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    "Túi giấy",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Text(
-                                    "5",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              child: Text(
-                                "GIFT",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    _invoice.type == InvoiceType.import
-                                        ? 'Đến'
-                                        : 'Từ',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black54),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      height: 30,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      '${_invoice.type == InvoiceType.import ? 'Từ' : 'Đến'} '
+                      '${_invoice.owner}',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54),
                     )
                   ],
                 ),
@@ -225,21 +113,126 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
             Expanded(
                 flex: 1,
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(child: _buildRedButton()),
-                      Expanded(child: _buildGreenButton())
-                    ],
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: BlocBuilder(
+                    bloc: _invoiceDetailBloc,
+                    builder: (BuildContext context, InvoiceDetailState state) {
+                      if (state is Loading) {
+                        return LoadingIndicator(opacity: 0);
+                      }
+                      if (state is Loaded) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text('Đã cập nhật thành công'),
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 1),
+                          ));
+                        });
+                        return _buildControlPanel(state.invoiceStatus);
+                      }
+                      if (state is Failure) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text(state.errorMessage.toString()),
+                            backgroundColor: Colors.redAccent,
+                          ));
+                        });
+                      }
+                      return _buildControlPanel(_invoice.status);
+                    },
                   ),
-                ))
+                )),
           ],
         ),
       ),
     );
   }
 
-  Container _buildGreenButton() {
+  Widget _buildRow({String title, InvoiceItemListModel items}) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.only(top: 20),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent),
+            ),
+          ),
+          ListBody(
+            children: items == null
+                ? []
+                : items.map((item) {
+                    return Container(
+                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                              bottom: BorderSide(
+                                  style: BorderStyle.solid,
+                                  width: 1,
+                                  color: Colors.grey[200]))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            item.label.toString(),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Text(
+                            item.quantity.toString(),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildControlPanel(InvoiceStatus status) {
+    if (status == InvoiceStatus.pending) {
+      return Row(
+        children: <Widget>[
+          Expanded(child: _buildRedButton()),
+          Expanded(child: _buildGreenButton())
+        ],
+      );
+    }
+    if (status == InvoiceStatus.approved) {
+      return Align(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.check, color: Colors.green,),
+            Text(' Đã nhận')
+          ],
+        ),
+        alignment: Alignment.center,
+      );
+    }
+    return Align(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.close, color: Colors.red),
+          Text(' Đã từ chối')
+        ],
+      ),
+      alignment: Alignment.center,
+    );
+  }
+
+  Widget _buildGreenButton() {
     return Container(
       margin: EdgeInsets.only(left: 5),
       decoration: BoxDecoration(
@@ -247,16 +240,17 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
       child: FlatButton(
           padding: EdgeInsets.symmetric(vertical: 13),
           onPressed: () {
-            _invoiceBloc.dispatch(GreenButtonPressed());
+            _invoiceDetailBloc.dispatch(ButtonPressed(
+                invoiceId: _invoice.id, invoiceStatus: InvoiceStatus.approved));
           },
           child: Text(
-            "Xác nhận",
+            'Xác nhận',
             style: TextStyle(fontSize: 18, color: Colors.white),
           )),
     );
   }
 
-  Container _buildRedButton() {
+  Widget _buildRedButton() {
     return Container(
       margin: EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
@@ -264,10 +258,11 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
       child: FlatButton(
           padding: EdgeInsets.symmetric(vertical: 13),
           onPressed: () {
-            _invoiceBloc.dispatch(RedButtonPressed());
+            _invoiceDetailBloc.dispatch(ButtonPressed(
+                invoiceId: _invoice.id, invoiceStatus: InvoiceStatus.denied));
           },
           child: Text(
-            "Từ chối",
+            'Từ chối',
             style: TextStyle(fontSize: 18, color: Colors.white),
           )),
     );
@@ -275,10 +270,26 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
 
   String _mapInvoiceTypeToText(InvoiceType type) {
     if (type == InvoiceType.import) {
-      return 'Nhập';
+      return 'Nhập Hàng';
     }
     if (type == InvoiceType.export) {
-      return 'Xuất';
+      return 'Xuất Hàng';
+    }
+    return 'Không xác định';
+  }
+
+  String _mapAdditionalToName(AdditionalType type) {
+    if (type == AdditionalType.pointOfSaleMaterials) {
+      return 'POSM';
+    }
+    if (type == AdditionalType.samples) {
+      return 'SAMPLING';
+    }
+    if (type == AdditionalType.gifts) {
+      return 'GIFT';
+    }
+    if (type == AdditionalType.purchases) {
+      return 'BUY';
     }
     return 'Không xác định';
   }

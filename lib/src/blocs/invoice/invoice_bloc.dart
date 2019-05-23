@@ -24,6 +24,9 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
     if (event is InvoiceFilter) {
       yield Loading();
       try {
+        if (event.startDate == null || event.endDate == null) {
+          throw 'Phải chọn thời gian';
+        }
         final _invoiceList =
             await _inventoryRepository.getInvoiceAccordingToDateTime(
           startDate: _currentStartDate = event.startDate,
@@ -46,7 +49,21 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
           offset: _currentOffset = _currentOffset + _currentLimit,
           limit: _currentLimit,
         );
-        yield Loaded(invoiceList: _invoiceList, isLoadMore: true);
+        if (_invoiceList.length == 0) {
+          yield ReachMax();
+        } else {
+          yield Loaded(invoiceList: _invoiceList, isLoadMore: true);
+        }
+      } catch (error) {
+        yield Failure(errorMessage: error.toString());
+      }
+    }
+    if (event is ButtonPressed) {
+      yield Submitting();
+      try {
+        await _inventoryRepository.updateInvoiceStatus(event.invoiceId,
+            status: event.invoiceStatus);
+        yield Submitted();
       } catch (error) {
         yield Failure(errorMessage: error.toString());
       }
