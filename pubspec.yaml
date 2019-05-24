@@ -33,6 +33,7 @@ dependencies:
   google_maps_flutter: ^0.5.13
   location: ^2.3.5
   path_provider: ^1.1.0
+  month_picker_dialog: ^0.0.8
 
 dev_dependencies:
   flutter_test:
