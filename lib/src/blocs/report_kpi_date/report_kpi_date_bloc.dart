@@ -14,6 +14,7 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
   DateTime _currentEndDate;
   int _currentOffset;
   int _currentLimit;
+  int count;
 
   ReportKpiDayBloc({
     @required reportKpiDayRepository,
@@ -39,13 +40,11 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
               limit:  _currentLimit = event.limit
           );
 
-          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay);
+          //viet ham lấy tổng lượt viếng thăm
+          count = 26;
+          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, countKpi: count);
         }
-        //int count = 0;
 
-//        listKpiDay.listKpiDayItem.forEach((item){
-//          count+=item.countVisit;
-//        });
       } catch (error) {
         yield ReportKpiDayFailure(error: error.toString());
       }
@@ -62,7 +61,7 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
         if (listKpiDay.listKpiDayItem.length == 0) {
           yield ReachMax();
         } else {
-          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, isLoadMore: true);
+          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, isLoadMore: true, countKpi: count);
         }
       } catch (error) {
         yield ReportKpiDayFailure(error: error.toString());

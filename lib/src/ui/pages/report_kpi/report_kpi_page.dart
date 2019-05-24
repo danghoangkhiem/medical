@@ -7,7 +7,6 @@ import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_state.dart';
 import 'package:medical/src/models/report_kpi_day_model.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
 
 class ReportKpiPage extends StatefulWidget {
@@ -23,6 +22,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
   bool _isLoading = false;
 
   ReportKpiDayModel listReportKpiDay;
+  int _count = 0;
 
 
 
@@ -254,6 +254,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                             ));
                                           }
                                           if (state is ReportKpiDayLoaded) {
+                                            setState(() {
+                                              _count = state.countKpi;
+                                            });
                                             if (state.isLoadMore) {
                                               listReportKpiDay.listKpiDayItem.addAll(state.reportKpiDayModel.listKpiDayItem);
                                               _isLoading = false;
@@ -279,45 +282,65 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                   ),
                                                 );
                                               }
-                                              return Table(
-                                                columnWidths: {0: FractionColumnWidth(0.4), 1: FractionColumnWidth(0.4)},
-                                                children: listReportKpiDay.listKpiDayItem.map((item){
-                                                  return TableRow(
-                                                      children: [
-                                                        new Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Padding(
-                                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                                              child:  new Text(DateFormat('dd-MM-yyyy').format(item.date), style: new TextStyle(fontSize: 16),),
+                                              return Stack(
+                                                children: <Widget>[
+                                                  Table(
+                                                    columnWidths: {0: FractionColumnWidth(0.4), 1: FractionColumnWidth(0.4)},
+                                                    children: listReportKpiDay.listKpiDayItem.map((item){
+                                                      return TableRow(
+                                                          children: [
+                                                            new Row(
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              children: <Widget>[
+                                                                Padding(
+                                                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                                                  child:  new Text(DateFormat('dd-MM-yyyy').format(item.date), style: new TextStyle(fontSize: 16),),
+                                                                ),
+                                                              ],
                                                             ),
+                                                            new Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: <Widget>[
+                                                                Padding(
+                                                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                                                  child: new Text(item.countVisit.toString(), style: new TextStyle(fontSize: 16),),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            new Row(
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              children: <Widget>[
+                                                                Padding(
+                                                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                                                  child: new InkWell(
+                                                                    onTap: (){
+                                                                    },
+                                                                    child: new Text("chi tiết", style: new TextStyle(fontSize: 16, color: Colors.blueAccent),),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ]
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                  _isLoading ? Positioned(
+                                                      bottom: 0,
+                                                      left: 0,
+                                                      child: Container(
+                                                        padding: EdgeInsets.only(bottom: 10),
+                                                        width: MediaQuery.of(context).size.width,
+                                                        alignment: Alignment.center,
+                                                        child: new Row(
+                                                          children: <Widget>[
+                                                            Spacer(),
+                                                            CircularProgressIndicator(),
+                                                            Spacer(),
                                                           ],
                                                         ),
-                                                        new Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: <Widget>[
-                                                            Padding(
-                                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                                              child: new Text(item.countVisit.toString(), style: new TextStyle(fontSize: 16),),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        new Row(
-                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                          children: <Widget>[
-                                                            Padding(
-                                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                                              child: new InkWell(
-                                                                onTap: (){
-                                                                },
-                                                                child: new Text("chi tiết", style: new TextStyle(fontSize: 16, color: Colors.blueAccent),),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]
-                                                  );
-                                                }).toList(),
+                                                      )
+                                                  ) : Container()
+                                                ],
                                               );
                                             }
                                         ),
@@ -336,53 +359,51 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                             alignment: Alignment.center,
                             width: double.infinity,
                             color: Colors.grey[200],
-//                            child: BlocBuilder(
-//                                bloc: _blocReportKpiDay,
-//                                builder: (BuildContext context, state){
-//                                  if(state is ReportKpiDayLoaded){
-//                                    return Table(
-//                                      columnWidths: {0: FractionColumnWidth(0.5)},
-//                                      children: [
-//                                        TableRow(
-//                                            children: [
-//                                              new Row(
-//                                                mainAxisAlignment: MainAxisAlignment.start,
-//                                                children: <Widget>[
-//                                                  new Text("Tổng", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-//                                                ],
-//                                              ),
-//                                              new Row(
-//                                                mainAxisAlignment: MainAxisAlignment.center,
-//                                                children: <Widget>[
-//                                                  new Padding(
-//                                                    padding: EdgeInsets.only(left: 15),
-//                                                    child: new Text(state.countKpi.toString(), style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-//                                                  )
-//                                                ],
-//                                              ),
-//                                              new Row(
-//                                                mainAxisAlignment: MainAxisAlignment.center,
-//                                                children: <Widget>[
-//                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-//                                                ],
-//                                              ),
-//                                              new Row(
-//                                                mainAxisAlignment: MainAxisAlignment.center,
-//                                                children: <Widget>[
-//                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-//                                                ],
-//                                              ),
-//                                            ]
-//                                        ),
-//                                      ],
-//                                    );
-//                                  }
-//                                  if(state is ReportKpiDayFailure){
-//                                    return new Text("Dữ liệu không hoạt động");
-//                                  }
-//                                  return Container();
-//                                }
-//                            ),
+                            child: BlocBuilder(
+                                bloc: _blocReportKpiDay,
+                                builder: (BuildContext context, state){
+
+                                  if(state is ReportKpiDayFailure){
+                                    return new Text("Dữ liệu không hoạt động");
+                                  }
+                                  return Table(
+                                    columnWidths: {0: FractionColumnWidth(0.5)},
+                                    children: [
+                                      TableRow(
+                                          children: [
+                                            new Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                new Text("Tổng", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                              ],
+                                            ),
+                                            new Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                new Padding(
+                                                  padding: EdgeInsets.only(left: 15),
+                                                  child: new Text(_count.toString(), style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                                )
+                                              ],
+                                            ),
+                                            new Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                              ],
+                                            ),
+                                            new Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                              ],
+                                            ),
+                                          ]
+                                      ),
+                                    ],
+                                  );
+                                }
+                            ),
                           )
                       )
                     ],
