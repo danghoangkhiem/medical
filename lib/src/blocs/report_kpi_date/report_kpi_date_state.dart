@@ -12,19 +12,28 @@ class ReportKpiDayInitial extends ReportKpiDayState {
 }
 
 class ReportKpiDayLoading extends ReportKpiDayState {
+
+  final bool isLoadMore;
+
+  ReportKpiDayLoading({this.isLoadMore = false});
+
   @override
   String toString() => 'ReportKpiDayLoading';
 }
 
 class ReportKpiDayLoaded extends ReportKpiDayState {
+  final bool isLoadMore;
   final ReportKpiDayModel reportKpiDayModel;
-  final int countKpi;
+  //final int countKpi;
+  //ReportKpiDayLoaded({@required this.reportKpiDayModel, @required this.countKpi}) : super([reportKpiDayModel, countKpi]);
 
-  ReportKpiDayLoaded({@required this.reportKpiDayModel, @required this.countKpi}) : super([reportKpiDayModel, countKpi]);
+  ReportKpiDayLoaded({@required this.reportKpiDayModel,this.isLoadMore = false}) : super([reportKpiDayModel, isLoadMore]);
 
   @override
   String toString() => 'ReportKpiDayLoaded';
 }
+
+class ReachMax extends ReportKpiDayState {}
 
 class ReportKpiDayFailure extends ReportKpiDayState {
   final String error;

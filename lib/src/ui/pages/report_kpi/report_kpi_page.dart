@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_bloc.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_event.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_state.dart';
+import 'package:medical/src/models/report_kpi_day_model.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
 
 class ReportKpiPage extends StatefulWidget {
@@ -17,18 +19,21 @@ class ReportKpiPage extends StatefulWidget {
 
 class _ReportKpiPageState extends State<ReportKpiPage> {
 
-  final ScrollController _controller = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
 
+  ReportKpiDayModel listReportKpiDay;
 
-  //table thi lam meo j co su kien load them ma viet ham nay !!!
+
+
   void _scrollListener() {
-    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       throttle(200, () {
         if (_isLoading != true) {
           _isLoading = true;
           print("Load more");
-          //_blocReportKpiDay.dispatch(GetReportKpiDay(starDay: starDate, endDay: endDate, offset: offsetkpi));
+          _blocReportKpiDay.dispatch(GetReportKpiDayMore());
+
         }
       });
     }
@@ -36,7 +41,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
 
   DateTime starDate;
   DateTime endDate;
-  int offsetkpi = 0;
+  int offsetKpi = 0;
 
   ReportKpiDayBloc _blocReportKpiDay;
 
@@ -48,8 +53,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
   void initState() {
 
     super.initState();
+    listReportKpiDay = ReportKpiDayModel.fromJson([]);
     _blocReportKpiDay = ReportKpiDayBloc(reportKpiDayRepository: _reportKpiDayRepository);
-    _controller.addListener(_scrollListener);
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
@@ -172,8 +178,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               onPressed: (){
                                                 if(starDate !=null && endDate!=null){
                                                   print("Du dieu kien tim");
-                                                  _blocReportKpiDay.dispatch(GetReportKpiDay(starDay: starDate, endDay: endDate, offset: offsetkpi));
-
+                                                  _blocReportKpiDay.dispatch(GetReportKpiDay(starDay: starDate, endDay: endDate, offset: offsetKpi, limit: 10));
                                                 }
                                                 else{
                                                   print("Chua du dieu kien tim");
@@ -199,7 +204,6 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                   height: 50,
                                   color: Colors.grey[200],
                                   child: Table(
-
                                     columnWidths: {0: FractionColumnWidth(0.4), 1: FractionColumnWidth(0.4)},
                                     children: [
                                       TableRow(
@@ -231,27 +235,53 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                   child: Container(
                                     padding: EdgeInsets.symmetric(horizontal: 20),
                                     child: SingleChildScrollView(
-                                      child: BlocBuilder(
-                                          bloc: _blocReportKpiDay,
-                                          builder: (BuildContext context, state){
-                                            if(state is ReportKpiDayLoading){
-                                              return WillPopScope(
-                                                onWillPop: () async {
-                                                  return true;
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.only(top: 30),
-                                                  color: Colors.transparent,
-                                                  child: new Center(
-                                                    child: new CircularProgressIndicator(),
-                                                  ),
-                                                ),
-                                              );
+                                      controller: _scrollController,
+                                      child: BlocListener(
+                                        bloc: _blocReportKpiDay,
+                                        listener: (BuildContext context, ReportKpiDayState state){
+                                          if (state is ReachMax) {
+                                            Scaffold.of(context).removeCurrentSnackBar();
+                                            Scaffold.of(context).showSnackBar(SnackBar(
+                                              content: Text('Got all the data!'),
+                                            ));
+                                            _scrollController.removeListener(_scrollListener);
+                                          }
+                                          if (state is ReportKpiDayFailure) {
+                                            Scaffold.of(context).removeCurrentSnackBar();
+                                            Scaffold.of(context).showSnackBar(SnackBar(
+                                              content: Text(state.error),
+                                              backgroundColor: Colors.redAccent,
+                                            ));
+                                          }
+                                          if (state is ReportKpiDayLoaded) {
+                                            if (state.isLoadMore) {
+                                              listReportKpiDay.listKpiDayItem.addAll(state.reportKpiDayModel.listKpiDayItem);
+                                              _isLoading = false;
+                                            } else {
+                                              listReportKpiDay.listKpiDayItem = state.reportKpiDayModel.listKpiDayItem;
                                             }
-                                            if(state is ReportKpiDayLoaded){
+                                          }
+                                        },
+                                        child: BlocBuilder(
+                                            bloc: _blocReportKpiDay,
+                                            builder: (BuildContext context, state){
+                                              if (state is ReportKpiDayLoading && !state.isLoadMore) {
+                                                return WillPopScope(
+                                                  onWillPop: () async {
+                                                    return true;
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.only(top: 30),
+                                                    color: Colors.transparent,
+                                                    child: new Center(
+                                                      child: new CircularProgressIndicator(),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
                                               return Table(
                                                 columnWidths: {0: FractionColumnWidth(0.4), 1: FractionColumnWidth(0.4)},
-                                                children: state.reportKpiDayModel.listKpiDayItem.map((item){
+                                                children: listReportKpiDay.listKpiDayItem.map((item){
                                                   return TableRow(
                                                       children: [
                                                         new Row(
@@ -285,19 +315,12 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                             ),
                                                           ],
                                                         ),
-
                                                       ]
                                                   );
                                                 }).toList(),
                                               );
                                             }
-                                            if(state is ReportKpiDayFailure){
-                                              return Center(
-                                                child: new Text(state.error),
-                                              );
-                                            }
-                                            return Container();
-                                          }
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -313,53 +336,53 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                             alignment: Alignment.center,
                             width: double.infinity,
                             color: Colors.grey[200],
-                            child: BlocBuilder(
-                                bloc: _blocReportKpiDay,
-                                builder: (BuildContext context, state){
-                                  if(state is ReportKpiDayLoaded){
-                                    return Table(
-                                      columnWidths: {0: FractionColumnWidth(0.5)},
-                                      children: [
-                                        TableRow(
-                                            children: [
-                                              new Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  new Text("Tổng", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                                ],
-                                              ),
-                                              new Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  new Padding(
-                                                    padding: EdgeInsets.only(left: 15),
-                                                    child: new Text(state.countKpi.toString(), style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                                  )
-                                                ],
-                                              ),
-                                              new Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                                ],
-                                              ),
-                                              new Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                                ],
-                                              ),
-                                            ]
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                  if(state is ReportKpiDayFailure){
-                                    return new Text("Dữ liệu không hoạt động");
-                                  }
-                                  return Container();
-                                }
-                            ),
+//                            child: BlocBuilder(
+//                                bloc: _blocReportKpiDay,
+//                                builder: (BuildContext context, state){
+//                                  if(state is ReportKpiDayLoaded){
+//                                    return Table(
+//                                      columnWidths: {0: FractionColumnWidth(0.5)},
+//                                      children: [
+//                                        TableRow(
+//                                            children: [
+//                                              new Row(
+//                                                mainAxisAlignment: MainAxisAlignment.start,
+//                                                children: <Widget>[
+//                                                  new Text("Tổng", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+//                                                ],
+//                                              ),
+//                                              new Row(
+//                                                mainAxisAlignment: MainAxisAlignment.center,
+//                                                children: <Widget>[
+//                                                  new Padding(
+//                                                    padding: EdgeInsets.only(left: 15),
+//                                                    child: new Text(state.countKpi.toString(), style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+//                                                  )
+//                                                ],
+//                                              ),
+//                                              new Row(
+//                                                mainAxisAlignment: MainAxisAlignment.center,
+//                                                children: <Widget>[
+//                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+//                                                ],
+//                                              ),
+//                                              new Row(
+//                                                mainAxisAlignment: MainAxisAlignment.center,
+//                                                children: <Widget>[
+//                                                  new Text("", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+//                                                ],
+//                                              ),
+//                                            ]
+//                                        ),
+//                                      ],
+//                                    );
+//                                  }
+//                                  if(state is ReportKpiDayFailure){
+//                                    return new Text("Dữ liệu không hoạt động");
+//                                  }
+//                                  return Container();
+//                                }
+//                            ),
                           )
                       )
                     ],
