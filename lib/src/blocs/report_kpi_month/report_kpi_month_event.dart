@@ -1,17 +1,17 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-abstract class ReportKpiDayEvent extends Equatable {
-  ReportKpiDayEvent([List props = const []]) : super(props);
+abstract class ReportKpiMonthEvent extends Equatable {
+  ReportKpiMonthEvent([List props = const []]) : super(props);
 }
 
-class GetReportKpiDay extends ReportKpiDayEvent {
+class GetReportKpiMonth extends ReportKpiMonthEvent {
   final DateTime starDay;
   final DateTime endDay;
   final int offset;
   final int limit;
 
-  GetReportKpiDay({
+  GetReportKpiMonth({
     @required this.starDay,
     @required this.endDay,
     @required this.offset,
@@ -20,9 +20,9 @@ class GetReportKpiDay extends ReportKpiDayEvent {
 
   @override
   String toString() {
-    return "Get list report kpi date by day";
+    return "Get list report kpi month by month";
   }
 }
 
-class GetReportKpiDayMore extends ReportKpiDayEvent{}
+class GetReportKpiMonthMore extends ReportKpiMonthEvent{}
 
