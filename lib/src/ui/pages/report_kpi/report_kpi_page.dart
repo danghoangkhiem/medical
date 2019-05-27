@@ -12,6 +12,7 @@ import 'package:medical/src/models/report_kpi_month_model.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medical/src/resources/report_kpi_month_repository.dart';
+import 'package:medical/src/ui/pages/report_kpi/kpi_date_detail.dart';
 import 'package:medical/src/utils.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
@@ -360,6 +361,8 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                                   padding: EdgeInsets.symmetric(vertical: 10),
                                                                   child: new InkWell(
                                                                     onTap: (){
+                                                                      Navigator.of(context).push(MaterialPageRoute(
+                                                                          builder: (BuildContext context) => KpiDateDetail(byDate: item.date,)));
                                                                     },
                                                                     child: new Text("chi tiết", style: new TextStyle(fontSize: 16, color: Colors.blueAccent),),
                                                                   ),

@@ -1,3 +1,4 @@
+import 'package:medical/src/models/kpi_date_detail_model.dart';
 import 'package:medical/src/models/report_kpi_day_model.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -19,7 +20,7 @@ class ReportKpiDayDetailLoading extends ReportKpiDayDetailState {
 
 class ReportKpiDayDetailLoaded extends ReportKpiDayDetailState {
 
-  final ReportKpiDayModel reportKpiDayDetailModel;
+  final ReportKpiDayDetailModel reportKpiDayDetailModel;
 
 
   ReportKpiDayDetailLoaded({@required this.reportKpiDayDetailModel}) : super([reportKpiDayDetailModel]);
