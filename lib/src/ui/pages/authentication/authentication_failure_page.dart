@@ -38,6 +38,7 @@ class AuthenticationFailurePage extends StatelessWidget {
                             color: Colors.black54,
                             fontSize: 20,
                             fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],

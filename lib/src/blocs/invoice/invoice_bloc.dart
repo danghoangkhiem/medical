@@ -58,15 +58,5 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
         yield Failure(errorMessage: error.toString());
       }
     }
-    if (event is ButtonPressed) {
-      yield Submitting();
-      try {
-        await _inventoryRepository.updateInvoiceStatus(event.invoiceId,
-            status: event.invoiceStatus);
-        yield Submitted();
-      } catch (error) {
-        yield Failure(errorMessage: error.toString());
-      }
-    }
   }
 }

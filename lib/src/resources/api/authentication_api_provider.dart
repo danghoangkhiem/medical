@@ -1,8 +1,11 @@
+import 'package:meta/meta.dart';
+
 import 'api_provider.dart';
 import 'api_response_error.dart';
 
 class AuthenticationApiProvider extends ApiProvider {
-  Future<String> authenticate({String username, String password}) async {
+  Future<String> authenticate(
+      {@required String username, @required String password}) async {
     Map<String, String> _requestBody = {
       'username': username,
       'password': password

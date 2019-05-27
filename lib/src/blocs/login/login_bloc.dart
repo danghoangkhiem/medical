@@ -6,10 +6,11 @@ import 'package:bloc/bloc.dart';
 import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'login.dart';
 
-import 'package:medical/src/resources/user_repository.dart';
+import 'package:medical/src/resources/authentication_repository.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final UserRepository _userRepository = UserRepository();
+  final AuthenticationRepository _authenticationRepository =
+      AuthenticationRepository();
   final AuthenticationBloc _authenticationBloc;
 
   LoginBloc({@required authenticationBloc})
@@ -26,7 +27,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (event.username.isEmpty || event.password.isEmpty) {
           throw 'Tên đăng nhập hoặc mật khẩu không được bỏ trống';
         }
-        final token = await _userRepository.authenticate(
+        final token = await _authenticationRepository.authenticate(
           username: event.username,
           password: event.password,
         );
