@@ -26,6 +26,9 @@ class CustomerManageBloc
     if (event is CustomerManageEventFilter) {
       yield Loading();
       try {
+        if (event.customerType == null || event.customerStatus == null) {
+          throw 'Phải chọn loại và tình trạng';
+        }
         final _customerManagerList =
             await _customerManageRepository.getCustomerByTypeAndStatus(
           customerType: _customerType = event.customerType,

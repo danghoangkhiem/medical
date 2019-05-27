@@ -24,3 +24,5 @@ class GetReportKpiDay extends ReportKpiDayEvent {
   }
 }
 
+class GetReportKpiDayMore extends ReportKpiDayEvent{}
+

@@ -10,6 +10,12 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
 
   final ReportKpiDayRepository _reportKpiDayRepository;
 
+  DateTime _currentStartDate;
+  DateTime _currentEndDate;
+  int _currentOffset;
+  int _currentLimit;
+  int count;
+
   ReportKpiDayBloc({
     @required reportKpiDayRepository,
   }) : _reportKpiDayRepository = reportKpiDayRepository;
@@ -20,20 +26,47 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
   @override
   Stream<ReportKpiDayState> mapEventToState(ReportKpiDayEvent event) async* {
     if (event is GetReportKpiDay) {
+
       yield ReportKpiDayLoading();
-
       try {
-        ReportKpiDayModel listKpiDay = await _reportKpiDayRepository.getReportKpiDay();
-        int count = 0;
+        if(event.starDay ==null || event.endDay ==null){
+          throw 'Phải chọn thời gian';
+        }
+        else{
+          ReportKpiDayModel listKpiDay = await _reportKpiDayRepository.getReportKpiDay(
+              startDate: _currentStartDate = event.starDay,
+              endDate: _currentEndDate = event.endDay,
+              offset: _currentOffset = event.offset,
+              limit:  _currentLimit = event.limit
+          );
 
-        listKpiDay.listKpiDayItem.forEach((item){
-          count+=item.countVisit;
-        });
+          //viet ham lấy tổng lượt viếng thăm
+          count = 26;
+          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, countKpi: count);
+        }
 
-        yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, countKpi: count);
       } catch (error) {
         yield ReportKpiDayFailure(error: error.toString());
       }
+    }
+    if(event is GetReportKpiDayMore){
+      yield ReportKpiDayLoading(isLoadMore: true);
+      try {
+        final listKpiDay = await _reportKpiDayRepository.getReportKpiDay(
+            startDate: _currentStartDate,
+            endDate: _currentEndDate,
+            offset: _currentOffset = _currentOffset + _currentLimit,
+            limit:  _currentLimit
+        );
+        if (listKpiDay.listKpiDayItem.length == 0) {
+          yield ReachMax();
+        } else {
+          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, isLoadMore: true, countKpi: count);
+        }
+      } catch (error) {
+        yield ReportKpiDayFailure(error: error.toString());
+      }
+
     }
   }
 

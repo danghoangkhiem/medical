@@ -6,6 +6,7 @@ import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 import 'package:medical/src/models/day_schedule_model.dart';
 import 'package:medical/src/blocs/day_schedule/day_schedule.dart';
+import 'package:medical/src/ui/pages/day_schedule/day_schedule_detail_page.dart';
 
 class DateSchedulePage extends StatefulWidget {
   final DateTime date;
@@ -111,8 +112,13 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                           );
                         }
                         return InkWell(
-                          onTap: (){
-                            Navigator.pop(context);
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    DayScheduleDetailPage(daySchedule: _dayScheduleList[index],),
+                              ),
+                            );
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -129,12 +135,20 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                               children: <Widget>[
                                 new Expanded(
                                   child: new Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       new Container(
                                         child: new Text(
-                                          "Từ " + DateFormat('hh:mm').format(_dayScheduleList[index].startTime) + " đến " + DateFormat('hh:mm').format(_dayScheduleList[index].endTime) ,
+                                          "Từ " +
+                                              DateFormat('hh:mm').format(
+                                                  _dayScheduleList[index]
+                                                      .startTime) +
+                                              " đến " +
+                                              DateFormat('hh:mm').format(
+                                                  _dayScheduleList[index]
+                                                      .endTime),
                                           style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
@@ -147,9 +161,13 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                       new Container(
                                         margin: EdgeInsets.only(left: 20),
                                         child: new Text(
-                                          _dayScheduleList[index].position + " : " + _dayScheduleList[index].doctorName,
+                                          _dayScheduleList[index].position +
+                                              " : " +
+                                              _dayScheduleList[index]
+                                                  .doctorName,
                                           style: new TextStyle(
-                                              fontSize: 18, fontWeight: FontWeight.bold),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                       new SizedBox(
@@ -158,9 +176,13 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                       new Container(
                                         margin: EdgeInsets.only(left: 20),
                                         child: new Text(
-                                          _dayScheduleList[index].addressType + " : " + _dayScheduleList[index].addressName,
+                                          _dayScheduleList[index].addressType +
+                                              " : " +
+                                              _dayScheduleList[index]
+                                                  .addressName,
                                           style: new TextStyle(
-                                              fontSize: 18, fontWeight: FontWeight.bold),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       )
                                     ],
