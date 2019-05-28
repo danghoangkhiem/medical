@@ -4,10 +4,10 @@ import 'package:bloc/bloc.dart';
 
 import 'invoice_detail.dart';
 
-import 'package:medical/src/resources/inventory_repository.dart';
+import 'package:medical/src/resources/invoice_repository.dart';
 
 class InvoiceDetailBloc extends Bloc<InvoiceDetailEvent, InvoiceDetailState> {
-  final InventoryRepository _inventoryRepository = InventoryRepository();
+  final InvoiceRepository _inventoryRepository = InvoiceRepository();
 
   @override
   InvoiceDetailState get initialState => Initial();

@@ -131,6 +131,7 @@ class _CheckInPage extends State<CheckInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
+        backgroundColor: Colors.blueAccent,
         actions: <Widget>[
           new IconButton(
               icon: Icon(Icons.history),
@@ -141,7 +142,7 @@ class _CheckInPage extends State<CheckInPage> {
                         AttendanceHistoryPage(),
                   ),
                 );
-              })
+              }),
         ],
         title: Text(
           "Chấm công",

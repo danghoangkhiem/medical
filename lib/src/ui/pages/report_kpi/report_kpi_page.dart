@@ -111,6 +111,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
         length: 2,
         child: new Scaffold(
           appBar: new AppBar(
+            backgroundColor: Colors.blueAccent,
             title: new Text("Thống kê KPI"),
             bottom: new TabBar(
                 tabs: <Widget>[

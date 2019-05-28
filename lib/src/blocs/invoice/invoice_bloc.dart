@@ -4,10 +4,10 @@ import 'package:bloc/bloc.dart';
 
 import 'invoice.dart';
 
-import 'package:medical/src/resources/inventory_repository.dart';
+import 'package:medical/src/resources/invoice_repository.dart';
 
 class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
-  final InventoryRepository _inventoryRepository = InventoryRepository();
+  final InvoiceRepository _invoiceRepository = InvoiceRepository();
 
   DateTime _currentStartDate;
   DateTime _currentEndDate;
@@ -28,7 +28,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
           throw 'Phải chọn thời gian';
         }
         final _invoiceList =
-            await _inventoryRepository.getInvoiceAccordingToDateTime(
+            await _invoiceRepository.getInvoiceAccordingToDateTime(
           startDate: _currentStartDate = event.startDate,
           endDate: _currentEndDate = event.endDate,
           offset: _currentOffset = event.offset,
@@ -43,7 +43,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
       yield Loading(isLoadMore: true);
       try {
         final _invoiceList =
-            await _inventoryRepository.getInvoiceAccordingToDateTime(
+            await _invoiceRepository.getInvoiceAccordingToDateTime(
           startDate: _currentStartDate,
           endDate: _currentEndDate,
           offset: _currentOffset = _currentOffset + _currentLimit,

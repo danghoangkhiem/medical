@@ -18,20 +18,33 @@ class InvoiceModel {
       : assert(json != null),
         id = json['id'] as int,
         type = InvoiceType.from(json['type']),
-        date = DateTime.fromMillisecondsSinceEpoch(json['date']),
+        date = DateTime.fromMillisecondsSinceEpoch(json['date'] * 1000),
         owner = json['owner'],
         status = InvoiceStatus.from(json['status']),
         items = _fromJsonInvoiceItemList(json['items']);
 
   static Map<AdditionalType, List<InvoiceItemModel>> _fromJsonInvoiceItemList(
-      Map<String, List> items) {
+      Map<String, dynamic> items) {
     return <AdditionalType, List<InvoiceItemModel>>{
       AdditionalType.samples:
           InvoiceItemListModel.fromJson(items[AdditionalType.samples.value]),
+      AdditionalType.purchases:
+          InvoiceItemListModel.fromJson(items[AdditionalType.purchases.value]),
       AdditionalType.gifts:
           InvoiceItemListModel.fromJson(items[AdditionalType.gifts.value]),
       AdditionalType.pointOfSaleMaterials: InvoiceItemListModel.fromJson(
           items[AdditionalType.pointOfSaleMaterials.value])
+    };
+  }
+
+  static Map<String, dynamic> _toJsonInvoiceItemList(
+      Map<AdditionalType, InvoiceItemModel> items) {
+    return <String, dynamic>{
+      AdditionalType.samples.value: items[AdditionalType.samples].toJson(),
+      AdditionalType.gifts.value: items[AdditionalType.gifts].toJson(),
+      AdditionalType.purchases.value: items[AdditionalType.purchases].toJson(),
+      AdditionalType.pointOfSaleMaterials.value:
+          items[AdditionalType.pointOfSaleMaterials].toJson(),
     };
   }
 
@@ -42,13 +55,7 @@ class InvoiceModel {
       'date': date.millisecondsSinceEpoch,
       'owner': owner,
       'status': status.value,
-      'items': {
-        AdditionalType.samples.value: items[AdditionalType.samples].toJson(),
-        AdditionalType.gifts.value: items[AdditionalType.gifts].toJson(),
-        AdditionalType.purchases.value: items[AdditionalType.purchases].toJson(),
-        AdditionalType.pointOfSaleMaterials.value:
-            items[AdditionalType.pointOfSaleMaterials].toJson(),
-      }
+      'items': _toJsonInvoiceItemList(items),
     };
   }
 }
@@ -102,8 +109,9 @@ class InvoiceType {
     if (type == InvoiceType.export.value) {
       return InvoiceType.export;
     }
-    throw Exception(
-        'Not found. Expected: ${InvoiceType.import}, ${InvoiceType.export}');
+    throw Exception('InvoiceType not found. Expected: '
+        '${InvoiceType.import}, '
+        '${InvoiceType.export}');
   }
 
   @override
@@ -129,7 +137,7 @@ class InvoiceStatus {
     if (status == InvoiceStatus.denied.value) {
       return InvoiceStatus.denied;
     }
-    throw Exception('Not found. Expected: '
+    throw Exception('InvoiceStatus not found. Expected: '
         '${InvoiceStatus.approved}, '
         '${InvoiceStatus.pending}, '
         '${InvoiceStatus.denied}');
