@@ -10,8 +10,7 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
 
   final ReportKpiMonthRepository _reportKpiMonthRepository;
 
-  DateTime _currentStartDate;
-  DateTime _currentEndDate;
+  DateTime _currentStartMonth;
   int _currentOffset;
   int _currentLimit;
   int count;
@@ -29,13 +28,12 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
 
       yield ReportKpiMonthLoading();
       try {
-        if(event.starDay ==null || event.endDay ==null){
+        if(event.starMonth == null){
           throw 'Phải chọn thời gian';
         }
         else{
           ReportKpiMonthModel listKpiMonth = await _reportKpiMonthRepository.getReportKpiMonth(
-              startDate: _currentStartDate = event.starDay,
-              endDate: _currentEndDate = event.endDay,
+              startMonth: _currentStartMonth = event.starMonth,
               offset: _currentOffset = event.offset,
               limit:  _currentLimit = event.limit
           );
@@ -53,13 +51,12 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
       yield ReportKpiMonthLoading(isLoadMore: true);
       try {
         ReportKpiMonthModel listKpiMonth = await _reportKpiMonthRepository.getReportKpiMonth(
-            startDate: _currentStartDate,
-            endDate: _currentEndDate,
+            startMonth: _currentStartMonth,
             offset: _currentOffset = _currentOffset + _currentLimit,
             limit:  _currentLimit
         );
         if (listKpiMonth.listKpiMonthItem.length == 0) {
-          yield ReachMax();
+          yield ReachMaxx();
         } else {
           yield ReportKpiMonthLoaded(reportKpiMonthModel: listKpiMonth, isLoadMore: true, countKpi: count);
         }

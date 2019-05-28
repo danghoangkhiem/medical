@@ -16,10 +16,10 @@ class _LoginPageState extends State<LoginPage> {
   AuthenticationBloc _authenticationBloc;
 
   @override
-  void didChangeDependencies() {
+  void initState() {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginBloc = LoginBloc(authenticationBloc: _authenticationBloc);
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override

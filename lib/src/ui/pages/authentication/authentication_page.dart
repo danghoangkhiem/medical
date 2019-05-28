@@ -7,6 +7,8 @@ import 'package:medical/src/ui/pages/authentication/authentication_failure_page.
 import 'package:medical/src/ui/pages/login/login_page.dart';
 import 'package:medical/src/ui/pages/home/home_page.dart';
 
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
+
 class AuthenticationPage extends StatefulWidget {
   @override
   _AuthenticationPageState createState() => _AuthenticationPageState();
@@ -28,7 +30,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
           bloc: bloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state.isAuthenticating) {
-              return CircularProgressIndicator();
+              return LoadingIndicator();
             }
             if (state.hasFailed) {
               return AuthenticationFailurePage(errorMessage: state.error);

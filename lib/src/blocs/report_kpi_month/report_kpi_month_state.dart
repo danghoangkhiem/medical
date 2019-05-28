@@ -32,7 +32,7 @@ class ReportKpiMonthLoaded extends ReportKpiMonthState {
   String toString() => 'ReportKpiMonthLoaded';
 }
 
-class ReachMax extends ReportKpiMonthState {}
+class ReachMaxx extends ReportKpiMonthState {}
 
 class ReportKpiMonthFailure extends ReportKpiMonthState {
   final String error;

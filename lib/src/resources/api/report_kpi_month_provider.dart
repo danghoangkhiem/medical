@@ -36,7 +36,51 @@ class ReportKpiMonthApiProvider extends ApiProvider {
         "type": "B",
         "count": 4
       },
-
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      },
+      {
+        "name": "Hoàng Thiên Mệnh" ,
+        "type": "B",
+        "count": 4
+      }
     ]);
   }
 }

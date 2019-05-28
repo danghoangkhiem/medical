@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/authentication/authentication.dart';
-import 'package:medical/src/ui/pages/inventories/inventories_page.dart';
-import 'package:medical/src/ui/pages/report_kpi/report_kpi_page.dart';
+import 'package:medical/src/blocs/home/home.dart';
+
+import 'package:medical/src/models/user_model.dart';
 
 import 'package:medical/src/utils.dart';
 
+import 'package:medical/src/ui/pages/authentication/authentication_failure_page.dart';
 import 'change_password_page.dart';
-import 'synchronize_page.dart';
+import 'package:medical/src/ui/pages/synchronize/synchronize_page.dart';
 import 'package:medical/src/ui/pages/check_in/check_in_page.dart';
 import 'package:medical/src/ui/pages/invoice/invoice_page.dart';
-import 'package:medical/src/ui/pages/customer_manage/customer_manager_page.dart';
+import 'package:medical/src/ui/pages/customer/customer_manager_page.dart';
+import 'package:medical/src/ui/pages/inventories/inventories_page.dart';
+import 'package:medical/src/ui/pages/report_kpi/report_kpi_page.dart';
+
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,13 +25,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  HomeBloc _homeBloc;
+
   @override
   void initState() {
+    _homeBloc = HomeBloc();
+    _homeBloc.dispatch(UserIdentifier());
     super.initState();
   }
 
   @override
   void dispose() {
+    _homeBloc?.dispose();
     super.dispose();
   }
 
@@ -35,488 +46,204 @@ class _HomePageState extends State<HomePage> {
     bloc.dispatch(AuthenticationEvent.loggedOut());
   }
 
+  Widget _buildSelectionItem(
+      {IconData icon, String label, Function onPressed}) {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: Colors.white,
+      ),
+      height: 60,
+      child: FlatButton(
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          onPressed: onPressed,
+          child: ListTile(
+            title: Text(
+              label,
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            leading: Icon(
+              icon,
+              size: 35,
+              color: Colors.blueAccent,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+            ),
+          )),
+    );
+  }
+
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: double.infinity,
-        color: Colors.grey[300],
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Column(
-            children: <Widget>[
-              buildUserInfo(),
-              buildAttendance(),
-              buildConsumer(),
-              buildReportKpi(),
-              buildInventory(),
-              buildInvoice(),
-              buildSchedule(),
-              buildScheduleCoaching(),
-              buildScheduleLocality(),
-              buildSynchronize(),
-              buildChangePassword(),
-              buildLogout(),
-              buildExit()
-            ],
-          ),
-        ),
+    return SafeArea(
+      child: Scaffold(
+        body: BlocBuilder(
+            bloc: _homeBloc,
+            builder: (BuildContext context, HomeState state) {
+              if (state is Loading) {
+                return LoadingIndicator(opacity: 0);
+              }
+              if (state is Loaded) {
+                return Container(
+                  height: double.infinity,
+                  color: Colors.grey[300],
+                  child: Column(
+                    children: <Widget>[
+                      _buildUserInfo(state.user),
+                      _buildSelectionItemBox(state.user)
+                    ],
+                  ),
+                );
+              }
+              if (state is Failure) {
+                return AuthenticationFailurePage(
+                    errorMessage: state.errorMessage);
+              }
+              return Container();
+            }),
       ),
     );
   }
 
-
-
-  Widget buildUserInfo() {
+  Widget _buildUserInfo(UserModel user) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
-      height: 100,
+      height: 50,
       color: Colors.blueAccent,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            'Tên: Nguyễn Thùy Trang',
-            style: TextStyle(
-                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          Icon(
+            Icons.verified_user,
+            color: Colors.white,
           ),
           SizedBox(
-            height: 5,
+            width: 10,
           ),
           Text(
-            'Mã số NV: HCM12345',
+            user.name.toString(),
             style: TextStyle(
-                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            '/',
+            style: TextStyle(color: Colors.white),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            user.code.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Container buildAttendance() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
+  Widget _buildSelectionItemBox(UserModel user) {
+    return Expanded(
+      flex: 1,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(
+          children: <Widget>[
+            _buildSelectionItem(
+                icon: Icons.access_alarm,
+                label: 'Chấm công',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => CheckInPage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.people,
+                label: 'Quản lý khách hàng',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => CustomerManagePage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.access_alarm,
+                label: 'Thống kê KPI',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ReportKpiPage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.shopping_cart,
+                label: 'Quản lý xuất nhập tồn',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => Inventories()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.assessment,
+                label: 'Phiếu xuất nhập hàng',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => InvoicePage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.schedule,
+                label: 'Lên kế hoạch làm việc',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => SynchronizePage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.alarm,
+                label: 'Lập kế hoạch coaching',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => SynchronizePage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.landscape,
+                label: 'Lập kế hoạch địa bàn',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => SynchronizePage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.cloud_upload,
+                label: 'Đồng bộ dữ liệu',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => SynchronizePage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.lock_outline,
+                label: 'Đổi mật khẩu',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ChangePasswordPage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.lock_open, label: 'Đăng xuất', onPressed: _logout),
+            _buildSelectionItem(
+                icon: Icons.exit_to_app,
+                label: 'Thoát ứng dụng',
+                onPressed: () => exitApp(context))
+          ],
+        ),
       ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => CheckInPage(),
-              ),
-            );
-          },
-          child: ListTile(
-            title: Text(
-              'Chấm công',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.access_alarms,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Container buildReportKpi() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => ReportKpiPage(),
-              ),
-            );
-          },
-          child: ListTile(
-            title: Text(
-              'Thống kê KPI của MED REP',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.access_alarms,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildConsumer() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => CustomerManagePage(),
-              ),
-            );
-          },
-          child: ListTile(
-            title: Text(
-              'Quản lý khách hàng',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.people,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildInventory() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => Inventories()));
-          },
-          child: ListTile(
-            title: Text(
-              'Quản lý xuất nhập tồn',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.shopping_cart,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildInvoice() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => InvoicePage()));
-          },
-          child: ListTile(
-            title: Text(
-              'Phiếu xuất nhập hàng',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.assignment,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildSchedule() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => SynchronizePage()));
-          },
-          child: ListTile(
-            title: Text(
-              'Lên lịch làm việc',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.schedule,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildScheduleCoaching() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => SynchronizePage()));
-          },
-          child: ListTile(
-            title: Text(
-              'Lập kế hoạch coaching',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.alarm,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildScheduleLocality() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => SynchronizePage()));
-          },
-          child: ListTile(
-            title: Text(
-              'Lập kế hoạch địa bàn',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.landscape,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildSynchronize() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => SynchronizePage()));
-          },
-          child: ListTile(
-            title: Text(
-              'Đồng bộ dữ liệu',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.cloud_upload,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildChangePassword() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => ChangePasswordPage()));
-          },
-          child: ListTile(
-            title: Text(
-              'Đổi mật khẩu',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.lock_outline,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildLogout() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: _logout,
-          child: ListTile(
-            title: Text(
-              'Đăng xuất',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.input,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
-    );
-  }
-
-  Widget buildExit() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: () => exitApp(context),
-          child: ListTile(
-            title: Text(
-              'Thoát',
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            leading: Icon(
-              Icons.close,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          )),
     );
   }
 }

@@ -1,9 +1,19 @@
+import 'package:meta/meta.dart';
+
+import 'api/user_api_provider.dart';
+
+import 'package:medical/src/models/user_model.dart';
+
 class UserRepository {
-  authenticate({String username, String password}) async {
-    await Future.delayed(Duration(seconds: 1));
+  final UserApiProvider _userApiProvider = UserApiProvider();
+
+  Future<String> changePassword(
+      {@required String oldPassword, @required String newPassword}) async {
+    return _userApiProvider.changePassword(
+        oldPassword: oldPassword, newPassword: newPassword);
   }
 
-  changePassword({String oldPassword, String newPassword}) async {
-    await Future.delayed(Duration(seconds: 1));
+  Future<UserModel> getInfo() async {
+    return await _userApiProvider.getInfo();
   }
 }

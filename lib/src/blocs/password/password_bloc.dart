@@ -31,12 +31,15 @@ class ChangePasswordBloc extends Bloc<ChangePasswordEvent, ChangePasswordState> 
         if (event.confirmPassword != event.newPassword) {
           throw 'Mật khẩu xác nhận không đúng với mật khẩu mới';
         }
-        await _userRepository.changePassword(
+        final _token = await _userRepository.changePassword(
           oldPassword: event.oldPassword,
           newPassword: event.newPassword,
         );
+        if (_token == null) {
+          throw 'Xảy ra lỗi trong quá trình đổi mật khẩu';
+        }
         _authenticationBloc
-            .dispatch(AuthenticationEvent.loggedOut());
+            .dispatch(AuthenticationEvent.loggedIn(token: _token));
         yield ChangePasswordSuccess();
       } catch (error) {
         yield ChangePasswordFailure(error: error.toString());
