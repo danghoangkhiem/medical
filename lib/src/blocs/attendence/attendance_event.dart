@@ -7,17 +7,17 @@ abstract class AttendanceEvent extends Equatable {
 }
 //ham lay danh sach lich su cham cong sau khi chon ngay bat dau, ngay ket thuc
 class GetAttendance extends AttendanceEvent {
-  final DateTime starDay;
-  final DateTime endDay;
+  final DateTime startDate;
+  final DateTime endDate;
   final int offset;
   final int limit;
 
   GetAttendance({
-    @required this.starDay,
-    @required this.endDay,
+    @required this.startDate,
+    @required this.endDate,
     @required this.offset,
     @required this.limit,
-  }) : super([starDay, endDay, offset, limit]);
+  }) : super([startDate, endDate, offset, limit]);
 
 
 
@@ -29,18 +29,18 @@ class GetAttendance extends AttendanceEvent {
 
 class GetAttendanceMore extends AttendanceEvent {
   final AttendancesModel attendance;
-  final DateTime starDay;
-  final DateTime endDay;
+  final DateTime startDate;
+  final DateTime endDate;
   final int offset;
   final int limit;
 
   GetAttendanceMore({
     @required this.attendance,
-    @required this.starDay,
-    @required this.endDay,
+    @required this.startDate,
+    @required this.endDate,
     @required this.offset,
     @required this.limit,
-  }) : super([ attendance,starDay, endDay, offset, limit]);
+  }) : super([ attendance,startDate, endDate, offset, limit]);
 
 
 

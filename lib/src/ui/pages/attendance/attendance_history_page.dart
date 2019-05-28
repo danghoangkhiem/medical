@@ -23,8 +23,9 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  DateTime starDay;
-  DateTime endDay;
+  DateTime _startDate;
+  DateTime _endDate;
+  DateTime _now;
 
   int offsetAttendance = 0;
 
@@ -35,6 +36,10 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
   @override
   void initState() {
     super.initState();
+    _now = DateTime.now();
+    _startDate =
+        _endDate = DateTime.parse(DateFormat('yyyy-MM-dd').format(_now));
+    
     isLoading = false;
     _blocAttendance = AttendanceBloc(attendanceRepository: _attendanceRepository);
     _scrollController.addListener((){
@@ -44,7 +49,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
         print("Load thêm đê");
         offsetAttendance+=10;
         print("ok" + offsetAttendance.toString());
-        _blocAttendance.dispatch(GetAttendanceMore(attendance: attendancesModelMore, starDay: starDay, endDay: endDay, offset: offsetAttendance, limit: 10));
+        _blocAttendance.dispatch(GetAttendanceMore(attendance: attendancesModelMore, startDate: _startDate, endDate: _endDate, offset: offsetAttendance, limit: 10));
       }
     });
   }
@@ -80,8 +85,9 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                     child: DateTimePickerFormField(
                                       inputType: InputType.date,
                                       format: DateFormat("dd-MM-yyyy"),
-                                      initialDate: DateTime.now(),
-                                      lastDate: endDay,
+                                      initialDate: _endDate ?? _now,
+                                      lastDate: _endDate ?? _now,
+                                      initialValue: _startDate,
                                       editable: false,
                                       decoration: InputDecoration(
                                         labelText: 'Chọn ngày bắt đầu',
@@ -99,7 +105,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                       onChanged: (dt) {
                                         if(dt != null){
                                           setState(() {
-                                            starDay = dt;
+                                            _startDate = dt;
 
                                           });
                                         }
@@ -117,9 +123,10 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                     child: DateTimePickerFormField(
                                       inputType: InputType.date,
                                       format: DateFormat("dd-MM-yyyy"),
-                                      initialDate: DateTime.now(),
-                                      lastDate: DateTime.now(),
-                                      firstDate: starDay,
+                                      initialDate: _startDate ?? _now,
+                                      firstDate: _startDate,
+                                      initialValue: _endDate,
+                                      lastDate: _now,
                                       editable: false,
                                       decoration: InputDecoration(
                                         labelText: 'Chọn ngày kết thúc',
@@ -137,7 +144,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                       onChanged: (dt) {
                                         if(dt != null){
                                           setState(() {
-                                            endDay = dt;
+                                            _endDate = dt;
                                             //print(endDay.millisecondsSinceEpoch);
                                           });
                                         }
@@ -158,9 +165,9 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage>{
                                 height: 42,
                                 child: FlatButton(
                                     onPressed: (){
-                                      if(starDay !=null && endDay!=null){
+                                      if(_startDate !=null && _endDate!=null){
                                         //print("tìm $starDay - $endDay");
-                                        _blocAttendance.dispatch(GetAttendance(starDay: starDay, endDay: endDay, offset: 0, limit: 10));
+                                        _blocAttendance.dispatch(GetAttendance(startDate: _startDate, endDate: _endDate, offset: 0, limit: 10));
                                       }
                                       else{
                                         print("Chua du dieu kien tim");

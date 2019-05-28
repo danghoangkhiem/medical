@@ -24,7 +24,7 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
       yield AttendanceLoading();
 
       try {
-        AttendancesModel attendance = await _attendanceRepository.getAttendance(startDay: event.starDay, endDay: event.endDay, offset: event.offset, limit: event.limit);
+        AttendancesModel attendance = await _attendanceRepository.getAttendance(startDay: event.startDate, endDay: event.endDate, offset: event.offset, limit: event.limit);
         yield AttendanceLoaded(attendance: attendance);
       } catch (error) {
         yield AttendanceFailure(error: error.toString());
@@ -34,7 +34,7 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
     if(event is GetAttendanceMore){
       yield AttendanceLoaded(attendance: event.attendance, isLoadingMore: true);
       try{
-        AttendancesModel attendanceMore = await _attendanceRepository.getAttendanceMore(startDay: event.starDay, endDay: event.endDay, offset: event.offset, limit: event.limit);
+        AttendancesModel attendanceMore = await _attendanceRepository.getAttendanceMore(startDay: event.startDate, endDay: event.endDate, offset: event.offset, limit: event.limit);
         print(attendanceMore.listAttendance.length);
         AttendancesModel oldAttendanceModel = event.attendance;
 
