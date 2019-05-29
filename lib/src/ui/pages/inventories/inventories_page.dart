@@ -39,8 +39,7 @@ class InventoriesState extends State<Inventories> {
     super.initState();
 
     _now = DateTime.now();
-    startDate =
-        endDate = DateTime.parse(DateFormat('yyyy-MM-dd').format(_now));
+    startDate = endDate = DateTime.parse(DateFormat('yyyy-MM-dd').format(_now));
 
     _blocType = TypeBloc(typeRepository: _typeRepository);
     _blocInventories =
@@ -258,28 +257,11 @@ class InventoriesState extends State<Inventories> {
                                       if (startDate != null &&
                                           endDate != null &&
                                           select != null) {
-                                        if (select == 1) {
-                                          print("ajax gift");
-                                          _blocInventories.dispatch(
-                                              GetInventoriesGift(
-                                                  starDay: startDate,
-                                                  endDay: endDate,
-                                                  value: select));
-                                        } else if (select == 2) {
-                                          print("ajax sampling");
-                                          _blocInventories.dispatch(
-                                              GetInventoriesSampling(
-                                                  starDay: startDate,
-                                                  endDay: endDate,
-                                                  value: select));
-                                        } else if (select == 3) {
-                                          print("ajax posm");
-                                          _blocInventories.dispatch(
-                                              GetInventoriesPosm(
-                                                  starDay: startDate,
-                                                  endDay: endDate,
-                                                  value: select));
-                                        }
+                                        _blocInventories.dispatch(
+                                            GetInventories(
+                                                starDay: startDate,
+                                                endDay: endDate,
+                                                value: select));
                                       } else {
                                         print("ko du dk tim");
                                       }
@@ -306,7 +288,7 @@ class InventoriesState extends State<Inventories> {
                         height: 55,
                         color: Colors.grey[200],
                         child: Table(
-                          columnWidths: {0: FractionColumnWidth(0.5)},
+                          columnWidths: {0: FractionColumnWidth(0.6)},
                           children: [
                             new TableRow(children: [
                               new Row(
@@ -373,7 +355,7 @@ class InventoriesState extends State<Inventories> {
                                 }
                                 if (state is InventoriesLoaded) {
                                   return Table(
-                                    columnWidths: {0: FractionColumnWidth(0.5)},
+                                    columnWidths: {0: FractionColumnWidth(0.6)},
                                     children: state
                                         .inventoriesModel.listInventories
                                         .map((item) {
@@ -388,7 +370,7 @@ class InventoriesState extends State<Inventories> {
                                               child: new Text(
                                                 item.label,
                                                 style:
-                                                    new TextStyle(fontSize: 16),
+                                                    new TextStyle(fontSize: 14),
                                               ),
                                             ),
                                           ],
@@ -403,7 +385,7 @@ class InventoriesState extends State<Inventories> {
                                               child: new Text(
                                                 item.import.toString(),
                                                 style:
-                                                    new TextStyle(fontSize: 16),
+                                                    new TextStyle(fontSize: 14),
                                               ),
                                             ),
                                           ],
@@ -418,7 +400,7 @@ class InventoriesState extends State<Inventories> {
                                               child: new Text(
                                                 item.export.toString(),
                                                 style:
-                                                    new TextStyle(fontSize: 16),
+                                                    new TextStyle(fontSize: 14),
                                               ),
                                             ),
                                           ],
@@ -433,7 +415,7 @@ class InventoriesState extends State<Inventories> {
                                               child: new Text(
                                                 item.stock.toString(),
                                                 style:
-                                                    new TextStyle(fontSize: 16),
+                                                    new TextStyle(fontSize: 14),
                                               ),
                                             ),
                                           ],
@@ -463,69 +445,71 @@ class InventoriesState extends State<Inventories> {
                   color: Colors.grey[200],
                   child: BlocBuilder(
                       bloc: _blocInventories,
-                      builder: (BuildContext context, state){
-                        if(state is InventoriesLoading){
+                      builder: (BuildContext context, state) {
+                        if (state is InventoriesLoading) {
                           return Container();
                         }
-                        if(state is InventoriesLoaded){
+                        if (state is InventoriesLoaded) {
                           return Table(
-                            columnWidths: {0: FractionColumnWidth(0.5)},
+                            columnWidths: {0: FractionColumnWidth(0.6)},
                             children: [
-                              TableRow(
-                                  children: [
-                                    new Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        new Text(
-                                          "Tổng",
-                                          style: new TextStyle(
-                                              fontSize: 18, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
+                              TableRow(children: [
+                                new Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Text(
+                                      "Tổng",
+                                      style: new TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          state.listSum[0].toString(),
-                                          style: new TextStyle(
-                                              fontSize: 18, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
+                                  ],
+                                ),
+                                new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    new Text(
+                                      state.listSum[0].toString(),
+                                      style: new TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          state.listSum[1].toString(),
-                                          style: new TextStyle(
-                                              fontSize: 18, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
+                                  ],
+                                ),
+                                new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    new Text(
+                                      state.listSum[1].toString(),
+                                      style: new TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          state.listSum[2].toString(),
-                                          style: new TextStyle(
-                                              fontSize: 18, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
+                                  ],
+                                ),
+                                new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    new Text(
+                                      state.listSum[2].toString(),
+                                      style: new TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ]),
+                                  ],
+                                ),
+                              ]),
                             ],
                           );
                         }
 
-                        if(state is InventoriesFailure){
+                        if (state is InventoriesFailure) {
                           return Center(
                             child: new Text(state.error),
                           );
                         }
                         return Container();
-                      }
-                  ),
+                      }),
                 ))
           ],
         ),

@@ -13,7 +13,7 @@ class InventoriesModel{
 }
 
 class InventoriesItem{
-  final String key;
+  final int key;
   final String label;
   final int import;
   final int export;

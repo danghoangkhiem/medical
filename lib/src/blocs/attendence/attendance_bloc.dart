@@ -24,7 +24,7 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
       yield AttendanceLoading();
 
       try {
-        AttendancesModel attendance = await _attendanceRepository.getAttendance(startDay: event.startDate, endDay: event.endDate, offset: event.offset, limit: event.limit);
+        AttendancesModel attendance = await _attendanceRepository.getAttendance(startDate: event.startDate, endDate: event.endDate, offset: event.offset, limit: event.limit);
         yield AttendanceLoaded(attendance: attendance);
       } catch (error) {
         yield AttendanceFailure(error: error.toString());

@@ -6,8 +6,8 @@ class AttendanceRepository {
 
   final AttendanceApiProvider _attendanceApiProvider = AttendanceApiProvider();
 
-  Future<AttendancesModel> getAttendance({DateTime startDay, DateTime endDay ,int offset, int limit}) async {
-    return await _attendanceApiProvider.getAttendance();
+  Future<AttendancesModel> getAttendance({DateTime startDate, DateTime endDate ,int offset, int limit}) async {
+    return await _attendanceApiProvider.getAttendance(offset: offset, limit: limit, startDate: startDate, endDate: endDate);
   }
 
   Future<AttendancesModel> getAttendanceMore({DateTime startDay, DateTime endDay ,int offset, int limit}) async {
