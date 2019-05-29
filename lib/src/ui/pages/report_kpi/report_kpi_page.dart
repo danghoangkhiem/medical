@@ -75,8 +75,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
     }
   }
 
-  DateTime starDate;
+  DateTime startDate;
   DateTime endDate;
+  DateTime _now;
 
   int offsetKpi = 0;
   int offsetKpiMonth = 0;
@@ -96,6 +97,11 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
   void initState() {
 
     super.initState();
+
+    _now = DateTime.now();
+    startDate =
+        endDate = DateTime.parse(DateFormat('yyyy-MM-dd').format(_now));
+    
     selectedDate = initialDate;
     listReportKpiMonth = ReportKpiMonthModel.fromJson([]);
     listReportKpiDay = ReportKpiDayModel.fromJson([]);
@@ -150,7 +156,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               child: DateTimePickerFormField(
                                                 inputType: InputType.date,
                                                 format: DateFormat("dd-MM-yyyy"),
-                                                initialDate: DateTime.now(),
+                                                initialDate: endDate ?? _now,
+                                                lastDate: endDate ?? _now,
+                                                initialValue: startDate,
                                                 editable: false,
                                                 decoration: InputDecoration(
                                                   labelText: 'Chọn ngày bắt đầu',
@@ -168,7 +176,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 onChanged: (dt) {
                                                   if(dt != null){
                                                     setState(() {
-                                                      starDate = dt;
+                                                      startDate = dt;
                                                     });
                                                   }
                                                 },
@@ -185,8 +193,10 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               child: DateTimePickerFormField(
                                                 inputType: InputType.date,
                                                 format: DateFormat("dd-MM-yyyy"),
-                                                initialDate: DateTime.now(),
-                                                lastDate: DateTime.now(),
+                                                initialDate: startDate ?? _now,
+                                                firstDate: startDate,
+                                                initialValue: endDate,
+                                                lastDate: _now,
                                                 editable: false,
                                                 decoration: InputDecoration(
                                                   labelText: 'Chọn ngày kết thúc',
@@ -224,9 +234,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                           height: 42,
                                           child: FlatButton(
                                               onPressed: (){
-                                                if(starDate !=null && endDate!=null){
+                                                if(startDate !=null && endDate!=null){
                                                   print("Du dieu kien tim");
-                                                  _blocReportKpiDay.dispatch(GetReportKpiDay(starDay: starDate, endDay: endDate, offset: offsetKpi, limit: 10));
+                                                  _blocReportKpiDay.dispatch(GetReportKpiDay(starDay: startDate, endDay: endDate, offset: offsetKpi, limit: 10));
                                                 }
                                                 else{
                                                   print("Chua du dieu kien tim");

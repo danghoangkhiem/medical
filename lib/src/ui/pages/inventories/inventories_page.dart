@@ -22,8 +22,9 @@ class Inventories extends StatefulWidget {
 class InventoriesState extends State<Inventories> {
   //form
   int select;
-  DateTime startDay;
-  DateTime endDay;
+  DateTime startDate;
+  DateTime endDate;
+  DateTime _now;
 
   TypeBloc _blocType;
   TypeRepository _typeRepository = TypeRepository();
@@ -36,6 +37,10 @@ class InventoriesState extends State<Inventories> {
   @override
   void initState() {
     super.initState();
+
+    _now = DateTime.now();
+    startDate =
+        endDate = DateTime.parse(DateFormat('yyyy-MM-dd').format(_now));
 
     _blocType = TypeBloc(typeRepository: _typeRepository);
     _blocInventories =
@@ -85,9 +90,10 @@ class InventoriesState extends State<Inventories> {
                                     child: DateTimePickerFormField(
                                       inputType: InputType.date,
                                       format: DateFormat("dd-MM-yyyy"),
-                                      initialDate: DateTime.now(),
+                                      initialDate: endDate ?? _now,
+                                      lastDate: endDate ?? _now,
+                                      initialValue: startDate,
                                       editable: false,
-                                      lastDate: DateTime.now(),
                                       decoration: InputDecoration(
                                         labelText: 'Chọn ngày bắt đầu',
                                         labelStyle: new TextStyle(
@@ -108,7 +114,7 @@ class InventoriesState extends State<Inventories> {
                                           fontWeight: FontWeight.bold),
                                       onChanged: (dt) {
                                         setState(() {
-                                          startDay = dt;
+                                          startDate = dt;
                                         });
                                       },
                                     ),
@@ -134,10 +140,11 @@ class InventoriesState extends State<Inventories> {
                                     child: DateTimePickerFormField(
                                       inputType: InputType.date,
                                       format: DateFormat("dd-MM-yyyy"),
-                                      initialDate: DateTime.now(),
-                                      firstDate: startDay,
+                                      initialDate: startDate ?? _now,
+                                      firstDate: startDate,
+                                      initialValue: endDate,
+                                      lastDate: _now,
                                       editable: false,
-                                      lastDate: DateTime.now(),
                                       decoration: InputDecoration(
                                         labelText: 'Chọn ngày kết thúc',
                                         labelStyle: new TextStyle(
@@ -158,7 +165,7 @@ class InventoriesState extends State<Inventories> {
                                           fontWeight: FontWeight.bold),
                                       onChanged: (dt) {
                                         setState(() {
-                                          endDay = dt;
+                                          endDate = dt;
                                         });
                                       },
                                     ),
@@ -248,29 +255,29 @@ class InventoriesState extends State<Inventories> {
                                 height: 42,
                                 child: FlatButton(
                                     onPressed: () {
-                                      if (startDay != null &&
-                                          endDay != null &&
+                                      if (startDate != null &&
+                                          endDate != null &&
                                           select != null) {
                                         if (select == 1) {
                                           print("ajax gift");
                                           _blocInventories.dispatch(
                                               GetInventoriesGift(
-                                                  starDay: startDay,
-                                                  endDay: endDay,
+                                                  starDay: startDate,
+                                                  endDay: endDate,
                                                   value: select));
                                         } else if (select == 2) {
                                           print("ajax sampling");
                                           _blocInventories.dispatch(
                                               GetInventoriesSampling(
-                                                  starDay: startDay,
-                                                  endDay: endDay,
+                                                  starDay: startDate,
+                                                  endDay: endDate,
                                                   value: select));
                                         } else if (select == 3) {
                                           print("ajax posm");
                                           _blocInventories.dispatch(
                                               GetInventoriesPosm(
-                                                  starDay: startDay,
-                                                  endDay: endDay,
+                                                  starDay: startDate,
+                                                  endDay: endDate,
                                                   value: select));
                                         }
                                       } else {
