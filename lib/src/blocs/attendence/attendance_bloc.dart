@@ -2,12 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:medical/src/blocs/attendence/attendance_event.dart';
 import 'package:medical/src/blocs/attendence/attendance_state.dart';
 import 'package:medical/src/resources/attendance_repository.dart';
-import '../../models/models.dart';
-
-
 import 'package:meta/meta.dart';
 
 class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
+
+  DateTime _currentStartDate;
+  DateTime _currentEndDate;
+  int _currentOffset;
+  int _currentLimit;
 
   final AttendanceRepository _attendanceRepository;
 
@@ -22,35 +24,43 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   Stream<AttendanceState> mapEventToState(AttendanceEvent event) async* {
     if (event is GetAttendance) {
       yield AttendanceLoading();
-
       try {
-        AttendancesModel attendance = await _attendanceRepository.getAttendance(startDate: event.startDate, endDate: event.endDate, offset: event.offset, limit: event.limit);
+        if (event.startDate == null || event.endDate == null) {
+          throw 'Phải chọn thời gian';
+        }
+
+        final attendance = await _attendanceRepository.getAttendance(
+            offset: _currentOffset = event.offset,
+            limit: _currentLimit = event.limit,
+            startDate: _currentStartDate = event.startDate,
+            endDate: _currentEndDate = event.endDate
+        );
         yield AttendanceLoaded(attendance: attendance);
       } catch (error) {
         yield AttendanceFailure(error: error.toString());
       }
     }
 
-    if(event is GetAttendanceMore){
-      yield AttendanceLoaded(attendance: event.attendance, isLoadingMore: true);
-      try{
-        AttendancesModel attendanceMore = await _attendanceRepository.getAttendanceMore(startDay: event.startDate, endDay: event.endDate, offset: event.offset, limit: event.limit);
-        print(attendanceMore.listAttendance.length);
-        AttendancesModel oldAttendanceModel = event.attendance;
+    if (event is LoadMore) {
+      yield AttendanceLoading(isLoadMore: true);
+      try {
+        final attendance = await _attendanceRepository.getAttendance(
+            offset: _currentOffset,
+            limit: _currentLimit,
+            startDate: _currentStartDate,
+            endDate: _currentEndDate
+        );
 
-        if(attendanceMore !=null){
-          oldAttendanceModel.listAttendance.addAll(attendanceMore.listAttendance);
-          print(oldAttendanceModel.listAttendance.length);
+        if (attendance.listAttendance.length == 0) {
+          yield ReachMax();
+        } else {
+          yield AttendanceLoaded(attendance: attendance, isLoadMore: true);
         }
-
-        print(oldAttendanceModel.listAttendance);
-        yield AttendanceLoaded(attendance: oldAttendanceModel, isLoadingMore: false);
-
-      }catch(error){
+      } catch (error) {
         yield AttendanceFailure(error: error.toString());
       }
-
     }
+
   }
 
 }
