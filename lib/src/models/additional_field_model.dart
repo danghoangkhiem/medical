@@ -1,4 +1,4 @@
-import 'additional_type.dart';
+import 'event_type.dart';
 
 class AdditionalFieldModel {
 
