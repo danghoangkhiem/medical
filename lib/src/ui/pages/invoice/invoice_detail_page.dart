@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:medical/src/blocs/invoice_detail/invoice_detail.dart';
-import 'package:medical/src/models/additional_type.dart';
+import 'package:medical/src/models/event_type.dart';
 import 'package:medical/src/models/invoice_item_model.dart';
 import 'package:medical/src/models/invoice_model.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
@@ -71,19 +71,19 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
                 child: ListView(
                   children: <Widget>[
                     _buildRow(
-                        title: _mapAdditionalToName(
-                            AdditionalType.pointOfSaleMaterials),
+                        title: _mapEventTypeToName(
+                            EventType.pointOfSaleMaterials),
                         items: _invoice
-                            .items[AdditionalType.pointOfSaleMaterials]),
+                            .items[EventType.pointOfSaleMaterials]),
                     _buildRow(
-                        title: _mapAdditionalToName(AdditionalType.gifts),
-                        items: _invoice.items[AdditionalType.gifts]),
+                        title: _mapEventTypeToName(EventType.gifts),
+                        items: _invoice.items[EventType.gifts]),
                     _buildRow(
-                        title: _mapAdditionalToName(AdditionalType.samples),
-                        items: _invoice.items[AdditionalType.samples]),
+                        title: _mapEventTypeToName(EventType.samples),
+                        items: _invoice.items[EventType.samples]),
                     _buildRow(
-                        title: _mapAdditionalToName(AdditionalType.purchases),
-                        items: _invoice.items[AdditionalType.purchases]),
+                        title: _mapEventTypeToName(EventType.purchases),
+                        items: _invoice.items[EventType.purchases]),
                     SizedBox(
                       height: 30,
                     )
@@ -278,18 +278,18 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
     return 'Không xác định';
   }
 
-  String _mapAdditionalToName(AdditionalType type) {
-    if (type == AdditionalType.pointOfSaleMaterials) {
+  String _mapEventTypeToName(EventType type) {
+    if (type == EventType.pointOfSaleMaterials) {
       return 'POSM';
     }
-    if (type == AdditionalType.samples) {
+    if (type == EventType.samples) {
       return 'SAMPLING';
     }
-    if (type == AdditionalType.gifts) {
-      return 'GIFT';
+    if (type == EventType.gifts) {
+      return 'GIFTS';
     }
-    if (type == AdditionalType.purchases) {
-      return 'BUY';
+    if (type == EventType.purchases) {
+      return 'SALES';
     }
     return 'Không xác định';
   }
