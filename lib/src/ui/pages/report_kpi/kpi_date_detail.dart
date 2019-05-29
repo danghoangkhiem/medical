@@ -73,6 +73,7 @@ class KpiDateDetailState extends State<KpiDateDetail> {
             new Expanded(
                 flex: 9,
                 child: new Container(
+                  color: Colors.white,
                   child: BlocBuilder(
                       bloc: _blocKpiDateDetail,
                       builder: (BuildContext context, state) {
@@ -107,9 +108,9 @@ class KpiDateDetailState extends State<KpiDateDetail> {
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: Colors.white, style: BorderStyle.solid, width: 1)),
-          color: Colors.grey[200]),
-      height: 60,
+                  color: Colors.grey[200], style: BorderStyle.solid, width: 1)),
+          color: Colors.white),
+      height: 50,
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[

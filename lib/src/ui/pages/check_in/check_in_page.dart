@@ -158,7 +158,7 @@ class _CheckInPage extends State<CheckInPage> {
                 Expanded(
                   flex: 6,
                   child: new Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: new Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
