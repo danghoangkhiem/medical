@@ -31,8 +31,12 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   AttendancesModel attendancesModel;
 
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   void _scrollListener() {
+    if(_isReachMax){
+      return;
+    }
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       throttle(200, () {
@@ -208,6 +212,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                     onPressed: () {
                                       if (_startDate != null &&
                                           _endDate != null) {
+                                        _isReachMax = false;
                                         //print("tìm $starDay - $endDay");
                                         _blocAttendance.dispatch(GetAttendance(
                                             startDate: _startDate,
@@ -241,9 +246,11 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           if (state is ReachMax) {
                             Scaffold.of(context).removeCurrentSnackBar();
                             Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('Got all the data!'),
+                              content: Text('Đã hiển thị tất cả dữ liệu'),
                             ));
-                            _scrollController.removeListener(_scrollListener);
+                            _isLoading = false;
+                            _isReachMax = true;
+                            //_scrollController.removeListener(_scrollListener);
                           }
                           if (state is AttendanceFailure) {
                             Scaffold.of(context).removeCurrentSnackBar();
@@ -266,7 +273,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                         child: BlocBuilder(
                             bloc: _blocAttendance,
                             builder: (context, state) {
-                              if (state is AttendanceLoading) {
+                              if (state is AttendanceLoading && !state.isLoadMore) {
                                 return LoadingIndicator();
                               }
                               return ListView.builder(
@@ -325,12 +332,12 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                     color: Colors.green,
                   ),
                 ),
-                new Container(
+                item.timeIn !=null ? new Container(
                   child: new Text(
                     DateFormat('dd-MM-yyyy hh:mm:ss').format(item.timeIn),
                     style: new TextStyle(fontSize: 16, color: Colors.black54),
                   ),
-                )
+                ): Container()
               ],
             ),
           ),
@@ -348,13 +355,13 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                     color: Colors.deepOrange,
                   ),
                 ),
-                new Container(
+                item.timeOut != null ? new Container(
                   //kiem tra co hay khong
                   child: new Text(
                     DateFormat('dd-MM-yyyy hh:mm:ss').format(item.timeOut),
                     style: new TextStyle(fontSize: 16, color: Colors.black54),
                   ),
-                )
+                ): Container()
               ],
             ),
           )

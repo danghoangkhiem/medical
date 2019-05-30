@@ -28,7 +28,7 @@ class AttendanceApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return AttendancesModel.fromJson(_resp.data["data"]);
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
 
   }
 

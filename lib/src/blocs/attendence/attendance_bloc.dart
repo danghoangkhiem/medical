@@ -35,8 +35,11 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
             startDate: _currentStartDate = event.startDate,
             endDate: _currentEndDate = event.endDate
         );
+        print("ok");
+        print(attendance);
         yield AttendanceLoaded(attendance: attendance);
-      } catch (error) {
+      } catch (error, stack) {
+        print(stack);
         yield AttendanceFailure(error: error.toString());
       }
     }
@@ -45,9 +48,9 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
       yield AttendanceLoading(isLoadMore: true);
       try {
         final attendance = await _attendanceRepository.getAttendance(
-            offset: _currentOffset,
+            offset: _currentOffset  = _currentOffset + _currentLimit,
             limit: _currentLimit,
-            startDate: _currentStartDate,
+            startDate: _currentStartDate ,
             endDate: _currentEndDate
         );
 
