@@ -12,16 +12,23 @@ class AttendanceInitial extends AttendanceState {
 }
 
 class AttendanceLoading extends AttendanceState {
+  final bool isLoadMore;
+
+  AttendanceLoading({this.isLoadMore = false});
+
   @override
   String toString() => 'AttendanceLoading';
+}
+
+class AttendanceEmpty extends AttendanceState {
 }
 
 class AttendanceLoaded extends AttendanceState {
   final AttendancesModel attendance;
 
-  bool isLoadingMore;
+  final bool isLoadMore;
 
-  AttendanceLoaded({@required this.attendance, this.isLoadingMore = false}) : super([attendance, isLoadingMore]);
+  AttendanceLoaded({@required this.attendance, this.isLoadMore = false}) : super([attendance, isLoadMore]);
 
   @override
   String toString() => 'AttendanceLoaded';
@@ -35,3 +42,5 @@ class AttendanceFailure extends AttendanceState {
   @override
   String toString() => 'AttendanceFailure { error: $error }';
 }
+
+class ReachMax extends AttendanceState {}

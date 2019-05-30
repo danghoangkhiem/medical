@@ -7,41 +7,41 @@ class ApiResponseError {
   ApiResponseError({this.code, this.message});
 
   ApiResponseError.fromJson(Map<String, dynamic> json)
-      : assert(json['code'] != null),
-        code = json['code'],
-        message = json['message'];
+      : code = json['code'] as int,
+        message = json['message'] as String;
 
   Map<String, dynamic> toJson() {
     return {'code': code, 'message': message};
   }
+
+  String toString() => message.toString();
 }
 
 class ApiResponseErrorList extends ListMixin<ApiResponseError> {
-  List<ApiResponseError> _responseErrorList = List();
+  List<ApiResponseError> _list = List();
 
-  ApiResponseErrorList.fromJson(Map<dynamic, dynamic> json)
-      : assert(json['errors'] != null) {
-    List.from(json['errors']).forEach(
-        (item) => _responseErrorList.add(ApiResponseError.fromJson(item)));
+  ApiResponseErrorList.fromJson(List<dynamic> json) : assert(json != null) {
+    List.from(json).forEach(
+        (item) => _list.add(ApiResponseError.fromJson(item)));
   }
 
   @override
-  int get length => _responseErrorList.length;
+  int get length => _list.length;
 
   @override
-  set length(value) => _responseErrorList.length = value;
+  set length(value) => _list.length = value;
 
   @override
   operator [](int index) {
-    return _responseErrorList[index];
+    return _list[index];
   }
 
   @override
   void operator []=(int index, value) {
-    if (_responseErrorList.length == index) {
-      _responseErrorList.add(value);
+    if (_list.length == index) {
+      _list.add(value);
     } else {
-      _responseErrorList[index] = value;
+      _list[index] = value;
     }
   }
 }

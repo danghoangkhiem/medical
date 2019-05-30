@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class SynchronizeResultPage extends StatefulWidget {
+class SynchronizationPage extends StatefulWidget {
   @override
-  _SynchronizeResultPageState createState() => _SynchronizeResultPageState();
+  _SynchronizationPageState createState() => _SynchronizationPageState();
 }
 
-class _SynchronizeResultPageState extends State<SynchronizeResultPage> {
+class _SynchronizationPageState extends State<SynchronizationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,20 +22,26 @@ class _SynchronizeResultPageState extends State<SynchronizeResultPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.check_circle_outline,
+                      Icons.cloud_upload,
                       color: Colors.blueAccent,
                       size: 100,
                     ),
                     Container(
                       margin: EdgeInsets.only(bottom: 5, top: 20),
                       child: Text(
-                        'Đồng bộ dữ liệu thành công',
+                        'Dữ liệu chưa được đồng bộ',
                         style: TextStyle(
                             color: Colors.black54,
                             fontSize: 22,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
+                    Container(
+                      child: Text(
+                        'Vui lòng đồng bộ dữ liệu',
+                        style: TextStyle(color: Colors.black54, fontSize: 16),
+                      ),
+                    )
                   ],
                 )),
             Expanded(
@@ -50,7 +56,7 @@ class _SynchronizeResultPageState extends State<SynchronizeResultPage> {
                   child: FlatButton(
                       onPressed: () {},
                       child: Text(
-                        'Trang chủ',
+                        'Đồng bộ dữ liệu',
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       )),
                 ))

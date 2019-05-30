@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'additional_type.dart';
+import 'event_type.dart';
 import 'invoice_item_model.dart';
 
 class InvoiceModel {
@@ -23,28 +23,28 @@ class InvoiceModel {
         status = InvoiceStatus.from(json['status']),
         items = _fromJsonInvoiceItemList(json['items']);
 
-  static Map<AdditionalType, List<InvoiceItemModel>> _fromJsonInvoiceItemList(
+  static Map<EventType, List<InvoiceItemModel>> _fromJsonInvoiceItemList(
       Map<String, dynamic> items) {
-    return <AdditionalType, List<InvoiceItemModel>>{
-      AdditionalType.samples:
-          InvoiceItemListModel.fromJson(items[AdditionalType.samples.value]),
-      AdditionalType.purchases:
-          InvoiceItemListModel.fromJson(items[AdditionalType.purchases.value]),
-      AdditionalType.gifts:
-          InvoiceItemListModel.fromJson(items[AdditionalType.gifts.value]),
-      AdditionalType.pointOfSaleMaterials: InvoiceItemListModel.fromJson(
-          items[AdditionalType.pointOfSaleMaterials.value])
+    return <EventType, List<InvoiceItemModel>>{
+      EventType.samples:
+          InvoiceItemListModel.fromJson(items[EventType.samples.value]),
+      EventType.purchases:
+          InvoiceItemListModel.fromJson(items[EventType.purchases.value]),
+      EventType.gifts:
+          InvoiceItemListModel.fromJson(items[EventType.gifts.value]),
+      EventType.pointOfSaleMaterials: InvoiceItemListModel.fromJson(
+          items[EventType.pointOfSaleMaterials.value])
     };
   }
 
   static Map<String, dynamic> _toJsonInvoiceItemList(
-      Map<AdditionalType, InvoiceItemModel> items) {
+      Map<EventType, InvoiceItemModel> items) {
     return <String, dynamic>{
-      AdditionalType.samples.value: items[AdditionalType.samples].toJson(),
-      AdditionalType.gifts.value: items[AdditionalType.gifts].toJson(),
-      AdditionalType.purchases.value: items[AdditionalType.purchases].toJson(),
-      AdditionalType.pointOfSaleMaterials.value:
-          items[AdditionalType.pointOfSaleMaterials].toJson(),
+      EventType.samples.value: items[EventType.samples].toJson(),
+      EventType.gifts.value: items[EventType.gifts].toJson(),
+      EventType.purchases.value: items[EventType.purchases].toJson(),
+      EventType.pointOfSaleMaterials.value:
+          items[EventType.pointOfSaleMaterials].toJson(),
     };
   }
 

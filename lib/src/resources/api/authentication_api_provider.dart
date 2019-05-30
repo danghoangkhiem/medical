@@ -14,7 +14,7 @@ class AuthenticationApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return _resp.data['token'];
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
   Future<bool> revoke() async {
@@ -22,6 +22,6 @@ class AuthenticationApiProvider extends ApiProvider {
     if (_resp.statusCode == 204) {
       return true;
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 }
