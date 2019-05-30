@@ -16,7 +16,7 @@ void exitApp(BuildContext context) async {
           content: Text('Bạn có chắc chắn muốn thoát khỏi ứng dụng?'),
           actions: <Widget>[
             FlatButton(
-              child: Text('Đóng lại'),
+              child: Text('Hủy'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
@@ -30,7 +30,7 @@ void exitApp(BuildContext context) async {
           ],
         );
       });
-  if (accepted) {
+  if (accepted is bool && accepted) {
     SystemNavigator.pop();
   }
 }

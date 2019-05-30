@@ -7,8 +7,8 @@ import 'package:medical/src/models/invoice_model.dart';
 
 class InvoiceApiProvider extends ApiProvider {
   Future<InvoiceListModel> getInvoiceAccordingToDateTime(
-      {int offset = 10,
-      int limit = 0,
+      {int offset = 0,
+      int limit = 10,
       @required DateTime startDate,
       @required DateTime endDate}) async {
     Map<String, dynamic> _queryParameters = {
@@ -28,7 +28,7 @@ class InvoiceApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return InvoiceListModel.fromJson(_resp.data['data']);
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
   Future<bool> updateInvoiceStatus(int invoiceId,
@@ -41,6 +41,6 @@ class InvoiceApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return true;
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 }

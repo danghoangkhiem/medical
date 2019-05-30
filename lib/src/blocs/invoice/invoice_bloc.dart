@@ -34,7 +34,11 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
           offset: _currentOffset = event.offset,
           limit: _currentLimit = event.limit,
         );
-        yield Loaded(invoiceList: _invoiceList);
+        if (_invoiceList.length == 0) {
+          yield NoRecordsFound();
+        } else {
+          yield Loaded(invoiceList: _invoiceList);
+        }
       } catch (error) {
         yield Failure(errorMessage: error.toString());
       }

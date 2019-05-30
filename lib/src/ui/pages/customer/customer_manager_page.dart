@@ -8,7 +8,7 @@ import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/models/customer_manage_model.dart';
 import 'package:medical/src/blocs/customer_manage/customer_manage.dart';
 
-import 'package:medical/src/ui/pages/customer/add_customer_page.dart';
+import 'package:medical/src/ui/pages/consumer/consumer_page.dart';
 
 //test
 import 'package:medical/src/ui/pages/day_schedule/day_schedule_page.dart';
@@ -71,7 +71,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
           FlatButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => AddCustomerPage()));
+                  builder: (BuildContext context) => ConsumerPage()));
             },
             child: Icon(Icons.person_add, color: Colors.white,),
           ),
