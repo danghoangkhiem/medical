@@ -35,8 +35,18 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
             startDate: _currentStartDate = event.startDate,
             endDate: _currentEndDate = event.endDate
         );
-        print("ok");
-        print(attendance);
+
+//        if(attendance.listAttendance.length > 0){
+//          yield AttendanceLoaded(attendance: attendance);
+//        }
+//        else{
+//          yield AttendanceEmpty();
+//        }
+        if(attendance.listAttendance.length == 0){
+          print("ko co du lieu");
+          yield AttendanceEmpty();
+        }
+
         yield AttendanceLoaded(attendance: attendance);
       } catch (error, stack) {
         print(stack);

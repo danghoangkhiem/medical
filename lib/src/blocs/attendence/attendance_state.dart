@@ -20,6 +20,9 @@ class AttendanceLoading extends AttendanceState {
   String toString() => 'AttendanceLoading';
 }
 
+class AttendanceEmpty extends AttendanceState {
+}
+
 class AttendanceLoaded extends AttendanceState {
   final AttendancesModel attendance;
 
