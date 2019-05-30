@@ -127,7 +127,6 @@ class _InvoicePageState extends State<InvoicePage> {
 
   Widget _buildRow(InvoiceModel invoice) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
@@ -135,31 +134,37 @@ class _InvoicePageState extends State<InvoicePage> {
         color: Colors.white,
       ),
       height: 50,
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => InvoiceDetailPage(
-                    invoice: invoice)));
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              DateFormat('dd-MM-yyyy hh:mm:ss').format(invoice.date),
-              style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                  ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => InvoiceDetailPage(
+                      invoice: invoice)));
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  DateFormat('dd-MM-yyyy hh:mm:ss').format(invoice.date),
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                      ),
+                ),
+                Text(
+                  _mapInvoiceStatusToName(invoice.status),
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+                Icon(
+                  _mapInvoiceStatusToIconData(invoice.status),
+                  color: _mapInvoiceStatusToColor(invoice.status),
+                )
+              ],
             ),
-            Text(
-              _mapInvoiceStatusToName(invoice.status),
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            Icon(
-              _mapInvoiceStatusToIconData(invoice.status),
-              color: _mapInvoiceStatusToColor(invoice.status),
-            )
-          ],
+          ),
         ),
       ),
     );
