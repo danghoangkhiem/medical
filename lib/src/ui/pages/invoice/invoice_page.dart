@@ -25,6 +25,7 @@ class _InvoicePageState extends State<InvoicePage> {
   InvoiceBloc _invoiceBloc;
 
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   @override
   void initState() {
@@ -42,6 +43,9 @@ class _InvoicePageState extends State<InvoicePage> {
   }
 
   void _scrollListener() {
+    if (_isReachMax) {
+      return;
+    }
     if (_controller.position.pixels == _controller.position.maxScrollExtent) {
       throttle(200, () {
         if (_isLoading != true) {
@@ -71,12 +75,19 @@ class _InvoicePageState extends State<InvoicePage> {
                 child: BlocListener(
                   bloc: _invoiceBloc,
                   listener: (BuildContext context, InvoiceState state) {
+                    if (state is NoRecordsFound) {
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('No records found!'),
+                      ));
+                    }
                     if (state is ReachMax) {
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('Got all the data!'),
                       ));
-                      _controller.removeListener(_scrollListener);
+                      _isLoading = false;
+                      _isReachMax = true;
                     }
                     if (state is Failure) {
                       Scaffold.of(context).removeCurrentSnackBar();
@@ -91,6 +102,7 @@ class _InvoicePageState extends State<InvoicePage> {
                         _isLoading = false;
                       } else {
                         _invoiceList = state.invoiceList;
+                        _isReachMax = false;
                       }
                     }
                   },

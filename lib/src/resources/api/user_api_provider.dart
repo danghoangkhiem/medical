@@ -16,7 +16,7 @@ class UserApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return _resp.data['token'];
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
   Future<UserModel> getInfo() async {
@@ -24,6 +24,6 @@ class UserApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return UserModel.fromJson(_resp.data);
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-class SynchronizePage extends StatefulWidget {
+class SynchronizationResultPage extends StatefulWidget {
   @override
-  _SynchronizePageState createState() => _SynchronizePageState();
+  _SynchronizationResultPageState createState() =>
+      _SynchronizationResultPageState();
 }
 
-class _SynchronizePageState extends State<SynchronizePage> {
+class _SynchronizationResultPageState extends State<SynchronizationResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,26 +23,20 @@ class _SynchronizePageState extends State<SynchronizePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.cloud_upload,
+                      Icons.check_circle_outline,
                       color: Colors.blueAccent,
                       size: 100,
                     ),
                     Container(
                       margin: EdgeInsets.only(bottom: 5, top: 20),
                       child: Text(
-                        'Dữ liệu chưa được đồng bộ',
+                        'Đồng bộ dữ liệu thành công',
                         style: TextStyle(
                             color: Colors.black54,
                             fontSize: 22,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Container(
-                      child: Text(
-                        'Vui lòng đồng bộ dữ liệu',
-                        style: TextStyle(color: Colors.black54, fontSize: 16),
-                      ),
-                    )
                   ],
                 )),
             Expanded(
@@ -56,7 +51,7 @@ class _SynchronizePageState extends State<SynchronizePage> {
                   child: FlatButton(
                       onPressed: () {},
                       child: Text(
-                        'Đồng bộ dữ liệu',
+                        'Trang chủ',
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       )),
                 ))

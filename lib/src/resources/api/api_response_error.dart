@@ -7,8 +7,7 @@ class ApiResponseError {
   ApiResponseError({this.code, this.message});
 
   ApiResponseError.fromJson(Map<String, dynamic> json)
-      : assert(json['code'] != null),
-        code = json['code'] as int,
+      : code = json['code'] as int,
         message = json['message'] as String;
 
   Map<String, dynamic> toJson() {

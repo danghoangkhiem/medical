@@ -27,3 +27,5 @@ class Failure extends InvoiceState {
 }
 
 class ReachMax extends InvoiceState {}
+
+class NoRecordsFound extends InvoiceState {}

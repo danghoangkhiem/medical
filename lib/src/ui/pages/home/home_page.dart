@@ -10,7 +10,7 @@ import 'package:medical/src/utils.dart';
 
 import 'package:medical/src/ui/pages/authentication/authentication_failure_page.dart';
 import 'change_password_page.dart';
-import 'package:medical/src/ui/pages/synchronize/synchronize_page.dart';
+import 'package:medical/src/ui/pages/synchronization/synchronization_page.dart';
 import 'package:medical/src/ui/pages/check_in/check_in_page.dart';
 import 'package:medical/src/ui/pages/invoice/invoice_page.dart';
 import 'package:medical/src/ui/pages/customer/customer_manager_page.dart';
@@ -211,28 +211,32 @@ class _HomePageState extends State<HomePage> {
                 label: 'Lên kế hoạch làm việc',
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => SynchronizePage()));
+                      builder: (BuildContext context) =>
+                          SynchronizationPage()));
                 }),
             _buildSelectionItem(
                 icon: Icons.alarm,
                 label: 'Lập kế hoạch coaching',
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => SynchronizePage()));
+                      builder: (BuildContext context) =>
+                          SynchronizationPage()));
                 }),
             _buildSelectionItem(
                 icon: Icons.landscape,
                 label: 'Lập kế hoạch địa bàn',
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => SynchronizePage()));
+                      builder: (BuildContext context) =>
+                          SynchronizationPage()));
                 }),
             _buildSelectionItem(
                 icon: Icons.cloud_upload,
                 label: 'Đồng bộ dữ liệu',
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => SynchronizePage()));
+                      builder: (BuildContext context) =>
+                          SynchronizationPage()));
                 }),
             _buildSelectionItem(
                 icon: Icons.lock_outline,
@@ -242,7 +246,36 @@ class _HomePageState extends State<HomePage> {
                       builder: (BuildContext context) => ChangePasswordPage()));
                 }),
             _buildSelectionItem(
-                icon: Icons.lock_open, label: 'Đăng xuất', onPressed: _logout),
+                icon: Icons.lock_open,
+                label: 'Đăng xuất',
+                onPressed: () async {
+                  final bool accepted = await showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Xác nhận'),
+                          content: Text('Bạn có chắc chắn muốn đăng xuất khỏi tài khoản này?'),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('Hủy'),
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                            ),
+                            FlatButton(
+                              child: Text('Đăng xuất'),
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                              },
+                            ),
+                          ],
+                        );
+                      });
+                  if (accepted is bool && accepted) {
+                    _logout();
+                  }
+                }),
             _buildSelectionItem(
                 icon: Icons.exit_to_app,
                 label: 'Thoát ứng dụng',
