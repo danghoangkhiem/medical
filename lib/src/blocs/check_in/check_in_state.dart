@@ -3,12 +3,13 @@ import 'package:medical/src/models/coordinate_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'package:medical/src/models/check_in_model.dart';
+import 'package:medical/src/models/check_io_model.dart';
 
 abstract class CheckInState extends Equatable {
   CheckInState([List props = const []]) : super(props);
 }
 
+//start state checkIn
 class CheckInInitial extends CheckInState {
   @override
   String toString() => 'CheckInInitial';
@@ -20,12 +21,12 @@ class CheckInLoading extends CheckInState {
 }
 
 class CheckInLoaded extends CheckInState {
-  final String title;
+  final String message;
 
-  CheckInLoaded({@required this.title}) : super([title]);
+  CheckInLoaded({this.message}) : super([message]);
 
   @override
-  String toString() => 'CheckInLoaded { title: $title }';
+  String toString() => 'CheckInLoaded';
 }
 
 class CheckInFailure extends CheckInState {
@@ -36,6 +37,68 @@ class CheckInFailure extends CheckInState {
   @override
   String toString() => 'CheckInFailure { error: $error }';
 }
+//end state checkIn
+
+//start state checkIO
+class CheckIOInitial extends CheckInState {
+  @override
+  String toString() => 'CheckIOInitial';
+}
+
+class CheckIOLoading extends CheckInState {
+  @override
+  String toString() => 'CheckIOLoading';
+}
+
+class CheckIOLoaded extends CheckInState {
+  final CheckIOModel checkIOModel;
+
+  CheckIOLoaded({this.checkIOModel}) : super([checkIOModel]);
+
+  @override
+  String toString() => 'CheckIOLoaded';
+}
+
+class CheckIOFailure extends CheckInState {
+  final String error;
+
+  CheckIOFailure({@required this.error}) : super([error]);
+
+  @override
+  String toString() => 'CheckIOFailure { error: $error }';
+}
+//end state checkIO
+
+
+//start state checkIn
+class CheckOutInitial extends CheckInState {
+  @override
+  String toString() => 'CheckOutInitial';
+}
+
+class CheckOutLoading extends CheckInState {
+  @override
+  String toString() => 'CheckOutLoading';
+}
+
+class CheckOutLoaded extends CheckInState {
+  final String message;
+
+  CheckOutLoaded({this.message}) : super([message]);
+
+  @override
+  String toString() => 'CheckOutLoaded';
+}
+
+class CheckOutFailure extends CheckInState {
+  final String error;
+
+  CheckOutFailure({@required this.error}) : super([error]);
+
+  @override
+  String toString() => 'CheckOutFailure { error: $error }';
+}
+//end state checkIn
 
 class CheckInLocationLoading extends CheckInState {
   @override

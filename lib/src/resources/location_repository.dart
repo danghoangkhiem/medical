@@ -1,10 +1,10 @@
 import 'package:medical/src/models/location_list_model.dart';
+import 'package:medical/src/resources/api/location_api_provider.dart';
+
 class LocationRepository {
+  final LocationApiProvider _locationApiProvider = LocationApiProvider();
+
   Future<LocationListModel> getLocations() async {
-    await Future.delayed(Duration(seconds: 1));
-    return LocationListModel.fromJson([
-        {'id' : 1,'name': "TPHCM"},
-        {'id' : 2,'name': "BINHDUONG"},
-      ]);
+    return await _locationApiProvider.getLocations();
   }
 }

@@ -81,7 +81,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
         child: new Column(
           children: <Widget>[
             Expanded(
-              flex: 3,
+              flex: 1,
               child: ListView(
                 children: <Widget>[
                   Container(
@@ -236,7 +236,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               ),
             ),
             Expanded(
-              flex: 8,
+              flex: 2,
               child: BlocListener(
                 bloc: _customerManageBloc,
                 listener: (BuildContext context, CustomerManageState state) {
@@ -329,87 +329,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget Test() {
-    Container(
-      child: new ListView(
-        children: <Widget>[
-          new Container(
-            decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-                      color: Colors.grey[200],
-                      width: 1,
-                      style: BorderStyle.solid)),
-              color: Colors.white,
-            ),
-            height: 60,
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                new Text(
-                  "Nguyễn Bá Triều",
-                  style: new TextStyle(fontSize: 16),
-                ),
-                new Text(
-                  "0375248965",
-                  style: new TextStyle(fontSize: 16),
-                )
-              ],
-            ),
-          ),
-          new Container(
-            decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-                      color: Colors.grey[200],
-                      width: 1,
-                      style: BorderStyle.solid)),
-              color: Colors.white,
-            ),
-            height: 60,
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                new Text(
-                  "Nguyễn Bá Triều",
-                  style: new TextStyle(fontSize: 16),
-                ),
-                new Text(
-                  "0375248965",
-                  style: new TextStyle(fontSize: 16),
-                )
-              ],
-            ),
-          ),
-          new Container(
-            decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-                      color: Colors.grey[200],
-                      width: 1,
-                      style: BorderStyle.solid)),
-              color: Colors.white,
-            ),
-            height: 60,
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                new Text(
-                  "Nguyễn Bá Triều",
-                  style: new TextStyle(fontSize: 16),
-                ),
-                new Text(
-                  "0375248965",
-                  style: new TextStyle(fontSize: 16),
-                )
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
