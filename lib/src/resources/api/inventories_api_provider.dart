@@ -1,67 +1,34 @@
+import 'package:medical/src/resources/api/api_response_error.dart';
+import 'package:meta/meta.dart';
+
 import 'api_provider.dart';
 
 import '../../models/models.dart';
 
 class InventoriesApiProvider extends ApiProvider {
 
-  Future<InventoriesModel> getInventoriesGift({DateTime startDay, DateTime endDay, int value}) async {
-    await Future.delayed(Duration(seconds: 1));
-    return InventoriesModel.fromJson([
-      {
-        "key": "ASD123",
-        "label": "Qua 1 gift",
-        "import": 20,
-        "export": 7,
-        "stock": 14
-      },
-      {
-        "key": "ASD124",
-        "label": "Qua 2 gift",
-        "import": 14,
-        "export": 7,
-        "stock": 7
-      },
-    ]);
-  }
+  Future<InventoriesModel> getInventories({@required DateTime startDate,@required DateTime endDate, int value}) async {
+    //await Future.delayed(Duration(seconds: 1));
+    Map<String, dynamic> _queryParameters = {
+      'startDate':
+      DateTime(startDate.year, startDate.month, startDate.day, 00, 00, 00)
+          .millisecondsSinceEpoch ~/
+          1000,
+      'endDate':
+      DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59)
+          .millisecondsSinceEpoch ~/
+          1000,
+      'type': value
+    };
 
-  Future<InventoriesModel> getInventoriesSampling({DateTime startDay, DateTime endDay, int value}) async {
-    await Future.delayed(Duration(seconds: 1));
-    return InventoriesModel.fromJson([
-      {
-        "key": "ASD123",
-        "label": "Qua 3 sampling",
-        "import": 20,
-        "export": 7,
-        "stock": 14
-      },
-      {
-        "key": "ASD124",
-        "label": "Qua 4 sampling",
-        "import": 14,
-        "export": 7,
-        "stock": 7
-      },
-    ]);
-  }
+    Response _resp = await httpClient.get('/inventories',
+        queryParameters: _queryParameters);
 
-  Future<InventoriesModel> getInventoriesPosm({DateTime startDay, DateTime endDay, int value}) async {
-    await Future.delayed(Duration(seconds: 1));
-    return InventoriesModel.fromJson([
-      {
-        "key": "ASD123",
-        "label": "Qua 5 posm",
-        "import": 20,
-        "export": 7,
-        "stock": 14
-      },
-      {
-        "key": "ASD124",
-        "label": "Qua 6 posm",
-        "import": 14,
-        "export": 7,
-        "stock": 7
-      },
-    ]);
+    if (_resp.statusCode == 200) {
+      return InventoriesModel.fromJson(_resp.data);
+    }
+    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+
   }
 
 }

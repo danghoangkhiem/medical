@@ -4,12 +4,12 @@ abstract class InventoriesEvent extends Equatable {
   InventoriesEvent([List props = const []]) : super(props);
 }
 
-class GetInventoriesGift extends InventoriesEvent {
+class GetInventories extends InventoriesEvent {
   final DateTime starDay;
   final DateTime endDay;
   final int value;
 
-  GetInventoriesGift({this.starDay, this.endDay, this.value}) : super([starDay, endDay, value]);
+  GetInventories({this.starDay, this.endDay, this.value}) : super([starDay, endDay, value]);
 
   @override
   String toString() {
@@ -18,29 +18,29 @@ class GetInventoriesGift extends InventoriesEvent {
 
 }
 
-class GetInventoriesSampling extends InventoriesEvent {
-  final DateTime starDay;
-  final DateTime endDay;
-  final int value;
+//class GetInventoriesSampling extends InventoriesEvent {
+//  final DateTime starDay;
+//  final DateTime endDay;
+//  final int value;
+//
+//  GetInventoriesSampling({this.starDay, this.endDay, this.value}) : super([starDay, endDay, value]);
+//
+//  @override
+//  String toString() {
+//    return "Get list inventories";
+//  }
+//}
 
-  GetInventoriesSampling({this.starDay, this.endDay, this.value}) : super([starDay, endDay, value]);
-
-  @override
-  String toString() {
-    return "Get list inventories";
-  }
-}
-
-class GetInventoriesPosm extends InventoriesEvent {
-  final DateTime starDay;
-  final DateTime endDay;
-  final int value;
-
-  GetInventoriesPosm({this.starDay, this.endDay, this.value}) : super([starDay, endDay, value]);
-
-  @override
-  String toString() {
-    return "Get list inventories";
-  }
-}
+//class GetInventoriesPosm extends InventoriesEvent {
+//  final DateTime starDay;
+//  final DateTime endDay;
+//  final int value;
+//
+//  GetInventoriesPosm({this.starDay, this.endDay, this.value}) : super([starDay, endDay, value]);
+//
+//  @override
+//  String toString() {
+//    return "Get list inventories";
+//  }
+//}
 

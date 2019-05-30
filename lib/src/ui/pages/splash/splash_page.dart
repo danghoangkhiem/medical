@@ -44,7 +44,21 @@ class SplashPage extends StatelessWidget {
                 ))
           ],
         ),
+
       ),
     );
   }
 }
+
+//Stack(
+//children: <Widget>[
+//Align(
+//alignment: Alignment.center,
+//child: CircularProgressIndicator(),
+//),
+//ModalBarrier(
+//dismissible: false,
+//color: Colors.black.withOpacity(0.3),
+//),
+//],
+//)

@@ -55,9 +55,13 @@ class _HomePageState extends State<HomePage> {
         color: Colors.white,
       ),
       height: 60,
-      child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          onPressed: onPressed,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(7),
+          onTap: (){
+            onPressed();
+          },
           child: ListTile(
             title: Text(
               label,
@@ -75,7 +79,9 @@ class _HomePageState extends State<HomePage> {
               Icons.arrow_forward_ios,
               size: 15,
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
