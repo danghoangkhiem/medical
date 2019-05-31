@@ -246,11 +246,19 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           if (state is ReachMax) {
                             Scaffold.of(context).removeCurrentSnackBar();
                             Scaffold.of(context).showSnackBar(SnackBar(
+                              duration: Duration(milliseconds: 1500),
                               content: Text('Đã hiển thị tất cả dữ liệu'),
                             ));
                             _isLoading = false;
                             _isReachMax = true;
                             //_scrollController.removeListener(_scrollListener);
+                          }
+                          if(state is AttendanceEmpty){
+                            Scaffold.of(context).removeCurrentSnackBar();
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              duration: Duration(milliseconds: 1500),
+                              content: Text('Không có dữ liệu'),
+                            ));
                           }
                           if (state is AttendanceFailure) {
                             Scaffold.of(context).removeCurrentSnackBar();

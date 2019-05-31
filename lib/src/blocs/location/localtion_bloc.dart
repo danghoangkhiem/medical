@@ -19,7 +19,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       try {
         final locationList = await _locationRepository.getLocations();
         yield LocationLoaded(locationList: locationList);
-      } catch (error) {
+      } catch (error,stack) {
         yield LocationFailure(error: error.toString());
       }
     }

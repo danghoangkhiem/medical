@@ -16,6 +16,8 @@ import 'package:medical/src/blocs/location/localtion.dart';
 
 import 'package:medical/src/ui/pages/attendance/attendance_history_page.dart';
 import 'package:medical/src/models/check_in_model.dart';
+import 'package:medical/src/models/check_out_model.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class CheckInPage extends StatefulWidget {
   @override
@@ -31,6 +33,7 @@ class _CheckInPage extends State<CheckInPage> {
   List<File> _image = [];
 
   CheckInModel newCheckInModel;
+
   //maps
   GoogleMapController controller;
 
@@ -56,7 +59,7 @@ class _CheckInPage extends State<CheckInPage> {
     var image = await ImagePicker.pickImage(
         source: ImageSource.camera, maxWidth: 800, maxHeight: 600);
     setState(() {
-      if(image != null){
+      if (image != null) {
         _image.add(image);
       }
     });
@@ -65,8 +68,11 @@ class _CheckInPage extends State<CheckInPage> {
   @override
   void initState() {
     _checkInBloc = CheckInBloc();
+    _checkInBloc.dispatch(CheckIO());
+
     _locationBloc = LocationBloc();
     _locationBloc.dispatch(GetLocation());
+
     currentLocation = null;
 
     initPlatformState();
@@ -74,7 +80,7 @@ class _CheckInPage extends State<CheckInPage> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _checkInBloc.dispose();
     _locationBloc.dispose();
     _locationSubscription.cancel();
@@ -92,7 +98,6 @@ class _CheckInPage extends State<CheckInPage> {
         _permission = await _locationService.requestPermission();
         //print("Permission: $_permission");
         if (_permission) {
-
           _locationSubscription = _locationService
               .onLocationChanged()
               .listen((LocationData result) async {
@@ -138,8 +143,7 @@ class _CheckInPage extends State<CheckInPage> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        AttendanceHistoryPage(),
+                    builder: (BuildContext context) => AttendanceHistoryPage(),
                   ),
                 );
               }),
@@ -151,223 +155,384 @@ class _CheckInPage extends State<CheckInPage> {
       ),
       body: BlocBuilder(
         bloc: _checkInBloc,
-        builder: (BuildContext context, state) {
-          return Container(
-            child: new Column(
-              children: <Widget>[
-                Expanded(
-                  flex: 6,
-                  child: new Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: new Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          child: new Text(
-                            "Chọn địa điểm",
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.black54),
+        builder: (BuildContext context, CheckInState state) {
+          if (state is CheckIOLoading) {
+            return LoadingIndicator();
+          }
+          if (state is CheckIOLoaded && state.checkIOModel.timeOut != null) {
+            return Container(
+              child: new Column(
+                children: <Widget>[
+                  Expanded(
+                    flex: 6,
+                    child: new Container(
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      child: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 20,
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BlocBuilder(
-                          bloc: _locationBloc,
-                          builder: (BuildContext context, state) {
-                            if (state is LocationLoading) {
-                              return Container();
-                            }
-                            if (state is LocationLoaded) {
-                              return Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.grey[400],
-                                      width: 1,
-                                      style: BorderStyle.solid),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: new DropdownButton(
-                                    isExpanded: true,
-                                    value: currentLocation,
-                                    items: state.locationList.map((element) {
-                                      return DropdownMenuItem(
-                                          value: element.id,
-                                          child: Text(element.name));
-                                    }).toList(),
-                                    onChanged: (int value) {
-                                      setState(() {
-                                        currentLocation = value;
-                                      });
-                                    },
-                                    style: new TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blueAccent,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-                            return Container();
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          child: new Text(
-                            "Vị trí hiện tại của bạn",
-                            style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.black54,
+                          Container(
+                            child: new Text(
+                              "Chọn địa điểm",
+                              style: new TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.black54),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          height: 200,
-                          color: Colors.grey,
-                          child: GoogleMap(
-                            mapType: MapType.normal,
-                            myLocationEnabled: true,
-                            initialCameraPosition: CameraPosition(
-                                target: LatLng(10.7797855, 106.6990189),
-                                zoom: 16.0),
-                            onMapCreated: (GoogleMapController controller) {
-                              _controller.complete(controller);
-                            },
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Container(
-                              child: new Text(
-                                "Hình ảnh check in",
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black54),
-                              ),
-                            ),
-                            InkWell(
-                              onTap: getImage,
-                              child: new Row(
-                                children: <Widget>[
-                                  new Text(
-                                    "Chụp hình",
-                                    style:
-                                        new TextStyle(color: Colors.blueAccent),
-                                  ),
-                                  new Padding(
-                                    padding: EdgeInsets.only(left: 5),
-                                    child: new Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.blueAccent,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Expanded(
-                          child: Container(
-                            color: Colors.white,
-                            child: new GridView.extent(
-                              maxCrossAxisExtent: 100,
-                              mainAxisSpacing: 5,
-                              crossAxisSpacing: 5,
-                              padding: EdgeInsets.all(5),
-                              children: _image.map((item) {
+                          BlocBuilder(
+                            bloc: _locationBloc,
+                            builder: (BuildContext context, state) {
+                              if (state is LocationLoading) {
+                                return Container();
+                              }
+                              if (state is LocationLoaded) {
                                 return Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  height: 40,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    image: DecorationImage(
-                                        image: FileImage(item),
-                                        fit: BoxFit.cover),
+                                    border: Border.all(
+                                        color: Colors.grey[400],
+                                        width: 1,
+                                        style: BorderStyle.solid),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: new DropdownButton(
+                                      isExpanded: true,
+                                      value: currentLocation,
+                                      items: state.locationList.map((element) {
+                                        return DropdownMenuItem(
+                                            value: element.id,
+                                            child: Text(element.name));
+                                      }).toList(),
+                                      onChanged: (int value) {
+                                        setState(() {
+                                          currentLocation = value;
+                                        });
+                                      },
+                                      style: new TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blueAccent,
+                                      ),
+                                    ),
                                   ),
                                 );
-                              }).toList(),
+                              }
+                              return Container();
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: new Text(
+                              "Vị trí hiện tại của bạn",
+                              style: new TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.black54,
+                              ),
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: new Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: new FlatButton(
-                      onPressed: () {
-                        if(currentLocation == null){
-                          showDialog(context: context, builder: (context){
-                            return AlertDialog(title: Text("Thông báo"),content: Text("Bạn phải chọn địa điểm!"),actions: <Widget>[
-                              FlatButton(onPressed: (){Navigator.pop(context);}, child: Text("OK"))
-                            ],);
-                          });
-                          return;
-                        }
-                        if(_image.length == 0 || _image.length > 5){
-                          showDialog(context: context, builder: (context){
-                            return AlertDialog(title: Text("Thông báo"),content: Text("Bạn phải chụp hình và không quá 5 tấm hình!"),actions: <Widget>[
-                              FlatButton(onPressed: (){Navigator.pop(context);}, child: Text("OK"))
-                            ],);
-                          });
-                          return;
-                        }
-                        CheckInModel newCheckInModel = CheckInModel(
-                            locationId: currentLocation, lat: _currentLocation.latitude, lon: _currentLocation.longitude, images: _image);
-                        _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
-                      },
-                      child: new Text(
-                        "Check in",
-                        style: new TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 200,
+                            color: Colors.grey,
+                            child: GoogleMap(
+                              mapType: MapType.normal,
+                              myLocationEnabled: true,
+                              initialCameraPosition: CameraPosition(
+                                  target: LatLng(10.7797855, 106.6990189),
+                                  zoom: 16.0),
+                              onMapCreated: (GoogleMapController controller) {
+                                _controller.complete(controller);
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Container(
+                                child: new Text(
+                                  "Hình ảnh check in",
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.black54),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: getImage,
+                                child: new Row(
+                                  children: <Widget>[
+                                    new Text(
+                                      "Chụp hình",
+                                      style: new TextStyle(
+                                          color: Colors.blueAccent),
+                                    ),
+                                    new Padding(
+                                      padding: EdgeInsets.only(left: 5),
+                                      child: new Icon(
+                                        Icons.camera_alt,
+                                        color: Colors.blueAccent,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                            child: Container(
+                              color: Colors.white,
+                              child: new GridView.extent(
+                                maxCrossAxisExtent: 100,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                                padding: EdgeInsets.all(5),
+                                children: _image.map((item) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      image: DecorationImage(
+                                          image: FileImage(item),
+                                          fit: BoxFit.cover),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
+                  Expanded(
+                    flex: 1,
+                    child: new Container(
+                      width: double.infinity,
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: new FlatButton(
+                        onPressed: () {
+                          if (currentLocation == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Thông báo"),
+                                    content: Text("Bạn phải chọn địa điểm!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("OK"))
+                                    ],
+                                  );
+                                });
+                            return;
+                          }
+                          if (_image.length == 0 || _image.length > 5) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Thông báo"),
+                                    content: Text(
+                                        "Bạn phải chụp hình và không quá 5 tấm hình!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("OK"))
+                                    ],
+                                  );
+                                });
+                            return;
+                          }
+                          CheckInModel newCheckInModel = CheckInModel(
+                              locationId: currentLocation,
+                              lat: _currentLocation.latitude,
+                              lon: _currentLocation.longitude,
+                              images: _image);
+                          _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
+                        },
+                        child: new Text(
+                          "Check in",
+                          style: new TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+          if (state is CheckIOLoaded && state.checkIOModel.timeOut == null) {
+            return Container(
+              child: new Column(
+                children: <Widget>[
+                  Expanded(
+                    flex: 6,
+                    child: new Container(
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      child: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: new Text(
+                              "Địa điểm",
+                              style: new TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.black54),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          new Container(
+                            height: 40,
+                            child: new Row(
+                              children: <Widget>[
+                                new Expanded(
+                                  child: new Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    alignment: Alignment.centerLeft,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey[400],
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: new Text(
+                                      state.checkIOModel.location.name,
+                                      style: new TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: new Text(
+                              "Vị trí hiện tại của bạn",
+                              style: new TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 200,
+                            color: Colors.grey,
+                            child: GoogleMap(
+                              mapType: MapType.normal,
+                              myLocationEnabled: true,
+                              initialCameraPosition: CameraPosition(
+                                  target: LatLng(10.7797855, 106.6990189),
+                                  zoom: 16.0),
+                              onMapCreated: (GoogleMapController controller) {
+                                _controller.complete(controller);
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: new Container(
+                      width: double.infinity,
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: new FlatButton(
+                        onPressed: () {
+                          CheckOutModel newCheckOut = CheckOutModel(
+                              latitude: _currentLocation.latitude,
+                              longitude: _currentLocation.longitude);
+                          print(newCheckOut);
+                          _checkInBloc.dispatch(AddCheckOut(newCheckOut));
+                        },
+                        child: new Text(
+                          "Check Out",
+                          style: new TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+          if (state is CheckInLoading) {
+            return LoadingIndicator();
+          }
+          if (state is CheckInLoading) {
+            return LoadingIndicator();
+          }
+          if (state is CheckInLoaded) {
+            Navigator.pop(context);
+          }
+          if (state is CheckOutLoading) {
+            return LoadingIndicator();
+          }
+          if (state is CheckOutLoaded) {
+            Navigator.pop(context);
+          }
+          return Container(
+            child: Text("ok"),
           );
         },
       ),
     );
   }
 }
-
-
-
-
-
-
-
-

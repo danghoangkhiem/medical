@@ -33,6 +33,7 @@ class InventoriesState extends State<Inventories> {
   InventoriesRepository _inventoriesRepository = InventoriesRepository();
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ class InventoriesState extends State<Inventories> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: new AppBar(
         backgroundColor: Colors.blueAccent,
         title: new Text("Phiếu xuất nhập tồn"),
@@ -263,7 +265,12 @@ class InventoriesState extends State<Inventories> {
                                                 endDay: endDate,
                                                 value: select));
                                       } else {
-                                        print("ko du dk tim");
+                                        _scaffoldKey.currentState.showSnackBar(
+                                            SnackBar(
+                                              backgroundColor: Colors.deepOrange,
+                                              content: Text('Không đủ điều kiện tìm kiếm'),
+                                              duration: Duration(milliseconds: 1500),
+                                            ));
                                       }
                                     },
                                     child: new Text(
