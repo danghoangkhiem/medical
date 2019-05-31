@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:intl/intl.dart';
 
 import 'package:medical/src/blocs/consumer/consumer.dart';
 
@@ -71,10 +73,10 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.grey[350], width: 1)),
+                          BorderSide(color: Colors.grey[350], width: 1)),
                   border: OutlineInputBorder(),
                   contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 ),
               )
             ],
@@ -101,8 +103,10 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
               SizedBox(
                 height: 5,
               ),
-              TextFormField(
-                initialValue: consumer?.dateOf?.toIso8601String(),
+              DateTimePickerFormField(
+                inputType: InputType.date,
+                format: DateFormat('dd/MM/yyyy'),
+                initialValue: consumer?.dateOf,
                 style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -110,10 +114,10 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.grey[350], width: 1)),
+                          BorderSide(color: Colors.grey[350], width: 1)),
                   border: OutlineInputBorder(),
                   contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 ),
               )
             ],
@@ -158,10 +162,10 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.grey[350], width: 1)),
+                          BorderSide(color: Colors.grey[350], width: 1)),
                   border: OutlineInputBorder(),
                   contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 ),
               )
             ],

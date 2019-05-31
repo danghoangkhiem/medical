@@ -44,7 +44,7 @@ class _ConsumerSearchFormState extends State<ConsumerSearchForm> {
           controller: _phoneController,
           keyboardType: TextInputType.phone,
           onChanged: (String value) {
-            String pattern = r"^0[1-9]{9}$";
+            String pattern = r"^0[^0][0-9]{8}$";
             RegExp regex = RegExp(pattern);
             if (regex.hasMatch(value) != true) {
               setState(() {
