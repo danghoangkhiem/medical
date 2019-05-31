@@ -310,7 +310,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                                   style: TextStyle(
                                       fontSize: 18,
                                       color: Colors.grey,
-                                      fontStyle: FontStyle.italic),
+                                      ),
                                 ),
                                 Text(
                                   _customerManagerList[index].phone,
