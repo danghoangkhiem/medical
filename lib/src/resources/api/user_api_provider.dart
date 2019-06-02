@@ -12,7 +12,7 @@ class UserApiProvider extends ApiProvider {
       'oldPassword': oldPassword,
       'newPassword': newPassword
     };
-    Response _resp = await httpClient.patch('/user/me', data: _requestBody);
+    Response _resp = await httpClient.patch('/users/me', data: _requestBody);
     if (_resp.statusCode == 200) {
       return _resp.data['token'];
     }
@@ -20,7 +20,7 @@ class UserApiProvider extends ApiProvider {
   }
 
   Future<UserModel> getInfo() async {
-    Response _resp = await httpClient.get('/user/me');
+    Response _resp = await httpClient.get('/users/me');
     if (_resp.statusCode == 200) {
       return UserModel.fromJson(_resp.data);
     }

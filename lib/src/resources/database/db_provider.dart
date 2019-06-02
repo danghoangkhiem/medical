@@ -5,8 +5,9 @@ import 'package:sqflite/sqflite.dart';
 
 class DbProvider {
   FutureOr<void> _onDatabaseCreate(Database db, int version) async {
+    // Create table `consumers`
     await db.execute('''
-     CREATE TABLE `consumers` (
+    CREATE TABLE `consumers` (
       `_id` INTEGER PRIMARY KEY AUTOINCREMENT,
       `_rawId` INTEGER NOT NULL,
       `id` INTEGER NOT NULL,
@@ -30,10 +31,16 @@ class DbProvider {
     CREATE INDEX createdBy_index ON consumers (createdBy);
     CREATE INDEX type_index ON consumers (type);
     ''');
+    // Create table `fields`
+    await db.execute('''
+    CREATE TABLE `fields` (
+      `data` text NOT NULL
+    );
+    ''');
   }
 
   Future<Database> database() async {
-    String dbFilename = 'medical.db';
+    String dbFilename = '1_medical.db';
     String dbPath = await getDatabasesPath();
     return openDatabase(join(dbPath, dbFilename),
         onCreate: _onDatabaseCreate, version: 1);
