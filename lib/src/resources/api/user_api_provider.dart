@@ -26,4 +26,12 @@ class UserApiProvider extends ApiProvider {
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));
   }
+
+  Future<bool> isAttendanceTimeIn() async {
+    Response _resp = await httpClient.get('/attendances/last');
+    if (_resp.statusCode == 200) {
+      return _resp.data['timeIn'] != null && _resp.data['timeOut'] == null;
+    }
+    return Future.error(ApiResponseError.fromJson(_resp.data));
+  }
 }
