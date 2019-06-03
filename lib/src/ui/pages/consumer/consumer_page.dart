@@ -13,12 +13,14 @@ class ConsumerPage extends StatefulWidget {
 }
 
 class _ConsumerPageState extends State<ConsumerPage> {
+  GlobalKey<FormState> _formKey;
   ConsumerBloc _consumerBloc;
 
   @override
   void initState() {
     _consumerBloc = ConsumerBloc();
     _consumerBloc.dispatch(GetAdditionalFields());
+    _formKey = GlobalKey<FormState>();
     super.initState();
   }
 
@@ -50,21 +52,22 @@ class _ConsumerPageState extends State<ConsumerPage> {
             if (state is Loading) {
               return LoadingIndicator();
             }
-            return state is Failure
-                ? Container()
-                : Container(
-                    child: Column(
-                      children: <Widget>[
-                        Expanded(
-                            flex: 6,
-                            child: ConsumerForm(consumerBloc: _consumerBloc)),
-                        Expanded(
-                          flex: 1,
-                          child: _buildNextStepButton(),
-                        )
-                      ],
-                    ),
-                  );
+            return Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                      flex: 6,
+                      child: ConsumerForm(
+                        consumerBloc: _consumerBloc,
+                        formKey: _formKey,
+                      )),
+                  Expanded(
+                    flex: 1,
+                    child: _buildNextStepButton(),
+                  )
+                ],
+              ),
+            );
           }),
     );
   }
@@ -83,13 +86,18 @@ class _ConsumerPageState extends State<ConsumerPage> {
                 child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 13),
                     onPressed: () {
+                      if (!_formKey.currentState.validate()) {
+                        return;
+                      }
                       _consumerBloc.dispatch(NextStepButtonPressed());
                     },
                     child: Text(
                       "TIẾP TỤC",
                       style: TextStyle(fontSize: 18, color: Colors.white),
-                    )),
-          ))
+                    )
+                ),
+              )
+          )
         ],
       ),
     );

@@ -27,6 +27,10 @@ class CheckInPage extends StatefulWidget {
 }
 
 class _CheckInPage extends State<CheckInPage> {
+  var location = new Location();
+
+  Map<String, double> userLocation;
+
   CheckInBloc _checkInBloc;
   LocationBloc _locationBloc;
   int currentLocation;
@@ -35,9 +39,9 @@ class _CheckInPage extends State<CheckInPage> {
   CheckInModel newCheckInModel;
 
   //maps
-  GoogleMapController controller;
-
   LocationData _currentLocation;
+
+  //GoogleMapController controller;
 
   StreamSubscription<LocationData> _locationSubscription;
 
@@ -85,6 +89,19 @@ class _CheckInPage extends State<CheckInPage> {
     _locationBloc.dispose();
     _locationSubscription.cancel();
     super.dispose();
+  }
+
+  Future<Map<String, double>> _getLocation() async {
+    var currentLocation = <String, double>{};
+    LocationData curent;
+    try {
+      curent = await location.getLocation();
+      currentLocation["latitude"] = curent.latitude;
+      currentLocation["longitude"] = curent.latitude;
+    } catch (e) {
+      currentLocation = null;
+    }
+    return currentLocation;
   }
 
   initPlatformState() async {
@@ -371,10 +388,34 @@ class _CheckInPage extends State<CheckInPage> {
                                 });
                             return;
                           }
+                          _getLocation().then((value) {
+                            setState(() {
+                              userLocation = value;
+                            });
+                          });
+                          if (userLocation.length == 0) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Thông báo"),
+                                    content: Text(
+                                        "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("OK"))
+                                    ],
+                                  );
+                                });
+                            return;
+                          }
                           CheckInModel newCheckInModel = CheckInModel(
                               locationId: currentLocation,
-                              lat: _currentLocation.latitude,
-                              lon: _currentLocation.longitude,
+                              lat: userLocation["latitude"],
+                              lon: userLocation["longitude"],
                               images: _image);
                           _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
                         },
@@ -493,10 +534,33 @@ class _CheckInPage extends State<CheckInPage> {
                       ),
                       child: new FlatButton(
                         onPressed: () {
+                          _getLocation().then((value) {
+                            setState(() {
+                              userLocation = value;
+                            });
+                          });
+                          if (userLocation.length == 0) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Thông báo"),
+                                    content: Text(
+                                        "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("OK"))
+                                    ],
+                                  );
+                                });
+                            return;
+                          }
                           CheckOutModel newCheckOut = CheckOutModel(
-                              latitude: _currentLocation.latitude,
-                              longitude: _currentLocation.longitude);
-                          print(newCheckOut);
+                              latitude: userLocation['latitude'],
+                              longitude: userLocation['longitude']);
                           _checkInBloc.dispatch(AddCheckOut(newCheckOut));
                         },
                         child: new Text(
@@ -520,17 +584,42 @@ class _CheckInPage extends State<CheckInPage> {
             return LoadingIndicator();
           }
           if (state is CheckInLoaded) {
-            Navigator.pop(context);
+            _locationSubscription.cancel();
+            return Container(
+                child: AlertDialog(
+              title: Text("Thông báo"),
+              content: Text("Check In thành công!"),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => CheckInPage()));
+                    },
+                    child: Text("OK"))
+              ],
+            ));
           }
           if (state is CheckOutLoading) {
             return LoadingIndicator();
           }
           if (state is CheckOutLoaded) {
-            Navigator.pop(context);
+            _locationSubscription.cancel();
+            return Container(
+                child: AlertDialog(
+              title: Text("Thông báo"),
+              content: Text("Check Out thành công!"),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => CheckInPage()));
+                    },
+                    child: Text("OK"))
+              ],
+            ));
           }
-          return Container(
-            child: Text("ok"),
-          );
+          _locationSubscription.cancel();
+          return Container();
         },
       ),
     );

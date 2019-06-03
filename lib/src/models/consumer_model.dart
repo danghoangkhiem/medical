@@ -1,7 +1,5 @@
 import 'dart:collection';
 
-import 'package:meta/meta.dart';
-
 import 'additional_data_model.dart';
 
 class ConsumerModel {
@@ -16,10 +14,10 @@ class ConsumerModel {
   final AdditionalDataModel additionalData;
 
   ConsumerModel({
-    @required this.id,
-    @required this.locationId,
-    @required this.name,
-    @required this.phoneNumber,
+    this.id,
+    this.locationId,
+    this.name,
+    this.phoneNumber,
     this.email,
     this.dateOf,
     this.createdAt,

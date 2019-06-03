@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:medical/src/blocs/synchronization/synchronization.dart';
 import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'package:medical/src/blocs/home/home.dart';
 
@@ -41,14 +42,44 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _logout() {
-    final AuthenticationBloc bloc =
-        BlocProvider.of<AuthenticationBloc>(context);
-    bloc.dispatch(AuthenticationEvent.loggedOut());
+  void _logout(BuildContext context) async {
+    final bool accepted = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Xác nhận'),
+            content:
+                Text('Bạn có chắc chắn muốn đăng xuất khỏi tài khoản này?'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Hủy'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('Đăng xuất'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        });
+    if (accepted is bool && accepted) {
+      final AuthenticationBloc bloc =
+          BlocProvider.of<AuthenticationBloc>(context);
+      bloc.dispatch(AuthenticationEvent.loggedOut());
+    }
   }
 
-  Widget _buildSelectionItem(
-      {IconData icon, String label, Function onPressed}) {
+  Widget _buildSelectionItem({
+    IconData icon,
+    String label,
+    Function onPressed,
+    bool isNoticed = false
+  }) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, top: 10),
       decoration: BoxDecoration(
@@ -60,16 +91,26 @@ class _HomePageState extends State<HomePage> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(7),
-          onTap: (){
+          onTap: () {
             onPressed();
           },
           child: ListTile(
-            title: Text(
-              label,
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
+            title: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                isNoticed ? Icon(
+                  Icons.info,
+                  color: Colors.redAccent,
+                ) : Container()
+              ],
             ),
             leading: Icon(
               icon,
@@ -166,6 +207,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildSelectionItemBox(UserModel user) {
+    final _bloc = BlocProvider.of<SynchronizationBloc>(context);
     return Expanded(
       flex: 1,
       child: SingleChildScrollView(
@@ -238,14 +280,20 @@ class _HomePageState extends State<HomePage> {
                       builder: (BuildContext context) =>
                           SynchronizationPage()));
                 }),
-            _buildSelectionItem(
-                icon: Icons.cloud_upload,
-                label: 'Đồng bộ dữ liệu',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          SynchronizationPage()));
-                }),
+            BlocBuilder(
+              bloc: _bloc,
+              builder: (BuildContext context, SynchronizationState state) {
+                return _buildSelectionItem(
+                    icon: Icons.cloud_upload,
+                    label: 'Đồng bộ dữ liệu',
+                    isNoticed: !state.isSynchronized,
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              SynchronizationPage()));
+                    });
+              },
+            ),
             _buildSelectionItem(
                 icon: Icons.lock_outline,
                 label: 'Đổi mật khẩu',
@@ -256,33 +304,8 @@ class _HomePageState extends State<HomePage> {
             _buildSelectionItem(
                 icon: Icons.lock_open,
                 label: 'Đăng xuất',
-                onPressed: () async {
-                  final bool accepted = await showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Xác nhận'),
-                          content: Text('Bạn có chắc chắn muốn đăng xuất khỏi tài khoản này?'),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: Text('Hủy'),
-                              onPressed: () {
-                                Navigator.of(context).pop(false);
-                              },
-                            ),
-                            FlatButton(
-                              child: Text('Đăng xuất'),
-                              onPressed: () {
-                                Navigator.of(context).pop(true);
-                              },
-                            ),
-                          ],
-                        );
-                      });
-                  if (accepted is bool && accepted) {
-                    _logout();
-                  }
+                onPressed: () {
+                  _logout(context);
                 }),
             _buildSelectionItem(
                 icon: Icons.exit_to_app,

@@ -69,6 +69,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             if (state is ChangePasswordSuccess) {
               showDialog(
                   context: context,
+                  barrierDismissible: false,
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text('Thành công!'),
