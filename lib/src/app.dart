@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/application/application.dart';
 import 'package:medical/src/blocs/authentication/authentication.dart';
+import 'package:medical/src/blocs/synchronization/synchronization.dart';
 
 import 'package:medical/src/ui/pages/authentication/authentication_page.dart';
 import 'package:medical/src/ui/pages/splash/splash_page.dart';
@@ -15,11 +16,14 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   ApplicationBloc _applicationBloc;
   AuthenticationBloc _authenticationBloc;
+  SynchronizationBloc _synchronizationBloc;
 
   @override
   void initState() {
     _applicationBloc = ApplicationBloc();
     _applicationBloc.dispatch(ApplicationEvent.launched());
+    _synchronizationBloc = SynchronizationBloc();
+    _synchronizationBloc.dispatch(SynchronizationEvent.check());
     super.initState();
   }
 
@@ -34,6 +38,7 @@ class AppState extends State<App> {
   void dispose() {
     _applicationBloc?.dispose();
     _authenticationBloc?.dispose();
+    _synchronizationBloc?.dispose();
     super.dispose();
   }
 
@@ -58,7 +63,8 @@ class AppState extends State<App> {
     return BlocProviderTree(
       blocProviders: [
         BlocProvider<ApplicationBloc>(bloc: _applicationBloc),
-        BlocProvider<AuthenticationBloc>(bloc: _authenticationBloc)
+        BlocProvider<AuthenticationBloc>(bloc: _authenticationBloc),
+        BlocProvider<SynchronizationBloc>(bloc: _synchronizationBloc),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

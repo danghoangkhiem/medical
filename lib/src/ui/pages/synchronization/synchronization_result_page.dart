@@ -49,7 +49,9 @@ class _SynchronizationResultPageState extends State<SynchronizationResultPage> {
                   width: double.infinity,
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                       child: Text(
                         'Trang chủ',
                         style: TextStyle(fontSize: 18, color: Colors.white),
