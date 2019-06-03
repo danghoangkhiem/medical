@@ -5,6 +5,7 @@ import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'package:medical/src/blocs/home/home.dart';
 
 import 'package:medical/src/models/user_model.dart';
+import 'package:medical/src/ui/pages/manage_area/manage_area_page.dart';
 
 import 'package:medical/src/utils.dart';
 
@@ -191,6 +192,13 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => ReportKpiPage()));
+                }),
+            _buildSelectionItem(
+                icon: Icons.access_alarm,
+                label: 'Quản lý địa bàn',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ManageArea()));
                 }),
             _buildSelectionItem(
                 icon: Icons.shopping_cart,
