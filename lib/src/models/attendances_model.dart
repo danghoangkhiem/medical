@@ -39,8 +39,8 @@ class AttendanceItem{
   factory AttendanceItem.fromJson(Map<String, dynamic> json){
     return AttendanceItem(
         location: Location.fromJson(json["location"]),
-        timeIn: json["timeIn"] !=null  ? DateTime.fromMillisecondsSinceEpoch(json["timeIn"]) : null ,
-        timeOut: json["timeOut"] !=null ? DateTime.fromMillisecondsSinceEpoch(json["timeOut"]) : null
+        timeIn: json["timeIn"] !=null  ? DateTime.fromMillisecondsSinceEpoch(json["timeIn"] * 1000) : null ,
+        timeOut: json["timeOut"] !=null ? DateTime.fromMillisecondsSinceEpoch(json["timeOut"] * 1000) : null
     );
   }
 

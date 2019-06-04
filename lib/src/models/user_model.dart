@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'user_model.g.dart';
 
 @JsonSerializable()
-class UserModel {
+class UserModel extends Equatable {
   final int id;
   final String name;
   final String code;
@@ -11,7 +12,8 @@ class UserModel {
   @JsonKey(fromJson: _roleFromJson, toJson: _roleToJson)
   final UserRoleType role;
 
-  UserModel({this.id, this.name, this.code, this.role});
+  UserModel({this.id, this.name, this.code, this.role})
+      : super([id, name, code, role]);
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

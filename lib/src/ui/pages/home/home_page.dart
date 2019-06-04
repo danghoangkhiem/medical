@@ -10,7 +10,7 @@ import 'package:medical/src/models/user_model.dart';
 import 'package:medical/src/utils.dart';
 
 import 'package:medical/src/ui/pages/authentication/authentication_failure_page.dart';
-import 'change_password_page.dart';
+import 'package:medical/src/ui/pages/change_password/change_password_page.dart';
 import 'package:medical/src/ui/pages/synchronization/synchronization_page.dart';
 import 'package:medical/src/ui/pages/check_in/check_in_page.dart';
 import 'package:medical/src/ui/pages/invoice/invoice_page.dart';

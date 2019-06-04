@@ -1,29 +1,48 @@
 import 'dart:collection';
 
+import 'package:meta/meta.dart';
+import 'package:equatable/equatable.dart';
+
 import 'additional_data_model.dart';
 
-class ConsumerModel {
-  final int id;
-  final int locationId;
-  final String name;
-  final String phoneNumber;
-  final String email;
-  final DateTime dateOf;
-  final DateTime createdAt;
-  final ConsumerType type;
-  final AdditionalDataModel additionalData;
+class ConsumerModel extends Equatable {
+  int id;
+  int locationId;
+  String name;
+  String phoneNumber;
+  String email;
+  DateTime expectedDateOfBirth;
+  DateTime createdAt;
+  int createdBy;
+  ConsumerType type;
+  AdditionalDataModel additionalData;
+  String description;
 
   ConsumerModel({
     this.id,
     this.locationId,
     this.name,
-    this.phoneNumber,
+    @required this.phoneNumber,
     this.email,
-    this.dateOf,
+    this.expectedDateOfBirth,
     this.createdAt,
+    this.createdBy,
     this.type,
-    this.additionalData,
-  });
+    @required this.additionalData,
+    this.description,
+  }) : super([
+          id,
+          locationId,
+          name,
+          phoneNumber,
+          email,
+          expectedDateOfBirth,
+          createdAt,
+          createdBy,
+          type,
+          additionalData,
+          description,
+        ]);
 
   ConsumerModel.fromJson(Map<String, dynamic> json)
       : assert(json != null),
@@ -32,11 +51,14 @@ class ConsumerModel {
         name = json['name'] as String,
         phoneNumber = json['phoneNumber'] as String,
         email = json['email'] as String,
-        dateOf = DateTime.fromMillisecondsSinceEpoch(json['dateOf'] * 1000),
+        expectedDateOfBirth =
+            DateTime.fromMillisecondsSinceEpoch(json['edob'] * 1000),
         createdAt =
             DateTime.fromMillisecondsSinceEpoch(json['createdAt'] * 1000),
+        createdBy = json['createdBy'] as int,
         type = ConsumerType.from(json['type']),
-        additionalData = AdditionalDataModel.fromJson(json['additionalData']);
+        additionalData = AdditionalDataModel.fromJson(json['additionalData']),
+        description = json['description'] as String;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -45,10 +67,12 @@ class ConsumerModel {
       'name': name,
       'phoneNumber': phoneNumber,
       'email': email,
-      'dateOf': dateOf.millisecondsSinceEpoch ~/ 1000,
+      'edob': expectedDateOfBirth.millisecondsSinceEpoch ~/ 1000,
       'createdAt': createdAt.millisecondsSinceEpoch ~/ 1000,
+      'createdBy': createdBy,
       'type': type.value,
       'additionalData': additionalData.toJson(),
+      'description': description,
     };
   }
 }

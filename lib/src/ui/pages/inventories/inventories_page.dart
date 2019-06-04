@@ -329,7 +329,7 @@ class InventoriesState extends State<Inventories> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   new Text(
-                                    "Còn lại",
+                                    "Còn",
                                     style: new TextStyle(fontSize: 16),
                                   ),
                                 ],
@@ -367,20 +367,23 @@ class InventoriesState extends State<Inventories> {
                                         .inventoriesModel.listInventories
                                         .map((item) {
                                       return TableRow(children: [
-                                        new Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10),
-                                              child: new Text(
-                                                item.label,
-                                                style:
-                                                    new TextStyle(fontSize: 14),
+                                        SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: new Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 10),
+                                                child: new Text(
+                                                  item.label,
+                                                  style:
+                                                  new TextStyle(fontSize: 14),
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                         new Row(
                                           mainAxisAlignment:

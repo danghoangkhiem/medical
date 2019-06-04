@@ -1,19 +1,21 @@
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
+import 'package:equatable/equatable.dart';
 
-class AdditionalFieldModel {
-  final int key;
-  final int value;
-  final String label;
+class AdditionalFieldModel extends Equatable {
+  int key;
+  Object value;
+  String label;
 
   AdditionalFieldModel(
-      {@required this.key, @required this.value, @required this.label});
+      {@required this.key, @required this.value, @required this.label})
+      : super([key, value, label]);
 
   AdditionalFieldModel.fromJson(Map<String, dynamic> json)
       : assert(json != null),
         key = json['key'] as int,
-        value = json['value'] as int,
+        value = json['value'] as Object,
         label = json['label'] as String;
 
   Map<String, dynamic> toJson() {
@@ -46,6 +48,17 @@ class AdditionalFieldListModel extends ListMixin<AdditionalFieldModel> {
     } else {
       _list[index] = value;
     }
+  }
+
+  void append(AdditionalFieldListModel appendedList) {
+    appendedList.forEach((AdditionalFieldModel item) {
+      int _index = _list.indexWhere((elem) => elem.key == item.key);
+      if (_index > -1) {
+        _list[_index] = AdditionalFieldModel.fromJson(item.toJson());
+      } else {
+        _list.add(AdditionalFieldModel.fromJson(item.toJson()));
+      }
+    });
   }
 
   AdditionalFieldListModel.fromJson(List json) : assert(json != null) {

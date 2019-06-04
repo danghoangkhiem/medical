@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/consumer/consumer.dart';
 
-import 'consumer_search_form.dart';
-import 'consumer_contact_form.dart';
+import 'consumer_step_1_form.dart';
+import 'consumer_step_2_form.dart';
+import 'consumer_step_3_form.dart';
+import 'consumer_step_4_form.dart';
 
 class ConsumerForm extends StatefulWidget {
   final ConsumerBloc consumerBloc;
@@ -26,35 +28,30 @@ class _ConsumerFormState extends State<ConsumerForm> {
     return Form(
         key: _formKey,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 30),
           child: ListView(
+            shrinkWrap: true,
             children: <Widget>[
               SizedBox(
                 height: 20,
               ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Thông tin khách hàng",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.blueAccent),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ConsumerSearchForm(
-                      consumerBloc: _consumerBloc,
-                    ),
-                    ConsumerContactForm(
-                      consumerBloc: _consumerBloc,
-                    )
-                  ],
-                ),
-              ),
+              BlocBuilder(
+                  bloc: _consumerBloc,
+                  builder: (BuildContext context, ConsumerState state) {
+                    if (state.currentStep == 0 || state.currentStep == 1) {
+                      return ConsumerStepOneForm(
+                          consumerBloc: _consumerBloc
+                      );
+                    }
+                    if (state.currentStep == 2) {
+                      return ConsumerStepTwoForm(
+                          consumerBloc: _consumerBloc
+                      );
+                    }
+                    if (state.currentStep == 3) {
+                      print(state.consumer.additionalData.toJson());
+                    }
+                    return Container();
+                  })
             ],
           ),
         ));

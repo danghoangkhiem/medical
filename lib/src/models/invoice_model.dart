@@ -1,9 +1,11 @@
 import 'dart:collection';
 
+import 'package:equatable/equatable.dart';
+
 import 'event_type.dart';
 import 'invoice_item_model.dart';
 
-class InvoiceModel {
+class InvoiceModel extends Equatable {
   final int id;
   final InvoiceType type;
   final InvoiceStatus status;
@@ -12,7 +14,8 @@ class InvoiceModel {
   final Map items;
 
   InvoiceModel(
-      {this.id, this.type, this.status, this.date, this.owner, this.items});
+      {this.id, this.type, this.status, this.date, this.owner, this.items})
+      : super([id, type, status, date, owner, items]);
 
   InvoiceModel.fromJson(Map<String, dynamic> json)
       : assert(json != null),

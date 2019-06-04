@@ -31,15 +31,15 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
             child: CircularProgressIndicator(),
           );
         }
-        if (state is FinishedSearching || state is Stepped) {
-          return _buildForm(_consumerBloc.consumer);
+        if (state is Stepped) {
+          return _buildContactForm(state.consumer);
         }
         return Container();
       },
     );
   }
 
-  Widget _buildForm(ConsumerModel consumer) {
+  Widget _buildContactForm(ConsumerModel consumer) {
     return Column(
       children: <Widget>[
         SizedBox(
@@ -65,6 +65,9 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                     return 'Họ và tên không được bỏ trống';
                   }
                 },
+                onSaved: (String value) {
+                  _consumerBloc.currentState.consumer.name = value;
+                },
                 initialValue: consumer?.name,
                 style: TextStyle(
                     fontSize: 16,
@@ -76,7 +79,7 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                           BorderSide(color: Colors.grey[350], width: 1)),
                   border: OutlineInputBorder(),
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 ),
               )
             ],
@@ -106,7 +109,16 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
               DateTimePickerFormField(
                 inputType: InputType.date,
                 format: DateFormat('dd/MM/yyyy'),
-                initialValue: consumer?.dateOf,
+                initialValue: consumer?.expectedDateOfBirth,
+                validator: (DateTime selectedDate) {
+                  if (selectedDate == null) {
+                    return 'Ngày dự sinh không hợp lệ';
+                  }
+                },
+                onSaved: (DateTime value) {
+                  _consumerBloc.currentState.consumer.expectedDateOfBirth =
+                      value;
+                },
                 style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -155,6 +167,9 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                     return 'Địa chỉ email nhập vào không hợp lệ';
                   }
                 },
+                onSaved: (String value) {
+                  _consumerBloc.currentState.consumer.email = value;
+                },
                 style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -165,7 +180,7 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                           BorderSide(color: Colors.grey[350], width: 1)),
                   border: OutlineInputBorder(),
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 ),
               )
             ],

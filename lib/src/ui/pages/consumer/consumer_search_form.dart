@@ -7,15 +7,14 @@ import 'package:medical/src/utils.dart';
 class ConsumerSearchForm extends StatefulWidget {
   final ConsumerBloc consumerBloc;
 
-  ConsumerSearchForm({Key key, @required this.consumerBloc})
-      : super(key: key);
+  ConsumerSearchForm({Key key, @required this.consumerBloc}) : super(key: key);
 
   @override
   _ConsumerSearchFormState createState() => _ConsumerSearchFormState();
 }
 
 class _ConsumerSearchFormState extends State<ConsumerSearchForm> {
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   ConsumerBloc get _consumerBloc => widget.consumerBloc;
 
@@ -25,6 +24,8 @@ class _ConsumerSearchFormState extends State<ConsumerSearchForm> {
   void initState() {
     super.initState();
     isValid = true;
+    _phoneNumberController.text =
+        _consumerBloc.currentState.consumer?.phoneNumber;
   }
 
   @override
@@ -41,7 +42,7 @@ class _ConsumerSearchFormState extends State<ConsumerSearchForm> {
           height: 5,
         ),
         TextField(
-          controller: _phoneController,
+          controller: _phoneNumberController,
           keyboardType: TextInputType.phone,
           onChanged: (String value) {
             String pattern = r"^0[^0][0-9]{8}$";
@@ -60,7 +61,7 @@ class _ConsumerSearchFormState extends State<ConsumerSearchForm> {
                 return;
               }
               _consumerBloc.dispatch(
-                  SearchPhoneNumber(phoneNumber: _phoneController.text));
+                  SearchPhoneNumber(phoneNumber: _phoneNumberController.text));
             });
           },
           style: TextStyle(
@@ -71,7 +72,7 @@ class _ConsumerSearchFormState extends State<ConsumerSearchForm> {
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey[350], width: 1)),
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           ),
         )
       ],

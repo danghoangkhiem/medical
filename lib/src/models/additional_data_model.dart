@@ -1,18 +1,21 @@
+import 'package:meta/meta.dart';
+import 'package:equatable/equatable.dart';
+
 import 'event_type.dart';
 import 'additional_field_model.dart';
 
-class AdditionalDataModel {
-  final AdditionalFieldListModel samples;
-  final AdditionalFieldListModel gifts;
-  final AdditionalFieldListModel purchases;
-  final AdditionalFieldListModel pointOfSaleMaterials;
+class AdditionalDataModel extends Equatable {
+  AdditionalFieldListModel samples;
+  AdditionalFieldListModel gifts;
+  AdditionalFieldListModel purchases;
+  AdditionalFieldListModel pointOfSaleMaterials;
 
   AdditionalDataModel({
-    this.samples,
-    this.gifts,
-    this.purchases,
-    this.pointOfSaleMaterials,
-  });
+    @required this.samples,
+    @required this.gifts,
+    @required this.purchases,
+    @required this.pointOfSaleMaterials,
+  }) : super([samples, gifts, purchases, pointOfSaleMaterials]);
 
   AdditionalDataModel.fromJson(Map<String, dynamic> json)
       : assert(json != null),

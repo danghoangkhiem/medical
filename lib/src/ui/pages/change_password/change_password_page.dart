@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'package:medical/src/blocs/password/password.dart';
 
-import 'change_password_form.dart';
+import 'package:medical/src/ui/pages/change_password/change_password_form.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 

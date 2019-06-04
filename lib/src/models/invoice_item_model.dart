@@ -1,11 +1,14 @@
 import 'dart:collection';
 
-class InvoiceItemModel {
+import 'package:equatable/equatable.dart';
+
+class InvoiceItemModel extends Equatable {
   final key;
   final String label;
   final int quantity;
 
-  InvoiceItemModel({this.key, this.label, this.quantity});
+  InvoiceItemModel({this.key, this.label, this.quantity})
+      : super([key, label, quantity]);
 
   InvoiceItemModel.fromJson(Map<String, dynamic> json)
       : key = json['key'],
