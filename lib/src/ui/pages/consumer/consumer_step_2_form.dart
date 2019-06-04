@@ -77,28 +77,26 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               }),
           TextFormField(
             validator: (String value) {
-              if (value.isEmpty) {
+              List _selectedList = _fields
+                  .where((item) => item.value != null && item.value)
+                  .toList();
+              if (value.isEmpty && _selectedList.length > 1) {
                 return 'Vui lòng nhập lý do';
               }
             },
             onSaved: (String value) {
               _consumerBloc.currentState.consumer.description = value;
             },
-            initialValue:
-            _consumerBloc.currentState.consumer?.description,
+            initialValue: _consumerBloc.currentState.consumer?.description,
             style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
+                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
             decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                  borderSide:
-                  BorderSide(color: Colors.grey[350], width: 1)),
-              border: OutlineInputBorder(),
-              contentPadding:
-                EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              hintText: 'Lý do sampling nhiều hơn một mẫu'
-            ),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[350], width: 1)),
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                hintText: 'Lý do sampling nhiều hơn một mẫu'),
             maxLines: 5,
           ),
         ],

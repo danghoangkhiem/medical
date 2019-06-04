@@ -138,7 +138,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   new SizedBox(
-                                    height: 20,
+                                    height: 5,
                                   ),
                                   new Row(
                                     children: <Widget>[
