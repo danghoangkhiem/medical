@@ -16,7 +16,6 @@ class DayScheduleDetailPage extends StatefulWidget {
 }
 
 class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
-
   TextEditingController _descriptionController = TextEditingController();
 
   TimeOfDay _time = TimeOfDay.now();
@@ -62,7 +61,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
         child: new Column(
           children: <Widget>[
             new Expanded(
-                flex: 6,
+                flex: 12,
                 child: new Form(
                     key: _formKey,
                     child: new Container(
@@ -395,7 +394,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                                 new Container(
                                   child: new Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       new Text(
                                         "Mục tiêu cuộc hẹn",
@@ -408,7 +407,8 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                                         height: 5,
                                       ),
                                       new TextFormField(
-                                        controller: _descriptionController..text = _daySchedule.purpose,
+                                        controller: _descriptionController
+                                          ..text = _daySchedule.purpose,
                                         style: new TextStyle(
                                             fontSize: 16,
                                             color: Colors.black,
@@ -476,9 +476,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                                               )
                                             ],
                                             onChanged: (value) {
-                                              setState(() {
-
-                                              });
+                                              setState(() {});
                                             },
                                             style: new TextStyle(
                                                 fontSize: 18,
@@ -509,7 +507,8 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                                         height: 5,
                                       ),
                                       new TextFormField(
-                                        controller: _descriptionController..text = _daySchedule.description,
+                                        controller: _descriptionController
+                                          ..text = _daySchedule.description,
                                         style: new TextStyle(
                                             fontSize: 16,
                                             color: Colors.black,
@@ -539,15 +538,14 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                       ),
                     ))),
             new Expanded(
-                flex: 1,
-                child: new Container(
-                  color: Colors.grey.withOpacity(0.1),
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-                  child: new Row(
-                    children: <Widget>[
-                      new Expanded(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 5),
+              flex: 2,
+              child: new Container(
+                color: Colors.grey.withOpacity(0.1),
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                child: new Row(
+                  children: <Widget>[
+                    new Expanded(
+                      child: Container(
                         decoration: BoxDecoration(
                             color: Colors.blueAccent,
                             borderRadius: BorderRadius.circular(4)),
@@ -566,10 +564,12 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                               style:
                                   TextStyle(fontSize: 18, color: Colors.white),
                             )),
-                      ))
-                    ],
-                  ),
-                ))
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),

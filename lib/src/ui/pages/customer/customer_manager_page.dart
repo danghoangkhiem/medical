@@ -12,6 +12,7 @@ import 'package:medical/src/ui/pages/consumer/consumer_page.dart';
 
 //test
 import 'package:medical/src/ui/pages/day_schedule/day_schedule_page.dart';
+import 'package:medical/src/ui/pages/day_coaching/day_coaching_page.dart';
 
 class CustomerManagePage extends StatefulWidget {
   @override
@@ -298,7 +299,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      DateSchedulePage(date: DateTime.now()),
+                                      DateCoachingPage(date: DateTime.now()),
                                 ),
                               );
                             },

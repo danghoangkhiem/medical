@@ -4,41 +4,41 @@ import 'package:intl/intl.dart';
 import 'package:medical/src/utils.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
-import 'package:medical/src/models/day_schedule_model.dart';
-import 'package:medical/src/blocs/day_schedule/day_schedule.dart';
-import 'package:medical/src/ui/pages/day_schedule/day_schedule_detail_page.dart';
+import 'package:medical/src/models/day_coaching_model.dart';
+import 'package:medical/src/blocs/day_coaching/day_coaching.dart';
+import 'package:medical/src/ui/pages/day_coaching/day_coaching_detail_page.dart';
 
-class DateSchedulePage extends StatefulWidget {
+class DateCoachingPage extends StatefulWidget {
   final DateTime date;
 
-  DateSchedulePage({this.date});
+  DateCoachingPage({this.date});
 
   @override
-  _DateSchedulePageState createState() {
-    return new _DateSchedulePageState();
+  _DateCoachingPageState createState() {
+    return new _DateCoachingPageState();
   }
 }
 
-class _DateSchedulePageState extends State<DateSchedulePage> {
+class _DateCoachingPageState extends State<DateCoachingPage> {
   final ScrollController _controller = ScrollController();
 
-  DayScheduleListModel _dayScheduleList;
-  DayScheduleBloc _dayScheduleBloc;
+  DayCoachingListModel _dayCoachingList;
+  DayCoachingBloc _dayCoachingBloc;
 
   bool _isLoading = false;
 
   @override
   void initState() {
-    _dayScheduleList = DayScheduleListModel.fromJson([]);
-    _dayScheduleBloc = DayScheduleBloc();
-    _dayScheduleBloc.dispatch(DayScheduleFilter(date: widget.date));
+    _dayCoachingList = DayCoachingListModel.fromJson([]);
+    _dayCoachingBloc = DayCoachingBloc();
+    _dayCoachingBloc.dispatch(DayCoachingFilter(date: widget.date));
     _controller.addListener(_scrollListener);
     super.initState();
   }
 
   @override
   void dispose() {
-    _dayScheduleBloc?.dispose();
+    _dayCoachingBloc?.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -48,7 +48,7 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
       throttle(200, () {
         if (_isLoading != true) {
           _isLoading = true;
-          _dayScheduleBloc.dispatch(LoadMore());
+          _dayCoachingBloc.dispatch(LoadMore());
         }
       });
     }
@@ -60,7 +60,7 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
     return Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text("Lịch làm việc trong ngày"),
+        title: Text("Lịch Coaching trong ngày"),
       ),
       body: Container(
         child: new Column(
@@ -68,8 +68,8 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
             Expanded(
               flex: 8,
               child: BlocListener(
-                bloc: _dayScheduleBloc,
-                listener: (BuildContext context, DayScheduleState state) {
+                bloc: _dayCoachingBloc,
+                listener: (BuildContext context, DayCoachingState state) {
                   if (state is ReachMax) {
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text('Got all the data!'),
@@ -84,26 +84,26 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      _dayScheduleList.addAll(state.dayScheduleList);
+                      _dayCoachingList.addAll(state.dayCoachingList);
                       _isLoading = false;
                     } else {
-                      _dayScheduleList = state.dayScheduleList;
+                      _dayCoachingList = state.dayCoachingList;
                     }
                   }
                 },
                 child: BlocBuilder(
-                  bloc: _dayScheduleBloc,
-                  builder: (BuildContext context, DayScheduleState state) {
+                  bloc: _dayCoachingBloc,
+                  builder: (BuildContext context, DayCoachingState state) {
                     if (state is Loading && !state.isLoadMore) {
                       return LoadingIndicator();
                     }
                     return ListView.builder(
                       controller: _controller,
                       itemCount: _isLoading
-                          ? _dayScheduleList.length + 1
-                          : _dayScheduleList.length,
+                          ? _dayCoachingList.length + 1
+                          : _dayCoachingList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        if (_isLoading && index == _dayScheduleList.length) {
+                        if (_isLoading && index == _dayCoachingList.length) {
                           return SizedBox(
                             height: 50,
                             child: Align(
@@ -116,8 +116,8 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    DayScheduleDetailPage(
-                                      daySchedule: _dayScheduleList[index],
+                                    DayCoachingDetailPage(
+                                      dayCoaching: _dayCoachingList[index],
                                     ),
                               ),
                             );
@@ -145,11 +145,11 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                         child: new Text(
                                           "Từ " +
                                               DateFormat('hh:mm').format(
-                                                  _dayScheduleList[index]
+                                                  _dayCoachingList[index]
                                                       .startTime) +
                                               " đến " +
                                               DateFormat('hh:mm').format(
-                                                  _dayScheduleList[index]
+                                                  _dayCoachingList[index]
                                                       .endTime),
                                           style: TextStyle(
                                               fontSize: 18,
@@ -163,9 +163,9 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                       Container(
                                         margin: EdgeInsets.only(left: 20),
                                         child: new Text(
-                                          _dayScheduleList[index].position +
+                                          _dayCoachingList[index].position +
                                               " : " +
-                                              _dayScheduleList[index]
+                                              _dayCoachingList[index]
                                                   .doctorName,
                                           style: new TextStyle(
                                               fontSize: 18,
@@ -178,9 +178,9 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                       Container(
                                         margin: EdgeInsets.only(left: 20),
                                         child: new Text(
-                                          _dayScheduleList[index].addressType +
+                                          _dayCoachingList[index].addressType +
                                               " : " +
-                                              _dayScheduleList[index]
+                                              _dayCoachingList[index]
                                                   .addressName,
                                           style: new TextStyle(
                                               fontSize: 18,
