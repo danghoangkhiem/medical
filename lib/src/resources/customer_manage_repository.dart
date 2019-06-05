@@ -1,7 +1,12 @@
 import 'package:meta/meta.dart';
 import 'package:medical/src/models/customer_manage_model.dart';
+import 'package:medical/src/resources/database/consumer_db_provider.dart';
 
 class CustomerManageRepository {
+
+  final ConsumerDbProvider _consumerDbProvider = ConsumerDbProvider();
+
+
   Future<CustomerManagerListModel> getCustomerByTypeAndStatus({
     int offset = 10,
     int limit = 0,
@@ -16,5 +21,10 @@ class CustomerManageRepository {
         "phone": "0984141645",
       };
     }).toList());
+  }
+
+  Future<CustomerManagerListModel> getCustomers(int timeIn, int userId, int offset, int limit,String type) async {
+    await Future.delayed(Duration(seconds: 1));
+    return await _consumerDbProvider.getListCustomer(timeIn, userId, offset, limit, type);
   }
 }
