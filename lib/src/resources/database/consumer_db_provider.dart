@@ -27,6 +27,14 @@ class ConsumerDbProvider extends DbProvider {
         purchaseList.length > 0 ? ConsumerType.user : ConsumerType.lead;
     final Map values = consumer.toJson();
     values['additionalData'] = json.encode(values['additionalData']);
+    List<Map> maps = await db.query('consumers',
+        columns: ['_id', 'id'],
+        where: 'id IS NULL AND phoneNumber = ?',
+        whereArgs: [consumer.phoneNumber]);
+    if (maps.length > 0) {
+      return await db.update('consumers', values,
+          where: '_id = ?', whereArgs: [maps.last['_id']]);
+    }
     return await db.insert('consumers', values);
   }
 }

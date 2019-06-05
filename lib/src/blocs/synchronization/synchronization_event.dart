@@ -3,16 +3,18 @@ import 'package:equatable/equatable.dart';
 
 class SynchronizationEvent extends Equatable {
   final SynchronizationEventType type;
+  final int userId;
 
-  SynchronizationEvent({@required this.type})
+  SynchronizationEvent({@required this.type, this.userId})
       : assert(type != null),
-        super([type]);
+        super([type, userId]);
 
   factory SynchronizationEvent.sync() =>
       SynchronizationEvent(type: SynchronizationEventType.sync);
 
-  factory SynchronizationEvent.check() =>
-      SynchronizationEvent(type: SynchronizationEventType.check);
+  factory SynchronizationEvent.check({@required int userId}) =>
+      SynchronizationEvent(
+          type: SynchronizationEventType.check, userId: userId);
 
   factory SynchronizationEvent.hasData() =>
       SynchronizationEvent(type: SynchronizationEventType.hasData);

@@ -33,7 +33,7 @@ class DbProvider {
   }
 
   Future<Database> database() async {
-    String dbFilename = '6b_medical.db';
+    String dbFilename = '6c_medical.db';
     String dbPath = await getDatabasesPath();
     return openDatabase(join(dbPath, dbFilename),
         onCreate: _onDatabaseCreate, version: 1);

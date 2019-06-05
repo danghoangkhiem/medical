@@ -22,8 +22,6 @@ class AppState extends State<App> {
   void initState() {
     _applicationBloc = ApplicationBloc();
     _applicationBloc.dispatch(ApplicationEvent.launched());
-    _synchronizationBloc = SynchronizationBloc();
-    _synchronizationBloc.dispatch(SynchronizationEvent.check());
     super.initState();
   }
 
@@ -31,6 +29,7 @@ class AppState extends State<App> {
   void didChangeDependencies() {
     _authenticationBloc = AuthenticationBloc();
     _authenticationBloc.dispatch(AuthenticationEvent.identified());
+    _synchronizationBloc = SynchronizationBloc();
     super.didChangeDependencies();
   }
 

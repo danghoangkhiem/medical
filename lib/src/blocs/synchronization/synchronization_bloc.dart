@@ -11,19 +11,19 @@ class SynchronizationBloc
   final SyncRepository _syncRepository = SyncRepository();
 
   @override
-  SynchronizationState get initialState =>
-      SynchronizationState.notSynchronized(0);
+  SynchronizationState get initialState => SynchronizationState.synchronized();
 
   @override
   Stream<SynchronizationState> mapEventToState(
     SynchronizationEvent event,
   ) async* {
     if (event.type == SynchronizationEventType.check) {
-      final _synced = await _syncRepository.synced();
+      final _synced = await _syncRepository.syncedByUserId(event.userId);
       if (_synced) {
         yield SynchronizationState.synchronized();
       } else {
-        final _quantity = await _syncRepository.quantityNotSynchronized();
+        final _quantity =
+            await _syncRepository.quantityNotSynchronizedByUserId(event.userId);
         yield SynchronizationState.notSynchronized(_quantity);
       }
     }
