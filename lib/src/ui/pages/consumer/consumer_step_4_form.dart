@@ -26,15 +26,8 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
     super.initState();
     _fields = AdditionalFieldListModel.fromJson(
         _consumerBloc.additionalFields.gifts.toJson());
-    _cachedFields =
-        _consumerBloc.currentState.consumer.additionalData.gifts;
+    _cachedFields = _consumerBloc.currentState.consumer.additionalData.gifts;
     _fields.append(_cachedFields);
-  }
-
-  @override
-  void dispose() {
-    _consumerBloc.currentState.consumer.additionalData.gifts = _fields;
-    super.dispose();
   }
 
   @override
@@ -81,6 +74,8 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
                           return;
                         }
                         _fields[index].value = int.parse(value);
+                        _consumerBloc.currentState.consumer.additionalData
+                            .gifts = _fields;
                       },
                       initialValue: _fields[index]?.value?.toString(),
                       style: TextStyle(
@@ -90,10 +85,10 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.grey[350], width: 1)),
+                                BorderSide(color: Colors.grey[350], width: 1)),
                         border: OutlineInputBorder(),
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       ),
                     ),
                   ],

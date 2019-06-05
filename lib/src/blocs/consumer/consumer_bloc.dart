@@ -58,7 +58,10 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
         ConsumerModel _consumer =
             await _consumerRepository.findPhoneNumber(event.phoneNumber);
         if (_consumer == null) {
-          _consumer = currentState.consumer..phoneNumber = event.phoneNumber;
+          _consumer = ConsumerModel(
+              phoneNumber: event.phoneNumber,
+              additionalData: AdditionalDataModel.fromJson(
+                  defaultConsumerInformation().additionalData.toJson()));
         }
         AttendanceModel _attendanceLastTime =
             await _userRepository.getAttendanceLastTimeLocally();

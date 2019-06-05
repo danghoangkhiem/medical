@@ -32,13 +32,6 @@ class _ConsumerStepFiveFormState extends State<ConsumerStepFiveForm> {
   }
 
   @override
-  void dispose() {
-    _consumerBloc.currentState.consumer.additionalData.pointOfSaleMaterials =
-        _fields;
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
