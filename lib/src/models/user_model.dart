@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 
@@ -21,24 +23,33 @@ class UserModel extends Equatable {
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   static UserRoleType _roleFromJson(String role) {
-    if (role == 'med') {
-      return UserRoleType.Med;
+    if (role == 'MED_SUP') {
+      return UserRoleType.MedicalSupervisor;
     }
-    if (role == 'leader') {
-      return UserRoleType.Leader;
+    if (role == 'MED_REP') {
+      return UserRoleType.MedicalRepresentative;
     }
-    return UserRoleType.Nutri;
+    return UserRoleType.MedicalNutritionRepresentative;
   }
 
   static String _roleToJson(UserRoleType role) {
-    if (role == UserRoleType.Med) {
-      return 'med';
+    if (role == UserRoleType.MedicalSupervisor) {
+      return 'MED_SUP';
     }
-    if (role == UserRoleType.Leader) {
-      return 'leader';
+    if (role == UserRoleType.MedicalRepresentative) {
+      return 'MED_REP';
     }
-    return 'nutri';
+    return 'NUTRI_REP';
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
   }
 }
 
-enum UserRoleType { Nutri, Med, Leader }
+enum UserRoleType {
+  MedicalNutritionRepresentative,
+  MedicalRepresentative,
+  MedicalSupervisor
+}

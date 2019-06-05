@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -24,6 +25,11 @@ class AdditionalFieldModel extends Equatable {
       'value': value,
       'label': label,
     };
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
   }
 }
 
@@ -69,5 +75,10 @@ class AdditionalFieldListModel extends ListMixin<AdditionalFieldModel> {
 
   List<dynamic> toJson() {
     return _list.map((element) => element.toJson()).toList();
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
   }
 }

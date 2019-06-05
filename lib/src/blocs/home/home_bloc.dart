@@ -22,6 +22,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       yield Loading();
       try {
         final UserModel _user = await _userRepository.getInfo();
+        await _userRepository.setInfoLocally(_user);
+        await _userRepository.setAttendanceLastTimeLocally(
+            await _userRepository.getAttendanceLastTime());
         yield Loaded(user: _user);
       } catch (error) {
         yield Failure(errorMessage: error.toString());

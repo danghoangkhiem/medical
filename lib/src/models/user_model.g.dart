@@ -9,8 +9,8 @@ part of 'user_model.dart';
 UserModel _$UserModelFromJson(Map<String, dynamic> json) {
   return UserModel(
       id: json['id'] as int,
-      name: 'Trịnh Quốc Thông',
-      code: 'NV2019',
+      name: json['name'].toString(),
+      code: json['code'].toString(),
       role: json['role'] == null
           ? null
           : UserModel._roleFromJson(json['role'] as String));

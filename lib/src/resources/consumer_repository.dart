@@ -16,4 +16,8 @@ class ConsumerRepository {
   Future<AdditionalDataModel> getAdditionalFields() async {
     return await _consumerApiProvider.getAdditionalFields();
   }
+
+  Future<int> addConsumer(ConsumerModel consumer) async {
+    return await _consumerDbProvider.addConsumer(consumer);
+  }
 }

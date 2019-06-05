@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -34,5 +36,10 @@ class AdditionalDataModel extends Equatable {
       EventType.purchases.value: purchases.toJson(),
       EventType.pointOfSaleMaterials.value: pointOfSaleMaterials.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
   }
 }

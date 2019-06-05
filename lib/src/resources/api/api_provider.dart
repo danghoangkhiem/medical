@@ -8,8 +8,8 @@ abstract class ApiProvider {
 
   static final _dio = Dio(BaseOptions(
     baseUrl: '$apiBaseUrl/$apiVersionPath',
-    connectTimeout: 6000,
-    receiveTimeout: 6000,
+    connectTimeout: 60000,
+    receiveTimeout: 60000,
     responseType: ResponseType.json,
     validateStatus: (status) => true,
     receiveDataWhenStatusError: true,
