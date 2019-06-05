@@ -10,4 +10,12 @@ class SyncRepository {
   Future<int> quantityNotSynchronized() async {
     return await _syncDbProvider.quantityNotSynchronized();
   }
+
+  Future<bool> syncedByUserId(int userId) async {
+    return await _syncDbProvider.syncedByUserId(userId);
+  }
+
+  Future<int> quantityNotSynchronizedByUserId(int userId) async {
+    return await _syncDbProvider.quantityNotSynchronizedByUserId(userId);
+  }
 }

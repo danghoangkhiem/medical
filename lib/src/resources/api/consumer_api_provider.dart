@@ -5,7 +5,7 @@ import 'package:medical/src/models/consumer_model.dart';
 import 'package:medical/src/models/additional_data_model.dart';
 
 class ConsumerApiProvider extends ApiProvider {
-  Future<ConsumerModel> createConsumer(ConsumerModel consumer) async {
+  Future<ConsumerModel> addConsumer(ConsumerModel consumer) async {
     Response _resp =
         await httpClient.post('/consumers', data: consumer.toJson());
     if (_resp.statusCode == 200) {

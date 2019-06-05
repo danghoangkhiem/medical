@@ -28,10 +28,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   UserModel _currentUser;
   HomeBloc _homeBloc;
+  SynchronizationBloc _synchronizationBloc;
 
   @override
   void initState() {
-    _homeBloc = HomeBloc();
+    _synchronizationBloc = BlocProvider.of<SynchronizationBloc>(context);
+    _homeBloc = HomeBloc(synchronizationBloc: _synchronizationBloc);
     _homeBloc.dispatch(UserIdentifier());
     super.initState();
   }
