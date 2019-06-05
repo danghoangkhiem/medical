@@ -52,10 +52,12 @@ class ConsumerModel extends Equatable {
         name = json['name'] as String,
         phoneNumber = json['phoneNumber'] as String,
         email = json['email'] as String,
-        expectedDateOfBirth =
-            DateTime.fromMillisecondsSinceEpoch(json['edob'] * 1000),
-        createdAt =
-            DateTime.fromMillisecondsSinceEpoch(json['createdAt'] * 1000),
+        expectedDateOfBirth = json['edob'] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(json['edob'] * 1000),
+        createdAt = json['createdAt'] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(json['createdAt'] * 1000),
         createdBy = json['createdBy'] as int,
         type = ConsumerType.from(json['type']),
         additionalData = AdditionalDataModel.fromJson(json['additionalData']),

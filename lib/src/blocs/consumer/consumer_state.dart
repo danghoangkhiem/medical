@@ -4,7 +4,7 @@ import 'package:medical/src/models/additional_field_model.dart';
 import 'package:medical/src/models/additional_data_model.dart';
 import 'package:medical/src/models/consumer_model.dart';
 
-final ConsumerModel defaultConsumerInformation = ConsumerModel(
+ConsumerModel defaultConsumerInformation() => ConsumerModel(
   phoneNumber: null,
   additionalData: AdditionalDataModel(
     samples: AdditionalFieldListModel.fromJson([]),
@@ -14,10 +14,9 @@ final ConsumerModel defaultConsumerInformation = ConsumerModel(
   ),
 );
 
-@immutable
 abstract class ConsumerState {
   final int currentStep = 0;
-  final ConsumerModel consumer = defaultConsumerInformation;
+  final ConsumerModel consumer = defaultConsumerInformation();
 }
 
 class Initial extends ConsumerState {}

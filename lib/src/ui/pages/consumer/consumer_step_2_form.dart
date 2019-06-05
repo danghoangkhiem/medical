@@ -31,12 +31,6 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
   }
 
   @override
-  void dispose() {
-    _consumerBloc.currentState.consumer.additionalData.samples = _fields;
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
@@ -63,6 +57,8 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
                   onChanged: (bool value) {
                     setState(() {
                       _fields[index].value = value;
+                      _consumerBloc.currentState.consumer.additionalData
+                          .samples = _fields;
                     });
                   },
                   title: Text(

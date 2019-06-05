@@ -32,12 +32,6 @@ class _ConsumerStepThreeFormState extends State<ConsumerStepThreeForm> {
   }
 
   @override
-  void dispose() {
-    _consumerBloc.currentState.consumer.additionalData.purchases = _fields;
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
@@ -81,6 +75,8 @@ class _ConsumerStepThreeFormState extends State<ConsumerStepThreeForm> {
                           return;
                         }
                         _fields[index].value = int.parse(value);
+                        _consumerBloc.currentState.consumer.additionalData
+                            .purchases = _fields;
                       },
                       initialValue: _fields[index]?.value?.toString(),
                       style: TextStyle(
