@@ -42,7 +42,11 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
         if (!isAttendanceTimeIn) {
           throw 'Bạn chưa chấm công vào trên hệ thống';
         }
-        _additionalFields = await _consumerRepository.getAdditionalFields();
+        _additionalFields =
+            await _consumerRepository.getAdditionalFieldsLocally();
+        if (_additionalFields == null) {
+          throw 'Bạn chưa đồng bộ dữ liệu';
+        }
         yield Loaded(additionalFields: _additionalFields);
       } catch (error) {
         yield FatalError(errorMessage: error.toString());
@@ -64,6 +68,7 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
         }
         _consumer
           ..locationId = _attendanceLastTime.location.id
+          ..createdAt = DateTime.now()
           ..createdBy = _userInfo.id;
         yield FinishedSearching();
         yield Stepped(1, consumer: _consumer);

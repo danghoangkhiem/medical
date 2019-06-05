@@ -30,16 +30,10 @@ class DbProvider {
     CREATE INDEX createdBy_index ON consumers (createdBy);
     CREATE INDEX type_index ON consumers (type);
     ''');
-    // Create table `fields`
-    await db.execute('''
-    CREATE TABLE `fields` (
-      `data` text NOT NULL
-    );
-    ''');
   }
 
   Future<Database> database() async {
-    String dbFilename = '5_medical.db';
+    String dbFilename = '6b_medical.db';
     String dbPath = await getDatabasesPath();
     return openDatabase(join(dbPath, dbFilename),
         onCreate: _onDatabaseCreate, version: 1);

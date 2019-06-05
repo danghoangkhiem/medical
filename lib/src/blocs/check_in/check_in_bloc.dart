@@ -19,8 +19,9 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
     if (event is AddCheckIn) {
       yield CheckInLoading();
       try {
-        final result =
-            await _checkInRepository.addCheckIn(event.newCheckInModel);
+        await _checkInRepository.addCheckIn(event.newCheckInModel);
+        await _userRepository.setAttendanceLastTimeLocally(
+            await _userRepository.getAttendanceLastTime());
         yield CheckInLoaded();
       } catch (error) {
         yield CheckInFailure(error: error.toString());
@@ -30,17 +31,20 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
       yield CheckIOLoading();
       try {
         bool isCheckIn = await _userRepository.isAttendanceTimeInLocally();
-        AttendanceModel attendanceModel = await _userRepository.getAttendanceLastTimeLocally();
-        yield CheckIOLoaded(isCheckIn: isCheckIn,attendanceModel: attendanceModel);
-      } catch (error, stack) {
+        AttendanceModel attendanceModel =
+            await _userRepository.getAttendanceLastTimeLocally();
+        yield CheckIOLoaded(
+            isCheckIn: isCheckIn, attendanceModel: attendanceModel);
+      } catch (error) {
         yield CheckIOFailure(error: error.toString());
       }
     }
     if (event is AddCheckOut) {
       yield CheckOutLoading();
       try {
-        final result =
         await _checkInRepository.addCheckOut(event.newCheckOutModel);
+        await _userRepository.setAttendanceLastTimeLocally(
+            await _userRepository.getAttendanceLastTime());
         yield CheckOutLoaded();
       } catch (error) {
         yield CheckOutFailure(error: error.toString());

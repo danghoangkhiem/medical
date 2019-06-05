@@ -31,9 +31,6 @@ class ConsumerApiProvider extends ApiProvider {
   Future<AdditionalDataModel> getAdditionalFields() async {
     Response _resp = await httpClient.get('/consumers/additional-fields');
     if (_resp.statusCode == 200) {
-      if (_resp.data['sameples'] != null) {
-        _resp.data['samples'] = _resp.data['sameples'];
-      }
       return AdditionalDataModel.fromJson(_resp.data);
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));
