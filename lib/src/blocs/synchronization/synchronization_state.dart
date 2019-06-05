@@ -4,25 +4,28 @@ import 'package:equatable/equatable.dart';
 class SynchronizationState extends Equatable {
   final bool isSynchronized;
   final bool isSynchronizing;
-  final int quantity;
+  final int process;
+  final int total;
 
   SynchronizationState({
     @required this.isSynchronized,
     this.isSynchronizing: false,
-    this.quantity: 0,
-  }) : super([isSynchronized, isSynchronizing, quantity]);
+    this.process: 0,
+    this.total: 0,
+  }) : super([isSynchronized, isSynchronizing, process, total]);
 
-  factory SynchronizationState.notSynchronized(int quantity) =>
+  factory SynchronizationState.notSynchronized(int total) =>
       SynchronizationState(
         isSynchronized: false,
-        quantity: quantity,
+        total: total,
       );
 
-  factory SynchronizationState.synchronizing(int quantity) =>
+  factory SynchronizationState.synchronizing(int process, int total) =>
       SynchronizationState(
         isSynchronized: true,
         isSynchronizing: true,
-        quantity: quantity,
+        process: process,
+        total: total,
       );
 
   factory SynchronizationState.synchronized() =>

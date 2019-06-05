@@ -284,8 +284,6 @@ class _HomePageState extends State<HomePage> {
               label: 'Lên kế hoạch làm việc',
               onPressed: () {
                 return;
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => SynchronizationPage()));
               },
               required: [
                 UserRoleType.MedicalRepresentative,
@@ -296,8 +294,6 @@ class _HomePageState extends State<HomePage> {
               label: 'Lập kế hoạch coaching',
               onPressed: () {
                 return;
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => SynchronizationPage()));
               },
               required: [
                 UserRoleType.MedicalSupervisor,
@@ -308,8 +304,6 @@ class _HomePageState extends State<HomePage> {
               label: 'Lập kế hoạch địa bàn',
               onPressed: () {
                 return;
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => SynchronizationPage()));
               },
               required: [
                 UserRoleType.MedicalSupervisor,
@@ -325,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            SynchronizationPage()));
+                            SynchronizationPage(user: _currentUser)));
                   },
                   required: [
                     UserRoleType.MedicalNutritionRepresentative,

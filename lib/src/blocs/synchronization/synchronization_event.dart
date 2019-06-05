@@ -9,8 +9,8 @@ class SynchronizationEvent extends Equatable {
       : assert(type != null),
         super([type, userId]);
 
-  factory SynchronizationEvent.sync() =>
-      SynchronizationEvent(type: SynchronizationEventType.sync);
+  factory SynchronizationEvent.synchronize({@required int userId}) =>
+      SynchronizationEvent(type: SynchronizationEventType.sync, userId: userId);
 
   factory SynchronizationEvent.check({@required int userId}) =>
       SynchronizationEvent(

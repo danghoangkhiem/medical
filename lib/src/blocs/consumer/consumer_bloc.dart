@@ -84,7 +84,7 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
         yield Loading();
         await Future.delayed(Duration(seconds: 1));
         try {
-          await _consumerRepository.addConsumer(event.consumer);
+          await _consumerRepository.addConsumerLocally(event.consumer);
           yield Added();
           _synchronizationBloc.dispatch(SynchronizationEvent.hasData());
           await Future.delayed(Duration(seconds: 2));

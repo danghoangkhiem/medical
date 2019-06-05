@@ -46,7 +46,20 @@ class ConsumerRepository {
     return false;
   }
 
-  Future<int> addConsumer(ConsumerModel consumer) async {
+  Future<ConsumerModel> addConsumer(ConsumerModel consumer) async {
+    return await _consumerApiProvider.addConsumer(consumer);
+  }
+
+  Future<int> addConsumerLocally(ConsumerModel consumer) async {
     return await _consumerDbProvider.addConsumer(consumer);
+  }
+
+  Future<int> setConsumerLocally(
+      int _id, ConsumerModel consumer) async {
+    return await _consumerDbProvider.setConsumerByPrimaryKey(_id, consumer);
+  }
+
+  Future<List<ConsumerModel>> getAll() async {
+    return await _consumerDbProvider.getAll();
   }
 }

@@ -53,7 +53,7 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               itemBuilder: (BuildContext context, int index) {
                 return CheckboxListTile(
                   value: _fields[index].value != null &&
-                      _fields[index].value as bool,
+                      int.parse(_fields[index].value.toString(), radix: 2) == 1,
                   onChanged: (bool value) {
                     setState(() {
                       _fields[index].value = value;
@@ -74,7 +74,9 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
           TextFormField(
             validator: (String value) {
               List _selectedList = _fields
-                  .where((item) => item.value != null && item.value)
+                  .where((item) =>
+                      item.value != null &&
+                      int.parse(item.value.toString(), radix: 2) == 1)
                   .toList();
               if (value.isEmpty && _selectedList.length > 1) {
                 return 'Vui lòng nhập lý do';
