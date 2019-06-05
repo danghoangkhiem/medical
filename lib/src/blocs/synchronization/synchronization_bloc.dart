@@ -72,6 +72,8 @@ class SynchronizationBloc
         print(error);
         print(trace);
       }
+      await _consumerRepository.setAdditionalFieldsLocally(
+          await _consumerRepository.getAdditionalFields());
       yield SynchronizationState.synchronized();
     }
     if (event.type == SynchronizationEventType.hasData) {
