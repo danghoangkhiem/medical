@@ -2,11 +2,14 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 
 import 'check_in.dart';
+import 'package:medical/src/resources/user_repository.dart';
 
 import 'package:medical/src/resources/check_in_repository.dart';
+import 'package:medical/src/models/attendance_model.dart';
 
 class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
   final CheckInRepository _checkInRepository = CheckInRepository();
+  final UserRepository _userRepository = UserRepository();
 
   @override
   CheckInState get initialState => CheckInInitial();
@@ -26,8 +29,9 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
     if (event is CheckIO) {
       yield CheckIOLoading();
       try {
-        final result = await _checkInRepository.checkIO();
-        yield CheckIOLoaded(checkIOModel: result);
+        bool isCheckIn = await _userRepository.isAttendanceTimeInLocally();
+        AttendanceModel attendanceModel = await _userRepository.getAttendanceLastTimeLocally();
+        yield CheckIOLoaded(isCheckIn: isCheckIn,attendanceModel: attendanceModel);
       } catch (error, stack) {
         yield CheckIOFailure(error: error.toString());
       }

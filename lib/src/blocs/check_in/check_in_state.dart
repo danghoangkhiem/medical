@@ -3,7 +3,7 @@ import 'package:medical/src/models/coordinate_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'package:medical/src/models/check_io_model.dart';
+import 'package:medical/src/models/attendance_model.dart';
 
 abstract class CheckInState extends Equatable {
   CheckInState([List props = const []]) : super(props);
@@ -51,9 +51,9 @@ class CheckIOLoading extends CheckInState {
 }
 
 class CheckIOLoaded extends CheckInState {
-  final CheckIOModel checkIOModel;
-
-  CheckIOLoaded({this.checkIOModel}) : super([checkIOModel]);
+  final bool isCheckIn;
+  final AttendanceModel attendanceModel;
+  CheckIOLoaded({this.isCheckIn,this.attendanceModel}) : super([isCheckIn,attendanceModel]);
 
   @override
   String toString() => 'CheckIOLoaded';

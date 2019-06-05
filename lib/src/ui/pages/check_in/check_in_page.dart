@@ -18,6 +18,7 @@ import 'package:medical/src/ui/pages/attendance/attendance_history_page.dart';
 import 'package:medical/src/models/check_in_model.dart';
 import 'package:medical/src/models/check_out_model.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
+import 'package:medical/src/models/attendance_model.dart';
 
 class CheckInPage extends StatefulWidget {
   @override
@@ -176,11 +177,11 @@ class _CheckInPage extends State<CheckInPage> {
           if (state is CheckIOLoading) {
             return LoadingIndicator();
           }
-          if (state is CheckIOLoaded && (state.checkIOModel.timeOut != null)) {
+          if (state is CheckIOLoaded && state.isCheckIn == false) {
             return checkIn();
           }
-          if (state is CheckIOLoaded && state.checkIOModel.timeOut == null) {
-            return checkOut(state);
+          if (state is CheckIOLoaded && state.isCheckIn == true) {
+            return checkOut(state.attendanceModel);
           }
           if (state is CheckInLoading) {
             return LoadingIndicator();
@@ -199,7 +200,7 @@ class _CheckInPage extends State<CheckInPage> {
             _locationSubscription.cancel();
             return checkOutNotification();
           }
-          //_locationSubscription.cancel();
+          _locationSubscription.cancel();
           return Container();
         },
       ),
@@ -460,7 +461,7 @@ class _CheckInPage extends State<CheckInPage> {
     );
   }
 
-  Widget checkOut(state){
+  Widget checkOut(AttendanceModel attendanceModel){
     return Container(
       child: new Column(
         children: <Widget>[
@@ -502,7 +503,7 @@ class _CheckInPage extends State<CheckInPage> {
                                     style: BorderStyle.solid),
                                 borderRadius: BorderRadius.circular(4)),
                             child: new Text(
-                              state.checkIOModel.location.name,
+                              attendanceModel.location.name,
                               style: new TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold),
