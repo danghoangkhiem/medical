@@ -9,8 +9,6 @@ import 'package:medical/src/models/user_model.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
-import 'package:medical/src/resources/consumer_repository.dart';
-
 class SynchronizationPage extends StatefulWidget {
   final UserModel user;
 
@@ -22,16 +20,17 @@ class SynchronizationPage extends StatefulWidget {
 
 class _SynchronizationPageState extends State<SynchronizationPage> {
   SynchronizationBloc _synchronizationBloc;
-  ConsumerRepository _consumerRepository = ConsumerRepository();
 
-  getAll() async {
-    List consumers = await _consumerRepository.getAll();
-    print('Consumer Total: ${consumers.length}');
+  @override
+  void initState() {
+    _synchronizationBloc = BlocProvider.of<SynchronizationBloc>(context);
+    _synchronizationBloc
+        .dispatch(SynchronizationEvent.check(userId: widget.user.id));
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _synchronizationBloc = BlocProvider.of<SynchronizationBloc>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
@@ -40,18 +39,16 @@ class _SynchronizationPageState extends State<SynchronizationPage> {
       body: BlocBuilder(
           bloc: _synchronizationBloc,
           builder: (BuildContext context, SynchronizationState state) {
+            if (state.isSynchronizing && state.process == state.total) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        SynchronizationResultPage()));
+              });
+            }
             if (state.isSynchronizing) {
               return LoadingIndicator();
             }
-            if (state.isSynchronizing && state.process == state.total) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            SynchronizationResultPage()));
-              });
-            }
-            getAll();
             return _buildPage();
           }),
     );

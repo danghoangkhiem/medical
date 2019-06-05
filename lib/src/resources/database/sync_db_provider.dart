@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'db_provider.dart';
 
 class SyncDbProvider extends DbProvider {
-  int _currentNotSynchronizedId;
+  int _currentNotSynchronizedPrimaryKey;
 
-  int get currentNotSynchronizedId => _currentNotSynchronizedId;
+  int get currentNotSynchronizedPrimaryKey => _currentNotSynchronizedPrimaryKey;
 
   Future<bool> syncedByUserId(int userId) async {
     return await quantityNotSynchronizedByUserId(userId) == 0;
@@ -35,7 +35,7 @@ class SyncDbProvider extends DbProvider {
       return null;
     }
     Map<String, dynamic> _consumer = Map.from(maps.last);
-    _currentNotSynchronizedId = _consumer['_id'];
+    _currentNotSynchronizedPrimaryKey = _consumer['_id'];
     _consumer['additionalData'] = json.decode(maps.last['additionalData']);
     return _consumer;
   }

@@ -36,22 +36,41 @@ class SynchronizationBloc
       Map<String, dynamic> _consumerRawData =
           await _syncRepository.getNotSynchronizedByUserId(event.userId);
       ConsumerModel _consumerLocally;
+      ConsumerModel _consumer;
       while (_consumerRawData != null &&
           currentState.process < currentState.total) {
         yield SynchronizationState.synchronizing(
             currentState.process + 1, currentState.total);
         _consumerLocally = ConsumerModel.fromJson(_consumerRawData);
         try {
-          ConsumerModel _consumerResult =
-              await _consumerRepository.addConsumer(_consumerLocally);
+          _consumer = await _consumerRepository.addConsumer(_consumerLocally);
           await _consumerRepository.setConsumerLocally(
-              _consumerRawData['_id'], _consumerResult);
+              _consumerRawData['_id'], _consumer);
         } catch (error, trace) {
           print(error);
           print(trace);
         }
         _consumerRawData =
             await _syncRepository.getNotSynchronizedByUserId(event.userId);
+      }
+      try {
+        _consumer = await _consumerRepository.getLastLocally();
+        ConsumerListModel _consumers =
+            await _consumerRepository.getConsumerAccordingToOffset(
+                offset: _consumer?.id ?? 0, limit: 20);
+        while (_consumers != null && _consumers.length > 0) {
+          yield SynchronizationState.synchronizing(
+              currentState.process, currentState.total);
+          for (_consumer in _consumers) {
+            print(_consumer);
+            await _consumerRepository.insertConsumerLocally(_consumer);
+          }
+          _consumers = await _consumerRepository.getConsumerAccordingToOffset(
+              offset: _consumer.id, limit: 20);
+        }
+      } catch (error, trace) {
+        print(error);
+        print(trace);
       }
       yield SynchronizationState.synchronized();
     }

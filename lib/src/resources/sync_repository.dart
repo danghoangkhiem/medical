@@ -3,7 +3,8 @@ import 'database/sync_db_provider.dart';
 class SyncRepository {
   final SyncDbProvider _syncDbProvider = SyncDbProvider();
 
-  int get currentNotSynchronizedId => _syncDbProvider.currentNotSynchronizedId;
+  int get currentNotSynchronizedPrimaryKey =>
+      _syncDbProvider.currentNotSynchronizedPrimaryKey;
 
   Future<bool> syncedByUserId(int userId) async {
     return await _syncDbProvider.syncedByUserId(userId);
