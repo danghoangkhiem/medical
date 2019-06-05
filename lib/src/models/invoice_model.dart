@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
@@ -61,6 +62,11 @@ class InvoiceModel extends Equatable {
       'items': _toJsonInvoiceItemList(items),
     };
   }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
+  }
 }
 
 class InvoiceListModel extends ListMixin<InvoiceModel> {
@@ -94,6 +100,11 @@ class InvoiceListModel extends ListMixin<InvoiceModel> {
 
   List<dynamic> toJson() {
     return _list.map((element) => element.toJson()).toList();
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
   }
 }
 

@@ -6,7 +6,6 @@ import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'package:medical/src/blocs/home/home.dart';
 
 import 'package:medical/src/models/user_model.dart';
-import 'package:medical/src/ui/pages/manage_area/manage_area_page.dart';
 
 import 'package:medical/src/utils.dart';
 
@@ -27,6 +26,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  UserModel _currentUser;
   HomeBloc _homeBloc;
 
   @override
@@ -74,59 +74,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _buildSelectionItem({
-    IconData icon,
-    String label,
-    Function onPressed,
-    bool isNoticed = false
-  }) {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
-      ),
-      height: 60,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(7),
-          onTap: () {
-            onPressed();
-          },
-          child: ListTile(
-            title: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                isNoticed ? Icon(
-                  Icons.info,
-                  color: Colors.redAccent,
-                ) : Container()
-              ],
-            ),
-            leading: Icon(
-              icon,
-              size: 35,
-              color: Colors.blueAccent,
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -142,8 +89,8 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.grey[300],
                   child: Column(
                     children: <Widget>[
-                      _buildUserInfo(state.user),
-                      _buildSelectionItemBox(state.user)
+                      _buildUserInfo(_currentUser = state.user),
+                      _buildSelectionItemBox()
                     ],
                   ),
                 );
@@ -206,8 +153,68 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSelectionItemBox(UserModel user) {
-    final _bloc = BlocProvider.of<SynchronizationBloc>(context);
+  Widget _buildSelectionItem({
+    IconData icon,
+    String label,
+    Function onPressed,
+    bool isNoticed = false,
+    List<UserRoleType> required = const [],
+  }) {
+    if (_currentUser == null ||
+        required.isNotEmpty && required.indexOf(_currentUser.role) < 0) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: Colors.white,
+      ),
+      height: 60,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(7),
+          onTap: () {
+            onPressed();
+          },
+          child: ListTile(
+            title: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                isNoticed
+                    ? Icon(
+                        Icons.info,
+                        color: Colors.redAccent,
+                      )
+                    : Container()
+              ],
+            ),
+            leading: Icon(
+              icon,
+              size: 35,
+              color: Colors.blueAccent,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectionItemBox() {
+    final _syncBloc = BlocProvider.of<SynchronizationBloc>(context);
     return Expanded(
       flex: 1,
       child: SingleChildScrollView(
@@ -215,83 +222,113 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: <Widget>[
             _buildSelectionItem(
-                icon: Icons.access_alarm,
-                label: 'Chấm công',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => CheckInPage()));
-                }),
+              icon: Icons.access_alarm,
+              label: 'Chấm công',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => CheckInPage()));
+              },
+              required: [
+                UserRoleType.MedicalNutritionRepresentative,
+              ],
+            ),
             _buildSelectionItem(
-                icon: Icons.people,
-                label: 'Quản lý khách hàng',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => CustomerManagePage()));
-                }),
+              icon: Icons.people,
+              label: 'Quản lý khách hàng',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => CustomerManagePage()));
+              },
+              required: [
+                UserRoleType.MedicalNutritionRepresentative,
+              ],
+            ),
             _buildSelectionItem(
-                icon: Icons.access_alarm,
-                label: 'Thống kê KPI',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ReportKpiPage()));
-                }),
+              icon: Icons.access_alarm,
+              label: 'Thống kê KPI',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ReportKpiPage()));
+              },
+              required: [
+                UserRoleType.MedicalRepresentative,
+                UserRoleType.MedicalSupervisor,
+              ],
+            ),
             _buildSelectionItem(
-                icon: Icons.access_alarm,
-                label: 'Quản lý địa bàn',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ManageArea()));
-                }),
+              icon: Icons.shopping_cart,
+              label: 'Quản lý xuất nhập tồn',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Inventories()));
+              },
+              required: [
+                UserRoleType.MedicalNutritionRepresentative,
+              ],
+            ),
             _buildSelectionItem(
-                icon: Icons.shopping_cart,
-                label: 'Quản lý xuất nhập tồn',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => Inventories()));
-                }),
+              icon: Icons.assessment,
+              label: 'Phiếu xuất nhập hàng',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => InvoicePage()));
+              },
+              required: [
+                UserRoleType.MedicalNutritionRepresentative,
+              ],
+            ),
             _buildSelectionItem(
-                icon: Icons.assessment,
-                label: 'Phiếu xuất nhập hàng',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => InvoicePage()));
-                }),
+              icon: Icons.schedule,
+              label: 'Lên kế hoạch làm việc',
+              onPressed: () {
+                return;
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => SynchronizationPage()));
+              },
+              required: [
+                UserRoleType.MedicalRepresentative,
+              ],
+            ),
             _buildSelectionItem(
-                icon: Icons.schedule,
-                label: 'Lên kế hoạch làm việc',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          SynchronizationPage()));
-                }),
+              icon: Icons.alarm,
+              label: 'Lập kế hoạch coaching',
+              onPressed: () {
+                return;
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => SynchronizationPage()));
+              },
+              required: [
+                UserRoleType.MedicalSupervisor,
+              ],
+            ),
             _buildSelectionItem(
-                icon: Icons.alarm,
-                label: 'Lập kế hoạch coaching',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          SynchronizationPage()));
-                }),
-            _buildSelectionItem(
-                icon: Icons.landscape,
-                label: 'Lập kế hoạch địa bàn',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          SynchronizationPage()));
-                }),
+              icon: Icons.landscape,
+              label: 'Lập kế hoạch địa bàn',
+              onPressed: () {
+                return;
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => SynchronizationPage()));
+              },
+              required: [
+                UserRoleType.MedicalSupervisor,
+              ],
+            ),
             BlocBuilder(
-              bloc: _bloc,
+              bloc: _syncBloc,
               builder: (BuildContext context, SynchronizationState state) {
                 return _buildSelectionItem(
-                    icon: Icons.cloud_upload,
-                    label: 'Đồng bộ dữ liệu',
-                    isNoticed: !state.isSynchronized,
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              SynchronizationPage()));
-                    });
+                  icon: Icons.cloud_upload,
+                  label: 'Đồng bộ dữ liệu',
+                  isNoticed: !state.isSynchronized,
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            SynchronizationPage()));
+                  },
+                  required: [
+                    UserRoleType.MedicalNutritionRepresentative,
+                  ],
+                );
               },
             ),
             _buildSelectionItem(

@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -67,13 +68,21 @@ class ConsumerModel extends Equatable {
       'name': name,
       'phoneNumber': phoneNumber,
       'email': email,
-      'edob': expectedDateOfBirth.millisecondsSinceEpoch ~/ 1000,
-      'createdAt': createdAt.millisecondsSinceEpoch ~/ 1000,
+      'edob': expectedDateOfBirth == null
+          ? null
+          : expectedDateOfBirth.millisecondsSinceEpoch ~/ 1000,
+      'createdAt':
+          createdAt == null ? null : createdAt.millisecondsSinceEpoch ~/ 1000,
       'createdBy': createdBy,
-      'type': type.value,
-      'additionalData': additionalData.toJson(),
+      'type': type?.value,
+      'additionalData': additionalData?.toJson(),
       'description': description,
     };
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
   }
 }
 
@@ -108,6 +117,11 @@ class ConsumerListModel extends ListMixin<ConsumerModel> {
 
   List<dynamic> toJson() {
     return _list.map((element) => element.toJson()).toList();
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson());
   }
 }
 

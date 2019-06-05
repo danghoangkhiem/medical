@@ -4,19 +4,19 @@ import 'package:medical/src/blocs/consumer/consumer.dart';
 
 import 'package:medical/src/models/additional_field_model.dart';
 
-class ConsumerStepFourForm extends StatefulWidget {
+class ConsumerStepFiveForm extends StatefulWidget {
   final ConsumerBloc consumerBloc;
 
-  ConsumerStepFourForm({Key key, @required this.consumerBloc})
+  ConsumerStepFiveForm({Key key, @required this.consumerBloc})
       : assert(consumerBloc != null),
         assert(consumerBloc.additionalFields.samples != null),
         super(key: key);
 
   @override
-  _ConsumerStepFourFormState createState() => _ConsumerStepFourFormState();
+  _ConsumerStepFiveFormState createState() => _ConsumerStepFiveFormState();
 }
 
-class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
+class _ConsumerStepFiveFormState extends State<ConsumerStepFiveForm> {
   ConsumerBloc get _consumerBloc => widget.consumerBloc;
   AdditionalFieldListModel _fields;
   AdditionalFieldListModel _cachedFields;
@@ -25,15 +25,16 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
   void initState() {
     super.initState();
     _fields = AdditionalFieldListModel.fromJson(
-        _consumerBloc.additionalFields.gifts.toJson());
+        _consumerBloc.additionalFields.pointOfSaleMaterials.toJson());
     _cachedFields =
-        _consumerBloc.currentState.consumer.additionalData.gifts;
+        _consumerBloc.currentState.consumer.additionalData.pointOfSaleMaterials;
     _fields.append(_cachedFields);
   }
 
   @override
   void dispose() {
-    _consumerBloc.currentState.consumer.additionalData.gifts = _fields;
+    _consumerBloc.currentState.consumer.additionalData.pointOfSaleMaterials =
+        _fields;
     super.dispose();
   }
 
@@ -45,7 +46,7 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Thông tin quà tặng",
+            "Thông tin POSM",
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -81,6 +82,8 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
                           return;
                         }
                         _fields[index].value = int.parse(value);
+                        _consumerBloc.currentState.consumer.additionalData
+                            .pointOfSaleMaterials = _fields;
                       },
                       initialValue: _fields[index]?.value?.toString(),
                       style: TextStyle(
@@ -90,10 +93,10 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.grey[350], width: 1)),
+                                BorderSide(color: Colors.grey[350], width: 1)),
                         border: OutlineInputBorder(),
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       ),
                     ),
                   ],
