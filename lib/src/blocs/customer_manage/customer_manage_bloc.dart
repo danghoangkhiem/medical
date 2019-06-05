@@ -34,38 +34,40 @@ class CustomerManageBloc
         if (event.customerType == null || event.customerStatus == null) {
           throw 'Phải chọn loại và tình trạng';
         }
-        /*final _customerManagerList =
-            await _customerManageRepository.getCustomerByTypeAndStatus(
-          customerType: _customerType = event.customerType,
-          customerStatus: _customerStatus = event.customerStatus,
-          offset: _currentOffset = event.offset,
-          limit: _currentLimit = event.limit,
-        );*/
         AttendanceModel attendanceModel =
         await _userRepository.getAttendanceLastTimeLocally();
         UserModel userModel = await _userRepository.getInfo();
         int userId = userModel.id;
         int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
+        _currentOffset = event.offset;
+        _currentLimit = event.limit;
+        _customerType = event.customerType;
+        print("haha");
+        print(_customerType);
         final _customerManagerList =
-            await _customerManageRepository.getCustomers(timeIn, userId);
+            await _customerManageRepository.getCustomers(timeIn, userId, _currentOffset, _currentLimit, _customerType);
         yield Loaded(customerManagerList: _customerManagerList);
       } catch (error) {
         yield Failure(errorMessage: error.toString());
       }
     }
     if (event is LoadMore) {
+      print("haha");
       yield Loading(isLoadMore: true);
       try {
+        AttendanceModel attendanceModel =
+        await _userRepository.getAttendanceLastTimeLocally();
+        UserModel userModel = await _userRepository.getInfo();
+        int userId = userModel.id;
+        int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
+        _currentOffset = _currentOffset + _currentLimit;
+        _currentLimit = _currentLimit;
         final _customerManagerList =
-            await _customerManageRepository.getCustomerByTypeAndStatus(
-          customerType: _customerType,
-          customerStatus: _customerStatus,
-          offset: _currentOffset = _currentOffset + _currentLimit,
-          limit: _currentLimit,
-        );
+        await _customerManageRepository.getCustomers(timeIn, userId, _currentOffset, _currentLimit, _customerType);
         yield Loaded(
             customerManagerList: _customerManagerList, isLoadMore: true);
-      } catch (error) {
+      } catch (error,stack) {
+        print(stack);
         yield Failure(errorMessage: error.toString());
       }
     }

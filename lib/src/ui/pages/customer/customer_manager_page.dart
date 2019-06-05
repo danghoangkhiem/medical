@@ -255,7 +255,10 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      _customerManagerList.addAll(state.customerManagerList);
+                      if(state.customerManagerList != null){
+                        _customerManagerList.addAll(state.customerManagerList);
+                        _isLoading = false;
+                      }
                       _isLoading = false;
                     } else {
                       _customerManagerList = state.customerManagerList;

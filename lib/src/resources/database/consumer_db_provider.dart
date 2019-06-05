@@ -31,10 +31,12 @@ class ConsumerDbProvider extends DbProvider {
     return await db.insert('consumers', values);
   }
 
-  Future<CustomerManagerListModel> getListCustomer(int timeIn, int userId) async {
+  Future<CustomerManagerListModel> getListCustomer(int timeIn, int userId, int offset, int limit, String type) async {
+    print(offset);
+    print(limit);
     final db = await database();
     List<Map> maps = await db
-        .query('consumers', where: 'createdBy = ?', whereArgs: [userId]);
+        .query('consumers', where: 'createdBy = ? ',whereArgs: [userId],limit: limit,offset: offset);
     print(maps);
     if (maps.length == 0) {
       return null;
