@@ -1,30 +1,20 @@
 import 'package:meta/meta.dart';
 import 'package:medical/src/models/customer_manage_model.dart';
 import 'package:medical/src/resources/database/consumer_db_provider.dart';
+import 'package:medical/src/resources/api/customer_api_provider.dart';
 
 class CustomerManageRepository {
 
   final ConsumerDbProvider _consumerDbProvider = ConsumerDbProvider();
+  final CustomerApiProvider _customerApiProvider = CustomerApiProvider();
 
 
-  Future<CustomerManagerListModel> getCustomerByTypeAndStatus({
-    int offset = 10,
-    int limit = 0,
-    @required String customerType,
-    @required String customerStatus
-  }) async {
-    await Future.delayed(Duration(seconds: 1));
-    return CustomerManagerListModel.fromJson(List(10).map((item) {
-      return {
-        "id": item,
-        "name": "Nguyễn Văn A",
-        "phone": "0984141645",
-      };
-    }).toList());
+  Future<CustomerManagerListModel> getCustomerByTypeAndStatus(int timeIn, int offset, int limit,@required String type,@required String status) async {
+    return await _customerApiProvider.getCustomerByTypeAndStatus(timeIn: timeIn,offset: offset, limit: limit,type: type,status: status);
   }
 
-  Future<CustomerManagerListModel> getCustomers(int timeIn, int userId,String type, String status) async {
+  Future<CustomerManagerListModel> getCustomers(int timeIn, int userId, int offset, int limit,String type) async {
     await Future.delayed(Duration(seconds: 1));
-    return await _consumerDbProvider.getListCustomer(timeIn, userId, type, status);
+    return await _consumerDbProvider.getListCustomer(timeIn, userId, offset, limit, type);
   }
 }
