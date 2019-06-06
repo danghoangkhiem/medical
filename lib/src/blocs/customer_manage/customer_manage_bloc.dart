@@ -18,8 +18,6 @@ class CustomerManageBloc
 
   String _customerType;
   String _customerStatus;
-  int _currentOffset;
-  int _currentLimit;
 
   @override
   CustomerManageState get initialState => InitialCustomerManageState();
@@ -39,9 +37,6 @@ class CustomerManageBloc
         UserModel userModel = await _userRepository.getInfo();
         int userId = userModel.id;
         int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
-        _currentOffset = event.offset;
-        print("haha");
-        print(_customerType);
         final _customerManagerList =
             await _customerManageRepository.getCustomers(timeIn, userId, _customerType = event.customerType, _customerStatus = event.customerStatus);
         yield Loaded(customerManagerList: _customerManagerList);
@@ -50,7 +45,6 @@ class CustomerManageBloc
       }
     }
     if (event is LoadMore) {
-      print("haha");
       yield Loading(isLoadMore: true);
       try {
         AttendanceModel attendanceModel =
@@ -58,14 +52,11 @@ class CustomerManageBloc
         UserModel userModel = await _userRepository.getInfo();
         int userId = userModel.id;
         int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
-        _currentOffset = _currentOffset + _currentLimit;
-        _currentLimit = _currentLimit;
         final _customerManagerList =
         await _customerManageRepository.getCustomers(timeIn, userId, _customerType, _customerStatus);
         yield Loaded(
             customerManagerList: _customerManagerList, isLoadMore: true);
       } catch (error,stack) {
-        print(stack);
         yield Failure(errorMessage: error.toString());
       }
     }

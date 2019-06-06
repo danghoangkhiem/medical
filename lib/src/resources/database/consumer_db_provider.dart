@@ -94,8 +94,6 @@ class ConsumerDbProvider extends DbProvider {
 
   Future<CustomerManagerListModel> getListCustomer(
       int timeIn, int userId, String type, String status) async {
-    print("abc");
-    print(type);
     final db = await database();
     List<Map> maps = await db
         .query('consumers', where: 'createdBy = ? AND type = ?', whereArgs: [userId,type]);
