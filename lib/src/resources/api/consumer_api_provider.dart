@@ -3,11 +3,23 @@ import 'api_response_error.dart';
 
 import 'package:medical/src/models/consumer_model.dart';
 import 'package:medical/src/models/additional_data_model.dart';
+import 'package:medical/src/models/additional_field_model.dart';
 
 class ConsumerApiProvider extends ApiProvider {
+  Map<String, dynamic> _prepareConsumerData(ConsumerModel consumer) {
+    final ConsumerModel _consumer = ConsumerModel.fromJson(consumer.toJson());
+    final Function _predicate =
+        (AdditionalFieldModel item) => item.value == null;
+    _consumer.additionalData.samples.removeWhere(_predicate);
+    _consumer.additionalData.gifts.removeWhere(_predicate);
+    _consumer.additionalData.purchases.removeWhere(_predicate);
+    _consumer.additionalData.pointOfSaleMaterials.removeWhere(_predicate);
+    return _consumer.toJson()..remove('id');
+  }
+
   Future<ConsumerModel> addConsumer(ConsumerModel consumer) async {
-    Response _resp =
-        await httpClient.post('/consumers', data: consumer.toJson());
+    Map<String, dynamic> _requestBody = _prepareConsumerData(consumer);
+    Response _resp = await httpClient.post('/consumers', data: _requestBody);
     if (_resp.statusCode == 200) {
       return ConsumerModel.fromJson(_resp.data);
     }
@@ -20,8 +32,8 @@ class ConsumerApiProvider extends ApiProvider {
       'offset': offset,
       'limit': limit,
     };
-    Response _resp = await httpClient.get('/consumers',
-        queryParameters: _queryParameters);
+    Response _resp =
+        await httpClient.get('/consumers', queryParameters: _queryParameters);
     if (_resp.statusCode == 200) {
       return ConsumerListModel.fromJson(_resp.data['data']);
     }

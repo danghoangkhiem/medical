@@ -78,13 +78,13 @@ class _InvoicePageState extends State<InvoicePage> {
                     if (state is NoRecordsFound) {
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('No records found!'),
+                        content: Text('Không có dữ liệu được tìm thấy!'),
                       ));
                     }
                     if (state is ReachMax) {
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('Got all the data!'),
+                        content: Text('Đã hiển thị tất cả dữ liệu!'),
                       ));
                       _isLoading = false;
                       _isReachMax = true;

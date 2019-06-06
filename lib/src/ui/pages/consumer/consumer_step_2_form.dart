@@ -30,6 +30,16 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
     _fields.append(_cachedFields);
   }
 
+  bool _boolean(dynamic source) {
+    if (source == null) {
+      return false;
+    }
+    if (source is int) {
+      return int.tryParse(source.toString()) == 1;
+    }
+    return !!source;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,10 +63,10 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               itemBuilder: (BuildContext context, int index) {
                 return CheckboxListTile(
                   value: _fields[index].value != null &&
-                      _fields[index].value as bool,
+                      _boolean(_fields[index].value),
                   onChanged: (bool value) {
                     setState(() {
-                      _fields[index].value = value;
+                      _fields[index].value = value ? 1 : 0;
                       _consumerBloc.currentState.consumer.additionalData
                           .samples = _fields;
                     });
@@ -74,7 +84,7 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
           TextFormField(
             validator: (String value) {
               List _selectedList = _fields
-                  .where((item) => item.value != null && item.value)
+                  .where((item) => item.value != null && _boolean(item.value))
                   .toList();
               if (value.isEmpty && _selectedList.length > 1) {
                 return 'Vui lòng nhập lý do';

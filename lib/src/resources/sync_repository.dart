@@ -3,13 +3,8 @@ import 'database/sync_db_provider.dart';
 class SyncRepository {
   final SyncDbProvider _syncDbProvider = SyncDbProvider();
 
-  Future<bool> synced() async {
-    return await _syncDbProvider.synced();
-  }
-
-  Future<int> quantityNotSynchronized() async {
-    return await _syncDbProvider.quantityNotSynchronized();
-  }
+  int get currentNotSynchronizedPrimaryKey =>
+      _syncDbProvider.currentNotSynchronizedPrimaryKey;
 
   Future<bool> syncedByUserId(int userId) async {
     return await _syncDbProvider.syncedByUserId(userId);
@@ -17,5 +12,9 @@ class SyncRepository {
 
   Future<int> quantityNotSynchronizedByUserId(int userId) async {
     return await _syncDbProvider.quantityNotSynchronizedByUserId(userId);
+  }
+
+  Future<Map<String, dynamic>> getNotSynchronizedByUserId(int userId) async {
+    return await _syncDbProvider.getNotSynchronizedByUserId(userId);
   }
 }

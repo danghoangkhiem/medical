@@ -71,10 +71,7 @@ class _ConsumerStepFiveFormState extends State<ConsumerStepFiveForm> {
                     TextFormField(
                       keyboardType: TextInputType.number,
                       onSaved: (String value) {
-                        if (value.isEmpty) {
-                          return;
-                        }
-                        _fields[index].value = int.parse(value);
+                        _fields[index].value = int.tryParse(value);
                         _consumerBloc.currentState.consumer.additionalData
                             .pointOfSaleMaterials = _fields;
                       },

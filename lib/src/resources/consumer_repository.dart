@@ -17,6 +17,16 @@ class ConsumerRepository {
     return await _consumerDbProvider.findPhoneNumber(phoneNumber);
   }
 
+  Future<ConsumerModel> getLastLocally() async {
+    return await _consumerDbProvider.getLast();
+  }
+
+  Future<ConsumerListModel> getConsumerAccordingToOffset(
+      {int offset = 0, int limit = 10}) async {
+    return await _consumerApiProvider.getConsumerAccordingToOffset(
+        offset: offset, limit: limit);
+  }
+
   Future<AdditionalDataModel> getAdditionalFields() async {
     return await _consumerApiProvider.getAdditionalFields();
   }
@@ -46,7 +56,23 @@ class ConsumerRepository {
     return false;
   }
 
-  Future<int> addConsumer(ConsumerModel consumer) async {
+  Future<int> insertConsumerLocally(ConsumerModel consumer) async {
+    return await _consumerDbProvider.insertConsumer(consumer);
+  }
+
+  Future<ConsumerModel> addConsumer(ConsumerModel consumer) async {
+    return await _consumerApiProvider.addConsumer(consumer);
+  }
+
+  Future<int> addConsumerLocally(ConsumerModel consumer) async {
     return await _consumerDbProvider.addConsumer(consumer);
+  }
+
+  Future<int> setConsumerLocally(int _id, ConsumerModel consumer) async {
+    return await _consumerDbProvider.setConsumerByPrimaryKey(_id, consumer);
+  }
+
+  Future<List<ConsumerModel>> getAll() async {
+    return await _consumerDbProvider.getAll();
   }
 }

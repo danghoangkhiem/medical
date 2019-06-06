@@ -71,10 +71,7 @@ class _ConsumerStepThreeFormState extends State<ConsumerStepThreeForm> {
                     TextFormField(
                       keyboardType: TextInputType.number,
                       onSaved: (String value) {
-                        if (value.isEmpty) {
-                          return;
-                        }
-                        _fields[index].value = int.parse(value);
+                        _fields[index].value = int.tryParse(value);
                         _consumerBloc.currentState.consumer.additionalData
                             .purchases = _fields;
                       },
