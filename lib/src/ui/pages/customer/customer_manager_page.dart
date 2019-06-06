@@ -31,6 +31,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   CustomerManageBloc _customerManageBloc;
 
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   @override
   void initState() {
@@ -243,9 +244,10 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                 listener: (BuildContext context, CustomerManageState state) {
                   if (state is ReachMax) {
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Got all the data!'),
+                      content: Text('Đã hiển thị tất cả dữ liệu!'),
                     ));
-                    _controller.removeListener(_scrollListener);
+                    _isLoading = false;
+                    _isReachMax = true;
                   }
                   if (state is Failure) {
                     Scaffold.of(context).showSnackBar(SnackBar(
@@ -262,6 +264,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                       _isLoading = false;
                     } else {
                       _customerManagerList = state.customerManagerList;
+                      _isReachMax = false;
                     }
                   }
                 },
