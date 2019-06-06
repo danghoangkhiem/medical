@@ -36,7 +36,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   void initState() {
     _customerManagerList = CustomerManagerListModel.fromJson([]);
     _customerManageBloc = CustomerManageBloc();
-    _controller.addListener(_scrollListener);
     super.initState();
   }
 
@@ -45,17 +44,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
     _customerManageBloc?.dispose();
     _controller.dispose();
     super.dispose();
-  }
-
-  void _scrollListener() {
-    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-      throttle(200, () {
-        if (_isLoading != true) {
-          _isLoading = true;
-          _customerManageBloc.dispatch(LoadMore());
-        }
-      });
-    }
   }
 
   @override
@@ -244,12 +232,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               child: BlocListener(
                 bloc: _customerManageBloc,
                 listener: (BuildContext context, CustomerManageState state) {
-                  if (state is ReachMax) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Got all the data!'),
-                    ));
-                    _controller.removeListener(_scrollListener);
-                  }
                   if (state is Failure) {
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(state.errorMessage),
@@ -257,26 +239,19 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                     ));
                   }
                   if (state is Loaded) {
-                    if (state.isLoadMore) {
-                      if (state.customerManagerList != null) {
-                        _customerManagerList.addAll(state.customerManagerList);
-                        _isLoading = false;
-                      }
-                      _isLoading = false;
-                    } else {
-                      _customerManagerList = state.customerManagerList;
-                    }
+                    _customerManagerList = state.customerManagerList;
                   }
                 },
                 child: BlocBuilder(
                   bloc: _customerManageBloc,
                   builder: (BuildContext context, CustomerManageState state) {
-                    if (state is Loading && !state.isLoadMore) {
+                    if (state is Loading) {
                       return LoadingIndicator();
                     }
                     if (_customerManagerList == null) {
                       return Container(
-                        child: Text("Chưa có khách hàng trong ca làm việc này!"),
+                        child:
+                            Text("Chưa có khách hàng trong ca làm việc này!"),
                       );
                     }
                     return ListView.builder(

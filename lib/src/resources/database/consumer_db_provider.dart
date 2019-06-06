@@ -93,12 +93,12 @@ class ConsumerDbProvider extends DbProvider {
   }
 
   Future<CustomerManagerListModel> getListCustomer(
-      int timeIn, int userId, int offset, int limit, String type) async {
-    print(offset);
-    print(limit);
+      int timeIn, int userId, String type, String status) async {
+    print("abc");
+    print(type);
     final db = await database();
     List<Map> maps = await db
-        .query('consumers', where: 'createdBy = ? AND type = ?',whereArgs: [userId,type],limit: limit,offset: offset);
+        .query('consumers', where: 'createdBy = ? AND type = ?', whereArgs: [userId,type]);
     print(maps);
     if (maps.length == 0) {
       return null;

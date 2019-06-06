@@ -40,12 +40,10 @@ class CustomerManageBloc
         int userId = userModel.id;
         int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
         _currentOffset = event.offset;
-        _currentLimit = event.limit;
-        _customerType = event.customerType;
         print("haha");
         print(_customerType);
         final _customerManagerList =
-            await _customerManageRepository.getCustomers(timeIn, userId, _currentOffset, _currentLimit, _customerType);
+            await _customerManageRepository.getCustomers(timeIn, userId, _customerType = event.customerType, _customerStatus = event.customerStatus);
         yield Loaded(customerManagerList: _customerManagerList);
       } catch (error) {
         yield Failure(errorMessage: error.toString());
@@ -63,7 +61,7 @@ class CustomerManageBloc
         _currentOffset = _currentOffset + _currentLimit;
         _currentLimit = _currentLimit;
         final _customerManagerList =
-        await _customerManageRepository.getCustomers(timeIn, userId, _currentOffset, _currentLimit, _customerType);
+        await _customerManageRepository.getCustomers(timeIn, userId, _customerType, _customerStatus);
         yield Loaded(
             customerManagerList: _customerManagerList, isLoadMore: true);
       } catch (error,stack) {

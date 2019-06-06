@@ -23,8 +23,8 @@ class CustomerManageRepository {
     }).toList());
   }
 
-  Future<CustomerManagerListModel> getCustomers(int timeIn, int userId, int offset, int limit,String type) async {
+  Future<CustomerManagerListModel> getCustomers(int timeIn, int userId,String type, String status) async {
     await Future.delayed(Duration(seconds: 1));
-    return await _consumerDbProvider.getListCustomer(timeIn, userId, offset, limit, type);
+    return await _consumerDbProvider.getListCustomer(timeIn, userId, type, status);
   }
 }
