@@ -44,7 +44,7 @@ class ConsumerDbProvider extends DbProvider {
     print(limit);
     final db = await database();
     List<Map> maps = await db
-        .query('consumers', where: 'createdBy = ? ',whereArgs: [userId],limit: limit,offset: offset);
+        .query('consumers', where: 'createdBy = ? AND type = ?',whereArgs: [userId,type],limit: limit,offset: offset);
     print(maps);
     if (maps.length == 0) {
       return null;

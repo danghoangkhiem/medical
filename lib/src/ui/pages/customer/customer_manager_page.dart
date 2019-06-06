@@ -74,7 +74,10 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => ConsumerPage()));
             },
-            child: Icon(Icons.person_add, color: Colors.white,),
+            child: Icon(
+              Icons.person_add,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -255,7 +258,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      if(state.customerManagerList != null){
+                      if (state.customerManagerList != null) {
                         _customerManagerList.addAll(state.customerManagerList);
                         _isLoading = false;
                       }
@@ -270,6 +273,11 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                   builder: (BuildContext context, CustomerManageState state) {
                     if (state is Loading && !state.isLoadMore) {
                       return LoadingIndicator();
+                    }
+                    if (_customerManagerList == null) {
+                      return Container(
+                        child: Text("Chưa có khách hàng trong ca làm việc này!"),
+                      );
                     }
                     return ListView.builder(
                       controller: _controller,
@@ -312,9 +320,9 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                                 Text(
                                   _customerManagerList[index].name,
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.grey,
-                                      ),
+                                    fontSize: 18,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 Text(
                                   _customerManagerList[index].phone,
