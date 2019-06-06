@@ -18,6 +18,8 @@ class CustomerManageBloc
 
   String _customerType;
   String _customerStatus;
+  int _currentOffset;
+  int _currentLimit;
 
   @override
   CustomerManageState get initialState => InitialCustomerManageState();
@@ -37,14 +39,21 @@ class CustomerManageBloc
         UserModel userModel = await _userRepository.getInfo();
         int userId = userModel.id;
         int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
+        _currentOffset = event.offset;
+        _currentLimit = event.limit;
+        _customerType = event.customerType;
+        _customerStatus = event.customerStatus;
+        print("haha");
+        print(_customerType);
         final _customerManagerList =
-            await _customerManageRepository.getCustomers(timeIn, userId, _customerType = event.customerType, _customerStatus = event.customerStatus);
+            await _customerManageRepository.getCustomerByTypeAndStatus(timeIn, _currentOffset, _currentLimit, _customerType, _customerStatus);
         yield Loaded(customerManagerList: _customerManagerList);
       } catch (error) {
         yield Failure(errorMessage: error.toString());
       }
     }
     if (event is LoadMore) {
+      print("haha");
       yield Loading(isLoadMore: true);
       try {
         AttendanceModel attendanceModel =
@@ -52,11 +61,18 @@ class CustomerManageBloc
         UserModel userModel = await _userRepository.getInfo();
         int userId = userModel.id;
         int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
+        _currentOffset = _currentOffset + _currentLimit;
+        _currentLimit = _currentLimit;
         final _customerManagerList =
-        await _customerManageRepository.getCustomers(timeIn, userId, _customerType, _customerStatus);
-        yield Loaded(
-            customerManagerList: _customerManagerList, isLoadMore: true);
+        await _customerManageRepository.getCustomerByTypeAndStatus(timeIn, _currentOffset, _currentLimit, _customerType, _customerStatus);
+        if (_customerManagerList == null || _customerManagerList.length == 0) {
+          yield ReachMax();
+        } else {
+          yield Loaded(
+              customerManagerList: _customerManagerList, isLoadMore: true);
+        }
       } catch (error,stack) {
+        print(stack);
         yield Failure(errorMessage: error.toString());
       }
     }

@@ -10,10 +10,10 @@ class CustomerManagerModel {
   CustomerManagerModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'] as String,
-        phone = json['phone'] as String;
+        phone = json['phoneNumber'] as String;
 
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{'id': id, 'name': name, 'phone': phone};
+    return <String, dynamic>{'id': id, 'name': name, 'phoneNumber': phone};
   }
 }
 

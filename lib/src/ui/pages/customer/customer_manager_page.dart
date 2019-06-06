@@ -31,11 +31,13 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   CustomerManageBloc _customerManageBloc;
 
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   @override
   void initState() {
     _customerManagerList = CustomerManagerListModel.fromJson([]);
     _customerManageBloc = CustomerManageBloc();
+    _controller.addListener(_scrollListener);
     super.initState();
   }
 
@@ -44,6 +46,17 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
     _customerManageBloc?.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      throttle(200, () {
+        if (_isLoading != true) {
+          _isLoading = true;
+          _customerManageBloc.dispatch(LoadMore());
+        }
+      });
+    }
   }
 
   @override
@@ -62,10 +75,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => ConsumerPage()));
             },
-            child: Icon(
-              Icons.person_add,
-              color: Colors.white,
-            ),
+            child: Icon(Icons.person_add, color: Colors.white,),
           ),
         ],
       ),
@@ -232,6 +242,13 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               child: BlocListener(
                 bloc: _customerManageBloc,
                 listener: (BuildContext context, CustomerManageState state) {
+                  if (state is ReachMax) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Đã hiển thị tất cả dữ liệu!'),
+                    ));
+                    _isLoading = false;
+                    _isReachMax = true;
+                  }
                   if (state is Failure) {
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(state.errorMessage),
@@ -239,19 +256,27 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                     ));
                   }
                   if (state is Loaded) {
-                    _customerManagerList = state.customerManagerList;
+                    if (state.isLoadMore) {
+                      if(state.customerManagerList != null){
+                        _customerManagerList.addAll(state.customerManagerList);
+                        _isLoading = false;
+                      }
+                      _isLoading = false;
+                    } else {
+                      _customerManagerList = state.customerManagerList;
+                      _isReachMax = false;
+                    }
                   }
                 },
                 child: BlocBuilder(
                   bloc: _customerManageBloc,
                   builder: (BuildContext context, CustomerManageState state) {
-                    if (state is Loading) {
+                    if (state is Loading && !state.isLoadMore) {
                       return LoadingIndicator();
                     }
                     if (_customerManagerList == null) {
                       return Container(
-                        child:
-                            Text("Chưa có khách hàng trong ca làm việc này!"),
+                        child: Text("Chưa có khách hàng!"),
                       );
                     }
                     return ListView.builder(
@@ -295,9 +320,9 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                                 Text(
                                   _customerManagerList[index].name,
                                   style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.grey,
-                                  ),
+                                      fontSize: 18,
+                                      color: Colors.grey,
+                                      ),
                                 ),
                                 Text(
                                   _customerManagerList[index].phone,
