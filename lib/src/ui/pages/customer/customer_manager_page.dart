@@ -176,11 +176,11 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                                     value: _customerStatus,
                                     items: [
                                       DropdownMenuItem(
-                                          value: CustomerStatus.newStatus
+                                          value: CustomerStatus.oldStatus
                                               .toString(),
                                           child: new Text('Cũ')),
                                       DropdownMenuItem(
-                                          value: CustomerStatus.oldStatus
+                                          value: CustomerStatus.newStatus
                                               .toString(),
                                           child: new Text('Mới')),
                                       DropdownMenuItem(
@@ -237,11 +237,24 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                 ],
               ),
             ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              width: double.infinity,
+              height: 42,
+              child: Text('Lưu ý: Bạn nên đồng bộ dữ liệu trước để có được danh sách mới nhất!',style: TextStyle(color: Colors.red),),
+            ),
+
             Expanded(
               flex: 2,
               child: BlocListener(
                 bloc: _customerManageBloc,
                 listener: (BuildContext context, CustomerManageState state) {
+                  if (state is NoRecordsFound) {
+                    Scaffold.of(context).removeCurrentSnackBar();
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Không có dữ liệu được tìm thấy!'),
+                    ));
+                  }
                   if (state is ReachMax) {
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text('Đã hiển thị tất cả dữ liệu!'),
@@ -273,11 +286,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                   builder: (BuildContext context, CustomerManageState state) {
                     if (state is Loading && !state.isLoadMore) {
                       return LoadingIndicator();
-                    }
-                    if (_customerManagerList == null) {
-                      return Container(
-                        child: Text("Chưa có khách hàng!"),
-                      );
                     }
                     return ListView.builder(
                       controller: _controller,
