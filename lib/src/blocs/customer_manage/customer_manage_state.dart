@@ -27,3 +27,5 @@ class Failure extends CustomerManageState {
 }
 
 class ReachMax extends CustomerManageState {}
+
+class NoRecordsFound extends CustomerManageState {}

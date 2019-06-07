@@ -16,9 +16,14 @@ class CustomerApiProvider extends ApiProvider {
       /*'timeIn': timeIn,*/
       'offset': offset,
       'limit': limit,
-      /*'type': type,
-      'status': status,*/
+      'type': type,
+      'status': status,
     };
+    print(timeIn);
+    print(offset);
+    print(limit);
+    print(type);
+    print(status);
     Response _resp =
         await httpClient.get('/consumers', queryParameters: _queryParameters);
     if (_resp.statusCode == 200) {

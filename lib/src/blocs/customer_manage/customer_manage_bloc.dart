@@ -43,17 +43,18 @@ class CustomerManageBloc
         _currentLimit = event.limit;
         _customerType = event.customerType;
         _customerStatus = event.customerStatus;
-        print("haha");
-        print(_customerType);
         final _customerManagerList =
             await _customerManageRepository.getCustomerByTypeAndStatus(timeIn, _currentOffset, _currentLimit, _customerType, _customerStatus);
-        yield Loaded(customerManagerList: _customerManagerList);
+        if (_customerManagerList.length == 0) {
+          yield NoRecordsFound();
+        } else {
+          yield Loaded(customerManagerList: _customerManagerList);
+        }
       } catch (error) {
         yield Failure(errorMessage: error.toString());
       }
     }
     if (event is LoadMore) {
-      print("haha");
       yield Loading(isLoadMore: true);
       try {
         AttendanceModel attendanceModel =

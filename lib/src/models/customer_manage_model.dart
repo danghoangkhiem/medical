@@ -67,7 +67,7 @@ class CustomerType{
 class CustomerStatus{
   static const CustomerStatus oldStatus = CustomerStatus._('old');
   static const CustomerStatus newStatus = CustomerStatus._('new');
-  static const CustomerStatus receiveStatus = CustomerStatus._('receive');
+  static const CustomerStatus receiveStatus = CustomerStatus._('received');
 
   final String value;
 

@@ -9,7 +9,7 @@ class CustomerManageRepository {
   final CustomerApiProvider _customerApiProvider = CustomerApiProvider();
 
 
-  Future<CustomerManagerListModel> getCustomerByTypeAndStatus(int timeIn, int offset, int limit,@required String type,@required String status) async {
+  Future<CustomerManagerListModel> getCustomerByTypeAndStatus(int timeIn, int offset, int limit,String type,String status) async {
     return await _customerApiProvider.getCustomerByTypeAndStatus(timeIn: timeIn,offset: offset, limit: limit,type: type,status: status);
   }
 
