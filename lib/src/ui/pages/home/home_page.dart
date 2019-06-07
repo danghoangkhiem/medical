@@ -17,6 +17,7 @@ import 'package:medical/src/ui/pages/invoice/invoice_page.dart';
 import 'package:medical/src/ui/pages/customer/customer_manager_page.dart';
 import 'package:medical/src/ui/pages/inventories/inventories_page.dart';
 import 'package:medical/src/ui/pages/report_kpi/report_kpi_page.dart';
+import 'package:medical/src/ui/pages/schedule_work/schedule_work_page.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
@@ -283,7 +284,8 @@ class _HomePageState extends State<HomePage> {
               icon: Icons.schedule,
               label: 'Lên kế hoạch làm việc',
               onPressed: () {
-                return;
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ScheduleWorkPage()));
               },
               required: [
                 UserRoleType.MedicalRepresentative,
