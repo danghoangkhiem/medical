@@ -6,6 +6,7 @@ import 'package:medical/src/blocs/authentication/authentication.dart';
 import 'package:medical/src/blocs/home/home.dart';
 
 import 'package:medical/src/models/user_model.dart';
+import 'package:medical/src/ui/pages/manage_area_day/manage_area_day_page.dart';
 
 import 'package:medical/src/utils.dart';
 
@@ -197,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                         Icons.info,
                         color: Colors.redAccent,
                       )
-                    : Container()
+                    : SizedBox()
               ],
             ),
             leading: Icon(
@@ -229,6 +230,17 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => CheckInPage()));
+              },
+              required: [
+                UserRoleType.MedicalNutritionRepresentative,
+              ],
+            ),
+            _buildSelectionItem(
+              icon: Icons.access_alarm,
+              label: 'Danh sách quản lý địa ngày',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ManageAreaDay()));
               },
               required: [
                 UserRoleType.MedicalNutritionRepresentative,

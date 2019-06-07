@@ -5,14 +5,14 @@ import 'api_provider.dart';
 class ManageAreaApiProvider extends ApiProvider {
 
   Future<ManageAreaModel> getManageArea({int offset = 0, int limit = 10, @required DateTime date}) async {
-
+    await Future.delayed(Duration(seconds: 1));
     return ManageAreaModel.fromJson([
       {
         "id": 2,
-        "startTime": 2222222,
-        "endTime": 2222222,
-        "realStartTime": 333333,
-        "realEndTime": 23234234,
+        "startTime": 1559927049446,
+        "endTime": 1559927049746,
+        "realStartTime": null,
+        "realEndTime": null,
         "doctorName": "Nhật Thuần Phong 2",
         "addressType": "benh vien",
         "addressName": "binh thah",
@@ -22,34 +22,18 @@ class ManageAreaApiProvider extends ApiProvider {
       },
       {
         "id": 3,
-        "startTime": 2222222,
-        "endTime": 2222222,
-        "realStartTime": 333333,
-        "realEndTime": 23234234,
+        "startTime": 1559927049446,
+        "endTime": 1559927049746,
+        "realStartTime": null,
+        "realEndTime": null,
         "doctorName": "Nhật Thuần Phong 3",
         "addressType": "benh vien",
         "addressName": "binh thah",
         "status": 1,
         "targetBefore": "",
         "targetAfter": ""
-      },
-      {
-        "id": 4,
-        "startTime": 2222222,
-        "endTime": 2222222,
-        "realStartTime": 333333,
-        "realEndTime": 23234234,
-        "doctorName": "Nhật Thuần Phong 4",
-        "addressType": "benh vien",
-        "addressName": "binh thah",
-        "status": 1,
-        "targetBefore": "",
-        "targetAfter": ""
-      },
-
+      }
     ]);
-
-
 
 //    Map<String, dynamic> _queryParameters = {
 //      'offset': offset,
