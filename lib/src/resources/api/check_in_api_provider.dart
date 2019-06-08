@@ -20,18 +20,12 @@ class CheckInApiProvider extends ApiProvider {
     Response _resp =
         await httpClient.post('/attendances/check-in', data: formData);
     if (_resp.statusCode == 200) {
-
-      print("haha");
-      print(_resp.data);
-
       try {
         return CheckIOModel.fromJson(_resp.data) == null ? false : true;
       }
       catch(_){
         return false;
       }
-
-
     }
     return Future.error(ApiResponseError.fromJson(_resp.data['error']));
   }
