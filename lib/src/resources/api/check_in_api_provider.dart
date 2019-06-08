@@ -14,13 +14,24 @@ class CheckInApiProvider extends ApiProvider {
       "latitude": checkIn.lon,
       "locationId": checkIn.locationId,
       "images": checkIn.images.map((item) {
-        return UploadFileInfo(item, "abc.jpg");
+        return UploadFileInfo(item, "abc.def");
       }).toList()
     });
     Response _resp =
         await httpClient.post('/attendances/check-in', data: formData);
     if (_resp.statusCode == 200) {
-      return true;
+
+      print("haha");
+      print(_resp.data);
+
+      try {
+        return CheckIOModel.fromJson(_resp.data) == null ? false : true;
+      }
+      catch(_){
+        return false;
+      }
+
+
     }
     return Future.error(ApiResponseError.fromJson(_resp.data['error']));
   }
@@ -33,7 +44,7 @@ class CheckInApiProvider extends ApiProvider {
     return Future.error(ApiResponseError.fromJson(_resp.data['error']));
   }
 
-  Future<bool> addCheckOut({@required CheckOutModel checkOut}) async {
+  Future<CheckIOModel> addCheckOut({@required CheckOutModel checkOut}) async {
     Map<String, dynamic> _queryParameters = {
       'latitude': checkOut.latitude,
       'longitude': checkOut.longitude,
@@ -41,7 +52,7 @@ class CheckInApiProvider extends ApiProvider {
     Response _resp =
         await httpClient.post('/attendances/check-out', data: _queryParameters);
     if (_resp.statusCode == 200) {
-      return true;
+      return CheckIOModel.fromJson(_resp.data);
     }
     return Future.error(ApiResponseError.fromJson(_resp.data['error']));
   }

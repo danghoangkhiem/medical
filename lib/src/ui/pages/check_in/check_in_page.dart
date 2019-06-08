@@ -186,8 +186,9 @@ class _CheckInPage extends State<CheckInPage> {
           if (state is CheckInLoading) {
             return LoadingIndicator();
           }
-          if (state is CheckInLoading) {
-            return LoadingIndicator();
+          if (state is CheckInError) {
+            _locationSubscription.cancel();
+            return checkInNotificationError();
           }
           if (state is CheckInLoaded) {
             _locationSubscription.cancel();
@@ -600,6 +601,22 @@ class _CheckInPage extends State<CheckInPage> {
         ],
       ),
     );
+  }
+
+  Widget checkInNotificationError(){
+    return Container(
+        child: AlertDialog(
+          title: Text("Thông báo"),
+          content: Text("Check In thất bại! Vui lòng thử lại"),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => CheckInPage()));
+                },
+                child: Text("OK"))
+          ],
+        ));
   }
 
   Widget checkInNotification(){
