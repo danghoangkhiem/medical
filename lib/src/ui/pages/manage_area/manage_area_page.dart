@@ -79,7 +79,6 @@ class ManageAreaState extends State<ManageArea> {
         child: new Column(
           children: <Widget>[
             new Expanded(
-                flex: 6,
                 child: new Form(
                     key: _formKey,
                     child: new Container(
@@ -125,14 +124,6 @@ class ManageAreaState extends State<ManageArea> {
                                                 child: new Text("Bệnh viện 115"),
                                                 value: 1,
                                               ),
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 116"),
-                                                value: 1,
-                                              ),
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 117"),
-                                                value: 1,
-                                              )
                                             ],
                                             onChanged: (value){
 
@@ -477,38 +468,38 @@ class ManageAreaState extends State<ManageArea> {
                                 new SizedBox(
                                   height: 17,
                                 ),
-
                               ],
                             ),
                           ),
                         ],
                       ),
                     ))),
-            new Expanded(
-                flex: 1,
-                child: new Container(
-                  color: Colors.grey.withOpacity(0.1),
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-                  child: new Row(
-                    children: <Widget>[
-                      new Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 5),
-                            decoration: BoxDecoration(
-                                color: Colors.blueAccent,
-                                borderRadius: BorderRadius.circular(4)),
-                            child: new FlatButton(
-                                padding: EdgeInsets.symmetric(vertical: 13),
-                                onPressed: () {},
-                                child: new Text(
-                                  "TIẾP TỤC",
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.white),
-                                )),
-                          ))
-                    ],
-                  ),
-                ))
+            Material(
+              elevation: 15,
+              child: new Container(
+                height: 65,
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                child: new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 5),
+                          decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(4)),
+                          child: new FlatButton(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              onPressed: () {},
+                              child: new Text(
+                                "Lưu",
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              )),
+                        ))
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
