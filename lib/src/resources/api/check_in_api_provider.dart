@@ -14,7 +14,7 @@ class CheckInApiProvider extends ApiProvider {
       "latitude": checkIn.lon,
       "locationId": checkIn.locationId,
       "images": checkIn.images.map((item) {
-        return UploadFileInfo(item, "abc.def");
+        return UploadFileInfo(item, "abc.jpg");
       }).toList()
     });
     Response _resp =
