@@ -315,12 +315,12 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                           height: 50,
                           child: InkWell(
                             onTap: () {
-                              Navigator.of(context).push(
+                              /*Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       DateCoachingPage(date: DateTime.now()),
                                 ),
-                              );
+                              );*/
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
