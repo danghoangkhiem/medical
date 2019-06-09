@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(7),
         color: Colors.white,
       ),
-      height: 60,
+      height: 55,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                     label,
                     style: TextStyle(
                         color: Colors.black54,
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
