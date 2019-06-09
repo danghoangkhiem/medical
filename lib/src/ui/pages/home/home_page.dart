@@ -243,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                     builder: (BuildContext context) => ManageAreaDay()));
               },
               required: [
-                UserRoleType.MedicalSupervisor,
+                UserRoleType.MedicalRepresentative,
               ],
             ),
             _buildSelectionItem(

@@ -146,7 +146,6 @@ class ManageAreaDayState extends State<ManageAreaDay> {
 
   Widget _buildRow(ManageAreaItem item) {
     return Container(
-
       decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
@@ -161,7 +160,7 @@ class ManageAreaDayState extends State<ManageAreaDay> {
         child: InkWell(
           onTap: (){
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => ManageArea()));
+                builder: (BuildContext context) => ManageArea(item)));
           },
           child: new Row(
             children: <Widget>[
