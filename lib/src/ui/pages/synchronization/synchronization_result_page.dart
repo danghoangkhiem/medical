@@ -33,30 +33,40 @@ class _SynchronizationResultPageState extends State<SynchronizationResultPage> {
                         'Đồng bộ dữ liệu thành công',
                         style: TextStyle(
                             color: Colors.black54,
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
                 )),
-            Expanded(
-                flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.blueAccent,
-                  ),
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        'Trang chủ',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      )),
-                ))
+            Material(
+              elevation: 5,
+              child: new Container(
+                height: 65,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 5),
+                          decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(4)),
+                          child: new FlatButton(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: new Text(
+                                "Trang chủ",
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              )),
+                        ))
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),

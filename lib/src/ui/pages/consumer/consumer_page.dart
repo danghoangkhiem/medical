@@ -87,10 +87,7 @@ class _ConsumerPageState extends State<ConsumerPage> {
                       consumerBloc: _consumerBloc,
                       formKey: _formKey,
                     )),
-                Expanded(
-                  flex: 1,
-                  child: _buildActionButton(),
-                )
+                _buildActionButton()
               ],
             );
           }),
@@ -99,6 +96,7 @@ class _ConsumerPageState extends State<ConsumerPage> {
 
   Widget _buildActionButton() {
     return Container(
+      height: 50,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         children: <Widget>[

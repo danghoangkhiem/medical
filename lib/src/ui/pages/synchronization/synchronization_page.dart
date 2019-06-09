@@ -76,7 +76,7 @@ class _SynchronizationPageState extends State<SynchronizationPage> {
                           : 'Dữ liệu chưa được đồng bộ',
                       style: TextStyle(
                           color: Colors.black54,
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -90,28 +90,41 @@ class _SynchronizationPageState extends State<SynchronizationPage> {
                   )
                 ],
               )),
-          Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color: Colors.blueAccent,
-                ),
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: FlatButton(
-                    onPressed: () {
-                      _synchronizationBloc.dispatch(
-                          SynchronizationEvent.synchronize(
-                              userId: widget.user.id));
-                    },
-                    child: Text(
-                      'Đồng bộ dữ liệu',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    )),
-              )),
+          Material(
+            elevation: 5,
+            child: new Container(
+              height: 65,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: new Row(
+                children: <Widget>[
+                  new Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 5),
+                        decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            borderRadius: BorderRadius.circular(4)),
+                        child: new FlatButton(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            onPressed: () {
+                              _synchronizationBloc.dispatch(
+                                  SynchronizationEvent.synchronize(
+                                      userId: widget.user.id));
+                            },
+                            child: new Text(
+                              "Đồng bộ dữ liệu",
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.white),
+                            )),
+                      ))
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
+
+

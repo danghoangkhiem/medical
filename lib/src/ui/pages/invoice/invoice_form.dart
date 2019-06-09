@@ -33,6 +33,7 @@ class _InvoiceFormState extends State<InvoiceForm> {
 
   Widget _buildContainer() {
     return Container(
+      height: 200,
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
