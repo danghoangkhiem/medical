@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
 
 import 'api_provider.dart';
 import 'api_response_error.dart';
@@ -13,8 +16,8 @@ class CheckInApiProvider extends ApiProvider {
       "longitude": checkIn.lat,
       "latitude": checkIn.lon,
       "locationId": checkIn.locationId,
-      "images": checkIn.images.map((item) {
-        return UploadFileInfo(item, "abc.jpg");
+      "images": checkIn.images.map((File item) {
+        return UploadFileInfo(item, basename(item.path));
       }).toList()
     });
     Response _resp =
