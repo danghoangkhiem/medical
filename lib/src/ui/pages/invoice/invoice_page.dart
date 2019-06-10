@@ -47,7 +47,7 @@ class _InvoicePageState extends State<InvoicePage> {
       return;
     }
     if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-      throttle(200, () {
+      throttle(10, () {
         if (_isLoading != true) {
           _isLoading = true;
           _invoiceBloc.dispatch(LoadMore());

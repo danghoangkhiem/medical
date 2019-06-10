@@ -13,7 +13,7 @@ class ConsumerRepository {
   final ConsumerApiProvider _consumerApiProvider = ConsumerApiProvider();
 
   Future<ConsumerModel> findPhoneNumber(String phoneNumber) async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 200));
     return await _consumerDbProvider.findPhoneNumber(phoneNumber);
   }
 

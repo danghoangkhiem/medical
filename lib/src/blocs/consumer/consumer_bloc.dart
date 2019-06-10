@@ -82,7 +82,7 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
     if (event is NextStep) {
       if (currentState.currentStep == 5) {
         yield Loading();
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(Duration(milliseconds: 200));
         try {
           await _consumerRepository.addConsumerLocally(event.consumer);
           yield Added();

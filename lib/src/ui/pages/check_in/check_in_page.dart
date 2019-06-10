@@ -28,6 +28,11 @@ class CheckInPage extends StatefulWidget {
 }
 
 class _CheckInPage extends State<CheckInPage> {
+
+  bool _isCheckInPressed = false;
+  
+  bool _isCheckOutPressed = false;
+
   var location = new Location();
 
   Map<String, double> userLocation;
@@ -184,24 +189,29 @@ class _CheckInPage extends State<CheckInPage> {
             return checkOut(state.attendanceModel);
           }
           if (state is CheckInLoading) {
-            return LoadingIndicator();
+            return LoadingIndicator(
+              opacity: 0,
+            );
           }
           if (state is CheckInError) {
-            _locationSubscription.cancel();
+            setState(() {
+              _isCheckInPressed  = false;
+            });
+            _locationSubscription?.cancel();
             return checkInNotificationError();
           }
           if (state is CheckInLoaded) {
-            _locationSubscription.cancel();
+            _locationSubscription?.cancel();
             return checkInNotification();
           }
           if (state is CheckOutLoading) {
-            return LoadingIndicator();
+            return LoadingIndicator(opacity: 0,);
           }
           if (state is CheckOutLoaded) {
-            _locationSubscription.cancel();
+            _locationSubscription?.cancel();
             return checkOutNotification();
           }
-          _locationSubscription.cancel();
+          _locationSubscription?.cancel();
           return Container();
         },
       ),
@@ -387,6 +397,7 @@ class _CheckInPage extends State<CheckInPage> {
                     child: new FlatButton(
                         padding: EdgeInsets.symmetric(vertical: 10),
                         onPressed: () async {
+
                           if (currentLocation == null) {
                             showDialog(
                                 context: context,
@@ -424,6 +435,9 @@ class _CheckInPage extends State<CheckInPage> {
                                 });
                             return;
                           }
+                          setState(() {
+                            _isCheckInPressed = true;
+                          });
                           userLocation = await _getLocation();
                           if (userLocation.isEmpty) {
                             showDialog(
@@ -442,6 +456,9 @@ class _CheckInPage extends State<CheckInPage> {
                                     ],
                                   );
                                 });
+                            setState(() {
+                              _isCheckInPressed = false;
+                            });
                             return;
                           }
                           CheckInModel newCheckInModel = CheckInModel(
@@ -451,11 +468,27 @@ class _CheckInPage extends State<CheckInPage> {
                               images: _image);
                           _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
                         },
-                        child: new Text(
-                          "Check in",
-                          style: TextStyle(
-                              fontSize: 16, color: Colors.white),
-                        )),
+                        child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            _isCheckInPressed ? new SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(backgroundColor: Colors.white,),
+                            ) : SizedBox(),
+                            new Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: new Text(
+                                "Chấm công vào",
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              ),
+                            )
+
+
+                          ],
+                        )
+                    ),
                   ))
             ],
           ),
@@ -573,6 +606,11 @@ class _CheckInPage extends State<CheckInPage> {
                         child: new FlatButton(
                             padding: EdgeInsets.symmetric(vertical: 10),
                             onPressed: () async {
+                              
+                              setState(() {
+                                _isCheckOutPressed = true;
+                              });
+                              
                               userLocation = await _getLocation();
                               if (userLocation.length == 0) {
                                 showDialog(
@@ -591,18 +629,38 @@ class _CheckInPage extends State<CheckInPage> {
                                         ],
                                       );
                                     });
+                                setState(() {
+                                  _isCheckOutPressed = false;
+                                });
                                 return;
                               }
+
                               CheckOutModel newCheckOut = CheckOutModel(
                                   latitude: userLocation['latitude'],
                                   longitude: userLocation['longitude']);
                               _checkInBloc.dispatch(AddCheckOut(newCheckOut));
                             },
-                            child: new Text(
-                              "Check out",
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.white),
-                            )),
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                _isCheckInPressed ? new SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(backgroundColor: Colors.white,),
+                                ) : SizedBox(),
+                                new Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: new Text(
+                                    "Chấm công ra",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                )
+
+
+                              ],
+                            )
+                        ),
                       )),
                 ],
               ),
@@ -647,8 +705,16 @@ class _CheckInPage extends State<CheckInPage> {
   Widget checkInNotification(){
     return Container(
         child: AlertDialog(
-          title: Text("Thông báo"),
-          content: Text("Check In thành công!"),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new Icon(Icons.check_circle, color: Colors.green, size: 50,),
+              SizedBox(height: 10,),
+              Text("Đã chấm công vào!")
+            ],
+          ),
           actions: <Widget>[
             FlatButton(
                 onPressed: () {
@@ -663,8 +729,17 @@ class _CheckInPage extends State<CheckInPage> {
   Widget checkOutNotification(){
     return Container(
         child: AlertDialog(
-          title: Text("Thông báo"),
-          content: Text("Check Out thành công!"),
+
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new Icon(Icons.check_circle, color: Colors.green, size: 50,),
+              SizedBox(height: 10,),
+              Text("Đã chấm công ra!")
+            ],
+          ),
           actions: <Widget>[
             FlatButton(
                 onPressed: () {

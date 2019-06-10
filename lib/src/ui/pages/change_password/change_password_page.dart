@@ -73,16 +73,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text('Thành công!'),
-                      content: Text('Cập nhật mật khẩu thành công. '
-                          'Bạn cần phải đăng nhập lại bằng mật khẩu mới '
-                          'để có thể thao tác trên ứng dụng.'),
+                      content: Text(
+                        'Cập nhật mật khẩu thành công.',
+                        style: TextStyle(height: 1.2),
+                      ),
                       actions: <Widget>[
                         FlatButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                             Navigator.of(context).pop();
                           },
-                          child: Text('Đăng nhập'),
+                          child: Text('OK'),
                         )
                       ],
                     );
@@ -127,21 +128,21 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     children: <Widget>[
                       new Expanded(
                           child: Container(
-                            margin: EdgeInsets.only(left: 5),
-                            decoration: BoxDecoration(
-                                color: Colors.blueAccent,
-                                borderRadius: BorderRadius.circular(4)),
-                            child: new FlatButton(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                onPressed: () {
-                                  _onButtonSubmitted();
-                                },
-                                child: new Text(
-                                  "Đổi mật khẩu",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                )),
-                          ))
+                        margin: EdgeInsets.only(left: 5),
+                        decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            borderRadius: BorderRadius.circular(4)),
+                        child: new FlatButton(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            onPressed: () {
+                              _onButtonSubmitted();
+                            },
+                            child: new Text(
+                              "Đổi mật khẩu",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
+                            )),
+                      ))
                     ],
                   ),
                 ),

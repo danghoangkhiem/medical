@@ -45,7 +45,7 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
 
   void _scrollListener() {
     if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-      throttle(200, () {
+      throttle(10, () {
         if (_isLoading != true) {
           _isLoading = true;
           _dayCoachingBloc.dispatch(LoadMore());

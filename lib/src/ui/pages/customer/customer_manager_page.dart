@@ -50,7 +50,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
 
   void _scrollListener() {
     if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-      throttle(200, () {
+      throttle(10, () {
         if (_isLoading != true) {
           _isLoading = true;
           _customerManageBloc.dispatch(LoadMore());

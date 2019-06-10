@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ void exitApp(BuildContext context) async {
       });
   if (accepted is bool && accepted) {
     SystemNavigator.pop();
+    exit(0);
   }
 }
 

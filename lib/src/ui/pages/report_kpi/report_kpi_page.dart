@@ -46,7 +46,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
   void _scrollListener() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      throttle(200, () {
+      throttle(10, () {
         if (_isLoading != true) {
           _isLoading = true;
           print("Load more");
@@ -59,7 +59,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
   void _scrollListenerMonth() {
     if (_scrollControllerMonth.position.pixels ==
         _scrollControllerMonth.position.maxScrollExtent) {
-      throttle(200, () {
+      throttle(10, () {
         if (_isLoadingMonth != true) {
           _isLoadingMonth = true;
           print("Load more month");

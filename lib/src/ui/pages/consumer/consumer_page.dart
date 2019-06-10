@@ -58,7 +58,7 @@ class _ConsumerPageState extends State<ConsumerPage> {
                 Scaffold.of(context).removeCurrentSnackBar();
                 Scaffold.of(context).showSnackBar(SnackBar(
                   content: Text('Đã thêm khách hàng thành công'),
-                  backgroundColor: Colors.greenAccent,
+                  backgroundColor: Colors.green,
                   duration: Duration(seconds: 2),
                 ));
               });

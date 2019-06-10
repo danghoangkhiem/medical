@@ -39,7 +39,7 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
     }
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      throttle(200, () {
+      throttle(10, () {
         if (_isLoading != true) {
           _isLoading = true;
           _blocAttendance.dispatch(LoadMore());

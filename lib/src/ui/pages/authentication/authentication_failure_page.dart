@@ -43,24 +43,23 @@ class AuthenticationFailurePage extends StatelessWidget {
                     ),
                   ],
                 )),
-            Expanded(
-                flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.blueAccent,
-                  ),
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: FlatButton(
-                      onPressed: () {
-                        bloc.dispatch(AuthenticationEvent.loggedOut());
-                      },
-                      child: Text(
-                        'Đăng nhập',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      )),
-                ))
+            Container(
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: Colors.blueAccent,
+              ),
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: FlatButton(
+                  onPressed: () {
+                    bloc.dispatch(AuthenticationEvent.loggedOut());
+                  },
+                  child: Text(
+                    'Đăng nhập',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  )),
+            )
           ],
         ),
       ),
