@@ -6,6 +6,7 @@ import 'package:medical/src/resources/user_repository.dart';
 
 import 'package:medical/src/resources/check_in_repository.dart';
 import 'package:medical/src/models/attendance_model.dart';
+import 'package:medical/src/models/check_io_model.dart';
 
 class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
   final CheckInRepository _checkInRepository = CheckInRepository();
@@ -19,10 +20,15 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
     if (event is AddCheckIn) {
       yield CheckInLoading();
       try {
-        await _checkInRepository.addCheckIn(event.newCheckInModel);
+        bool checkIOModel = await _checkInRepository.addCheckIn(event.newCheckInModel);
         await _userRepository.setAttendanceLastTimeLocally(
             await _userRepository.getAttendanceLastTime());
-        yield CheckInLoaded();
+        print("haha");
+        if (checkIOModel == false) {
+          yield CheckInError();
+        } else {
+          yield CheckInLoaded();
+        }
       } catch (error) {
         yield CheckInFailure(error: error.toString());
       }

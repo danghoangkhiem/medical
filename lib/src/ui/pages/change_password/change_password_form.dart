@@ -68,7 +68,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       controller: widget.confirmPasswordController,
       obscureText: true,
       style: TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: isConfirmed ? Colors.black54 : Colors.redAccent),
+          fontSize: 16, fontWeight: FontWeight.bold, color: isConfirmed ? Colors.black54 : Colors.redAccent),
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.lock_outline),
         hintText: "Nhập lại mật khẩu mới",
@@ -85,7 +85,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       controller: widget.newPasswordController,
       obscureText: true,
       style: TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black54),
+          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54),
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.lock_outline),
         hintText: "Mật khẩu mới",
@@ -102,7 +102,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       controller: widget.oldPasswordController,
       obscureText: true,
       style: TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black54),
+          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54),
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.lock_outline),
         hintText: "Mật khẩu cũ",

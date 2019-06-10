@@ -75,175 +75,165 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => ConsumerPage()));
             },
-            child: Icon(Icons.person_add, color: Colors.white,),
+            child: Icon(
+              Icons.person_add,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
       body: new Container(
         child: new Column(
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: ListView(
+            Container(
+              height: 170,
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
                 children: <Widget>[
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: <Widget>[
-                        new SizedBox(
-                          height: 10,
+                  new SizedBox(
+                    height: 10,
+                  ),
+                  new Row(
+                    children: <Widget>[
+                      new Container(
+                        margin: EdgeInsets.only(right: 74),
+                        child: new Text(
+                          "Chọn loại",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
                         ),
-                        new Row(
-                          children: <Widget>[
-                            new Container(
-                              margin: EdgeInsets.only(right: 74),
-                              child: new Text(
-                                "Chọn loại",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
-                              ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.blueAccent,
-                                        width: 2,
-                                        style: BorderStyle.solid),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    isExpanded: true,
-                                    value: _customerType,
-                                    items: [
-                                      DropdownMenuItem(
-                                          value:
-                                              CustomerType.leadType.toString(),
-                                          child: new Text('Lead')),
-                                      DropdownMenuItem(
-                                          value:
-                                              CustomerType.userType.toString(),
-                                          child: new Text('User')),
-                                    ],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _customerType = value;
-                                      });
-                                    },
-                                    style: new TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.blueAccent,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        new SizedBox(
-                          height: 10,
-                        ),
-                        new Row(
-                          children: <Widget>[
-                            new Container(
-                              margin: EdgeInsets.only(right: 24),
-                              child: new Text(
-                                "Chọn tình trạng",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
-                              ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.blueAccent,
-                                        width: 2,
-                                        style: BorderStyle.solid),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    isExpanded: true,
-                                    value: _customerStatus,
-                                    items: [
-                                      DropdownMenuItem(
-                                          value: CustomerStatus.oldStatus
-                                              .toString(),
-                                          child: new Text('Cũ')),
-                                      DropdownMenuItem(
-                                          value: CustomerStatus.newStatus
-                                              .toString(),
-                                          child: new Text('Mới')),
-                                      DropdownMenuItem(
-                                          value: CustomerStatus.receiveStatus
-                                              .toString(),
-                                          child: new Text('Đã nhận Sampling')),
-                                    ],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _customerStatus = value;
-                                      });
-                                    },
-                                    style: new TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.blueAccent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          width: double.infinity,
+                      ),
+                      Flexible(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          height: 40,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.blueAccent,
-                          ),
-                          height: 42,
-                          child: FlatButton(
-                            onPressed: () {
-                              _customerManageBloc.dispatch(
-                                  CustomerManageEventFilter(
-                                      customerType: _customerType,
-                                      customerStatus: _customerStatus));
-                            },
-                            child: new Text(
-                              "Tìm",
+                              border: Border.all(
+                                  color: Colors.blueAccent,
+                                  width: 2,
+                                  style: BorderStyle.solid),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              isExpanded: true,
+                              value: _customerType,
+                              items: [
+                                DropdownMenuItem(
+                                    value: CustomerType.leadType.toString(),
+                                    child: new Text('Lead')),
+                                DropdownMenuItem(
+                                    value: CustomerType.userType.toString(),
+                                    child: new Text('User')),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _customerType = value;
+                                });
+                              },
                               style: new TextStyle(
-                                  fontSize: 18, color: Colors.white),
+                                  fontSize: 18,
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
-                        new SizedBox(
-                          height: 50,
+                      )
+                    ],
+                  ),
+                  new SizedBox(
+                    height: 10,
+                  ),
+                  new Row(
+                    children: <Widget>[
+                      new Container(
+                        margin: EdgeInsets.only(right: 24),
+                        child: new Text(
+                          "Chọn tình trạng",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
                         ),
-                      ],
+                      ),
+                      Flexible(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          height: 40,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.blueAccent,
+                                  width: 2,
+                                  style: BorderStyle.solid),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              isExpanded: true,
+                              value: _customerStatus,
+                              items: [
+                                DropdownMenuItem(
+                                    value: CustomerStatus.oldStatus.toString(),
+                                    child: new Text('Cũ')),
+                                DropdownMenuItem(
+                                    value: CustomerStatus.newStatus.toString(),
+                                    child: new Text('Mới')),
+                                DropdownMenuItem(
+                                    value:
+                                        CustomerStatus.receiveStatus.toString(),
+                                    child: new Text('Đã nhận Sampling')),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _customerStatus = value;
+                                });
+                              },
+                              style: new TextStyle(
+                                fontSize: 18,
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.blueAccent,
                     ),
-                  )
+                    height: 42,
+                    child: FlatButton(
+                      onPressed: () {
+                        _customerManageBloc.dispatch(CustomerManageEventFilter(
+                            customerType: _customerType,
+                            customerStatus: _customerStatus));
+                      },
+                      child: new Text(
+                        "Tìm",
+                        style: new TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
               width: double.infinity,
-              height: 42,
-              child: Text('Lưu ý: Bạn nên đồng bộ dữ liệu trước để có được danh sách mới nhất!',style: TextStyle(color: Colors.red),),
+              height: 50,
+              child: Text(
+                'Lưu ý: Bạn nên đồng bộ dữ liệu trước để có được danh sách mới nhất!',
+                style: TextStyle(color: Colors.red, height: 1.2),
+              ),
             ),
-
             Expanded(
               flex: 2,
               child: BlocListener(
@@ -270,7 +260,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      if(state.customerManagerList != null){
+                      if (state.customerManagerList != null) {
                         _customerManagerList.addAll(state.customerManagerList);
                         _isLoading = false;
                       }
@@ -315,12 +305,12 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                           height: 50,
                           child: InkWell(
                             onTap: () {
-                              Navigator.of(context).push(
+                              /*Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       DateCoachingPage(date: DateTime.now()),
                                 ),
-                              );
+                              );*/
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -328,9 +318,9 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                                 Text(
                                   _customerManagerList[index].name,
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.grey,
-                                      ),
+                                    fontSize: 18,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 Text(
                                   _customerManagerList[index].phone,

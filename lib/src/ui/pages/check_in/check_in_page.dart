@@ -186,8 +186,9 @@ class _CheckInPage extends State<CheckInPage> {
           if (state is CheckInLoading) {
             return LoadingIndicator();
           }
-          if (state is CheckInLoading) {
-            return LoadingIndicator();
+          if (state is CheckInError) {
+            _locationSubscription.cancel();
+            return checkInNotificationError();
           }
           if (state is CheckInLoaded) {
             _locationSubscription.cancel();
@@ -226,7 +227,7 @@ class _CheckInPage extends State<CheckInPage> {
                       "Chọn địa điểm",
                       style: new TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 16,
                           color: Colors.black54),
                     ),
                   ),
@@ -265,7 +266,7 @@ class _CheckInPage extends State<CheckInPage> {
                                 });
                               },
                               style: new TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blueAccent,
                               ),
@@ -284,7 +285,7 @@ class _CheckInPage extends State<CheckInPage> {
                       "Vị trí hiện tại của bạn",
                       style: new TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.black54,
                       ),
                     ),
@@ -317,7 +318,7 @@ class _CheckInPage extends State<CheckInPage> {
                           "Hình ảnh check in",
                           style: new TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: 16,
                               color: Colors.black54),
                         ),
                       ),
@@ -370,92 +371,97 @@ class _CheckInPage extends State<CheckInPage> {
               ),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: new Container(
-              width: double.infinity,
-              margin:
-              EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: new FlatButton(
-                onPressed: () async {
-                  if (currentLocation == null) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Thông báo"),
-                            content: Text("Bạn phải chọn địa điểm!"),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("OK"))
-                            ],
-                          );
-                        });
-                    return;
-                  }
-                  if (_image.length == 0 || _image.length > 5) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Thông báo"),
-                            content: Text(
-                                "Bạn phải chụp hình và không quá 5 tấm hình!"),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("OK"))
-                            ],
-                          );
-                        });
-                    return;
-                  }
-                  userLocation = await _getLocation();
-                  if (userLocation.isEmpty) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Thông báo"),
-                            content: Text(
-                                "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("OK"))
-                            ],
-                          );
-                        });
-                    return;
-                  }
-                  CheckInModel newCheckInModel = CheckInModel(
-                      locationId: currentLocation,
-                      lat: userLocation["latitude"],
-                      lon: userLocation["longitude"],
-                      images: _image);
-                  _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
-                },
-                child: new Text(
-                  "Check in",
-                  style: new TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          )
+      Material(
+        elevation: 15,
+        child: new Container(
+          height: 65,
+          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5),
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(4)),
+                    child: new FlatButton(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        onPressed: () async {
+                          if (currentLocation == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Thông báo"),
+                                    content: Text("Bạn phải chọn địa điểm!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("OK"))
+                                    ],
+                                  );
+                                });
+                            return;
+                          }
+                          if (_image.length == 0 || _image.length > 5) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Thông báo"),
+                                    content: Text(
+                                        "Bạn phải chụp hình và không quá 5 tấm hình!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("OK"))
+                                    ],
+                                  );
+                                });
+                            return;
+                          }
+                          userLocation = await _getLocation();
+                          if (userLocation.isEmpty) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Thông báo"),
+                                    content: Text(
+                                        "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("OK"))
+                                    ],
+                                  );
+                                });
+                            return;
+                          }
+                          CheckInModel newCheckInModel = CheckInModel(
+                              locationId: currentLocation,
+                              lat: userLocation["latitude"],
+                              lon: userLocation["longitude"],
+                              images: _image);
+                          _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
+                        },
+                        child: new Text(
+                          "Check in",
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.white),
+                        )),
+                  ))
+            ],
+          ),
+        ),
+      )
+
         ],
       ),
     );
@@ -477,10 +483,10 @@ class _CheckInPage extends State<CheckInPage> {
                   ),
                   Container(
                     child: new Text(
-                      "Địa điểm",
+                      "Chọn địa điểm",
                       style: new TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 16,
                           color: Colors.black54),
                     ),
                   ),
@@ -505,7 +511,7 @@ class _CheckInPage extends State<CheckInPage> {
                             child: new Text(
                               attendanceModel.location.name,
                               style: new TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -521,7 +527,7 @@ class _CheckInPage extends State<CheckInPage> {
                       "Vị trí hiện tại của bạn",
                       style: new TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.black54,
                       ),
                     ),
@@ -550,56 +556,92 @@ class _CheckInPage extends State<CheckInPage> {
               ),
             ),
           ),
-          Expanded(
-            flex: 1,
+
+          Material(
+            elevation: 15,
             child: new Container(
-              width: double.infinity,
-              margin:
-              EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: new FlatButton(
-                onPressed: () async {
-                  userLocation = await _getLocation();
-                  if (userLocation.length == 0) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Thông báo"),
-                            content: Text(
-                                "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("OK"))
-                            ],
-                          );
-                        });
-                    return;
-                  }
-                  CheckOutModel newCheckOut = CheckOutModel(
-                      latitude: userLocation['latitude'],
-                      longitude: userLocation['longitude']);
-                  _checkInBloc.dispatch(AddCheckOut(newCheckOut));
-                },
-                child: new Text(
-                  "Check Out",
-                  style: new TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
+              height: 65,
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+              child: new Row(
+                children: <Widget>[
+                  new Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 5),
+                        decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(4)),
+                        child: new FlatButton(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            onPressed: () async {
+                              userLocation = await _getLocation();
+                              if (userLocation.length == 0) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text("Thông báo"),
+                                        content: Text(
+                                            "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("OK"))
+                                        ],
+                                      );
+                                    });
+                                return;
+                              }
+                              CheckOutModel newCheckOut = CheckOutModel(
+                                  latitude: userLocation['latitude'],
+                                  longitude: userLocation['longitude']);
+                              _checkInBloc.dispatch(AddCheckOut(newCheckOut));
+                            },
+                            child: new Text(
+                              "Check out",
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.white),
+                            )),
+                      )),
+                ],
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Widget checkInNotificationError(){
+    return Container(
+        child: AlertDialog(
+          title: Text("Thông báo"),
+          content: Text("Check In thất bại! Vui lòng thử lại"),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => CheckInPage()));
+                },
+                child: Text("OK"))
+          ],
+        ));
   }
 
   Widget checkInNotification(){

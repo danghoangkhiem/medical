@@ -80,159 +80,160 @@ class AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
       body: new Container(
         child: new Column(
           children: <Widget>[
-            new Expanded(
-                flex: 3,
-                child: new Form(
-                    key: _formKey,
-                    child: new ListView(
-                      children: <Widget>[
-                        new Container(
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.symmetric(horizontal: 20),
-                          child: new Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new SizedBox(
-                                height: 20,
-                              ),
-                              new Row(
-                                children: <Widget>[
-                                  new Text(
-                                    "Từ ngày ",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black54),
-                                  ),
-                                  new SizedBox(
-                                    width: 30,
-                                  ),
-                                  new Flexible(
-                                    child: DateTimePickerFormField(
-                                      inputType: InputType.date,
-                                      format: DateFormat("dd-MM-yyyy"),
-                                      initialDate: _endDate ?? _now,
-                                      lastDate: _endDate ?? _now,
-                                      initialValue: _startDate,
-                                      editable: false,
-                                      decoration: InputDecoration(
-                                        labelText: 'Chọn ngày bắt đầu',
-                                        labelStyle: new TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            color: Colors.grey),
-                                        hasFloatingPlaceholder: false,
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.blueAccent,
-                                                width: 2)),
-                                        border: OutlineInputBorder(),
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 10),
-                                      ),
-                                      style: new TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold),
-                                      onChanged: (dt) {
-                                        if (dt != null) {
-                                          setState(() {
-                                            _startDate = dt;
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  )
-                                ],
-                              ),
-                              new SizedBox(
-                                height: 10,
-                              ),
-                              new Row(
-                                children: <Widget>[
-                                  new Text(
-                                    "Đến ngày ",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black54),
-                                  ),
-                                  new SizedBox(
-                                    width: 20,
-                                  ),
-                                  new Flexible(
-                                    child: DateTimePickerFormField(
-                                      inputType: InputType.date,
-                                      format: DateFormat("dd-MM-yyyy"),
-                                      initialDate: _startDate ?? _now,
-                                      firstDate: _startDate,
-                                      initialValue: _endDate,
-                                      lastDate: _now,
-                                      editable: false,
-                                      decoration: InputDecoration(
-                                        labelText: 'Chọn ngày kết thúc',
-                                        labelStyle: new TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            color: Colors.grey),
-                                        hasFloatingPlaceholder: false,
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.blueAccent,
-                                                width: 2)),
-                                        border: OutlineInputBorder(),
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 10),
-                                      ),
-                                      style: new TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold),
-                                      onChanged: (dt) {
-                                        if (dt != null) {
-                                          setState(() {
-                                            _endDate = dt;
-                                            //print(endDay.millisecondsSinceEpoch);
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  )
-                                ],
-                              ),
-                              new SizedBox(
-                                height: 10,
-                              ),
-                              new Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.blueAccent,
+            new Container(
+              height: 195,
+              child: new Form(
+                  key: _formKey,
+                  child: new ListView(
+                    children: <Widget>[
+                      new Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        child: new Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            new SizedBox(
+                              height: 20,
+                            ),
+                            new Row(
+                              children: <Widget>[
+                                new Text(
+                                  "Từ ngày ",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black54),
                                 ),
-                                height: 42,
-                                child: FlatButton(
-                                    onPressed: () {
-                                      if (_startDate != null &&
-                                          _endDate != null) {
-                                        _isReachMax = false;
-                                        //print("tìm $starDay - $endDay");
-                                        _blocAttendance.dispatch(GetAttendance(
-                                            startDate: _startDate,
-                                            endDate: _endDate,
-                                            ));
-                                      } else {
-                                        print("Chua du dieu kien tim");
+                                new SizedBox(
+                                  width: 30,
+                                ),
+                                new Flexible(
+                                  child: DateTimePickerFormField(
+                                    inputType: InputType.date,
+                                    format: DateFormat("dd-MM-yyyy"),
+                                    initialDate: _endDate ?? _now,
+                                    lastDate: _endDate ?? _now,
+                                    initialValue: _startDate,
+                                    editable: false,
+                                    decoration: InputDecoration(
+                                      labelText: 'Chọn ngày bắt đầu',
+                                      labelStyle: new TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.grey),
+                                      hasFloatingPlaceholder: false,
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.blueAccent,
+                                              width: 2)),
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10),
+                                    ),
+                                    style: new TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.blueAccent,
+                                        fontWeight: FontWeight.bold),
+                                    onChanged: (dt) {
+                                      if (dt != null) {
+                                        setState(() {
+                                          _startDate = dt;
+                                        });
                                       }
                                     },
-                                    child: new Text(
-                                      "Tìm",
-                                      style: new TextStyle(
-                                          fontSize: 18, color: Colors.white),
-                                    )),
-                              )
-                            ],
-                          ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            new SizedBox(
+                              height: 10,
+                            ),
+                            new Row(
+                              children: <Widget>[
+                                new Text(
+                                  "Đến ngày ",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black54),
+                                ),
+                                new SizedBox(
+                                  width: 20,
+                                ),
+                                new Flexible(
+                                  child: DateTimePickerFormField(
+                                    inputType: InputType.date,
+                                    format: DateFormat("dd-MM-yyyy"),
+                                    initialDate: _startDate ?? _now,
+                                    firstDate: _startDate,
+                                    initialValue: _endDate,
+                                    lastDate: _now,
+                                    editable: false,
+                                    decoration: InputDecoration(
+                                      labelText: 'Chọn ngày kết thúc',
+                                      labelStyle: new TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.grey),
+                                      hasFloatingPlaceholder: false,
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.blueAccent,
+                                              width: 2)),
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10),
+                                    ),
+                                    style: new TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.blueAccent,
+                                        fontWeight: FontWeight.bold),
+                                    onChanged: (dt) {
+                                      if (dt != null) {
+                                        setState(() {
+                                          _endDate = dt;
+                                          //print(endDay.millisecondsSinceEpoch);
+                                        });
+                                      }
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                            new SizedBox(
+                              height: 10,
+                            ),
+                            new Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.blueAccent,
+                              ),
+                              height: 42,
+                              child: FlatButton(
+                                  onPressed: () {
+                                    if (_startDate != null &&
+                                        _endDate != null) {
+                                      _isReachMax = false;
+                                      //print("tìm $starDay - $endDay");
+                                      _blocAttendance.dispatch(GetAttendance(
+                                        startDate: _startDate,
+                                        endDate: _endDate,
+                                      ));
+                                    } else {
+                                      print("Chua du dieu kien tim");
+                                    }
+                                  },
+                                  child: new Text(
+                                    "Tìm",
+                                    style: new TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                  )),
+                            )
+                          ],
                         ),
-                      ],
-                    ))),
+                      ),
+                    ],
+                  )),
+            ),
             new Expanded(
                 flex: 6,
                 child: new Stack(

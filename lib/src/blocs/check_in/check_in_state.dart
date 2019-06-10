@@ -123,3 +123,5 @@ class CheckInLocationFailure extends CheckInState {
   @override
   String toString() => 'CheckInFailure { error: $error }';
 }
+
+class CheckInError extends CheckInState {}

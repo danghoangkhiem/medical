@@ -66,10 +66,7 @@ class _InvoicePageState extends State<InvoicePage> {
       body: Container(
         child: Column(
           children: <Widget>[
-            Expanded(
-              flex: 3,
-              child: InvoiceForm(invoiceBloc: _invoiceBloc),
-            ),
+            InvoiceForm(invoiceBloc: _invoiceBloc),
             Expanded(
                 flex: 6,
                 child: BlocListener(

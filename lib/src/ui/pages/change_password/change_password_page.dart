@@ -118,22 +118,34 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   confirmPasswordController: _confirmPasswordController,
                 ),
               ),
-              Expanded(
-                  flex: 1,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: Colors.blueAccent,
-                    ),
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    child: FlatButton(
-                        onPressed: _onButtonSubmitted,
-                        child: Text(
-                          'Đổi mật khẩu',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        )),
-                  ))
+              Material(
+                elevation: 5,
+                child: new Container(
+                  height: 65,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: new Row(
+                    children: <Widget>[
+                      new Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(left: 5),
+                            decoration: BoxDecoration(
+                                color: Colors.blueAccent,
+                                borderRadius: BorderRadius.circular(4)),
+                            child: new FlatButton(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                onPressed: () {
+                                  _onButtonSubmitted();
+                                },
+                                child: new Text(
+                                  "Đổi mật khẩu",
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                )),
+                          ))
+                    ],
+                  ),
+                ),
+              )
             ],
           );
         });

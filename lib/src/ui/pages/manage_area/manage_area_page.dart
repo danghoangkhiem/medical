@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:medical/src/models/manage_area_model.dart';
 
+// ignore: must_be_immutable
 class ManageArea extends StatefulWidget {
+  ManageAreaItem item;
+
+
+  ManageArea(this.item);
+
   @override
   State<StatefulWidget> createState() {
 
-    return new ManageAreaState();
+    return new ManageAreaState(item);
   }
 }
 
 class ManageAreaState extends State<ManageArea> {
+  ManageAreaItem item;
+
+
+  ManageAreaState(this.item);
+
+  //vd Đã gặp, chưa gặp...
+  String _status ;
+
+
 
   TimeOfDay _time = TimeOfDay.now();
   DateTime time;
@@ -47,6 +62,11 @@ class ManageAreaState extends State<ManageArea> {
 
   @override
   void initState() {
+
+    print("ok thong");
+    print(item.toJson());
+
+
     super.initState();
     time  = DateTime.now();
 
@@ -107,32 +127,19 @@ class ManageAreaState extends State<ManageArea> {
                                       new SizedBox(
                                         height: 5,
                                       ),
-                                      new Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey[400],
-                                                width: 1,
-                                                style: BorderStyle.solid),
-                                            borderRadius: BorderRadius.circular(4)),
-                                        child: DropdownButtonHideUnderline(
-                                          child: new DropdownButton(
-                                            isExpanded: true,
-                                            items: [
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 115"),
-                                                value: 1,
-                                              ),
-                                            ],
-                                            onChanged: (value){
-
-                                            },
-                                            style: new TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueAccent),
-                                          ),
+                                      new TextFormField(
+                                        initialValue: item.addressType,
+                                        enabled: false,
+                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey[400],
+                                                  width: 1)),
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
                                         ),
                                       )
                                     ],
@@ -170,7 +177,7 @@ class ManageAreaState extends State<ManageArea> {
                                                             width: 1,
                                                             style: BorderStyle.solid),
                                                         borderRadius: BorderRadius.circular(4)),
-                                                    child: new Text("10:20 AM", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                                    child:item.endTime.hour > 12 ? new Text("${item.startTime.hour - 12}:${item.startTime.minute} PM", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),) : new Text("${item.startTime.hour}:${item.startTime.minute} AM", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                                                   ),
                                                 )
                                             ),
@@ -186,7 +193,7 @@ class ManageAreaState extends State<ManageArea> {
                                                             width: 1,
                                                             style: BorderStyle.solid),
                                                         borderRadius: BorderRadius.circular(4)),
-                                                    child: new Text("11:00 PM", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                                    child: item.endTime.hour > 12 ? new Text("${item.endTime.hour - 12}:${item.endTime.minute} PM", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),) : new Text("${item.endTime.hour}:${item.endTime.minute} AM", style: new TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                                                   ),
                                                 )
                                             )
@@ -283,40 +290,19 @@ class ManageAreaState extends State<ManageArea> {
                                       new SizedBox(
                                         height: 5,
                                       ),
-                                      new Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey[400],
-                                                width: 1,
-                                                style: BorderStyle.solid),
-                                            borderRadius: BorderRadius.circular(4)),
-                                        child: DropdownButtonHideUnderline(
-                                          child: new DropdownButton(
-                                            isExpanded: true,
-                                            items: [
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 115"),
-                                                value: 1,
-                                              ),
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 116"),
-                                                value: 1,
-                                              ),
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 117"),
-                                                value: 1,
-                                              )
-                                            ],
-                                            onChanged: (value){
-
-                                            },
-                                            style: new TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueAccent),
-                                          ),
+                                      new TextFormField(
+                                        initialValue: item.addressName,
+                                        enabled: false,
+                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey[400],
+                                                  width: 1)),
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
                                         ),
                                       )
                                     ],
@@ -338,40 +324,52 @@ class ManageAreaState extends State<ManageArea> {
                                       new SizedBox(
                                         height: 5,
                                       ),
-                                      new Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey[400],
-                                                width: 1,
-                                                style: BorderStyle.solid),
-                                            borderRadius: BorderRadius.circular(4)),
-                                        child: DropdownButtonHideUnderline(
-                                          child: new DropdownButton(
-                                            isExpanded: true,
-                                            items: [
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 115"),
-                                                value: 1,
-                                              ),
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 116"),
-                                                value: 1,
-                                              ),
-                                              DropdownMenuItem(
-                                                child: new Text("Bệnh viện 117"),
-                                                value: 1,
-                                              )
-                                            ],
-                                            onChanged: (value){
+                                      new TextFormField(
+                                        initialValue: item.doctorName,
+                                        enabled: false,
+                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey[400],
+                                                  width: 1)),
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                new SizedBox(height: 17,),
+                                new Container(
+                                  child: new Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      new Text(
+                                        "Mục tiêu",
+                                        style: new TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16
+                                        ),
+                                      ),
+                                      new SizedBox(
+                                        height: 5,
+                                      ),
+                                      new TextFormField(
+                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
 
-                                            },
-                                            style: new TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueAccent),
-                                          ),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey[400],
+                                                  width: 1)),
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
                                         ),
                                       )
                                     ],
@@ -403,23 +401,27 @@ class ManageAreaState extends State<ManageArea> {
                                                 style: BorderStyle.solid),
                                             borderRadius: BorderRadius.circular(4)),
                                         child: DropdownButtonHideUnderline(
-                                          child: new DropdownButton(
+                                          child: new DropdownButton<String>(
                                             isExpanded: true,
+                                            value: _status,
                                             items: [
                                               DropdownMenuItem(
-                                                child: new Text("Bệnh viện 115"),
-                                                value: 1,
+                                                child: new Text("Đã gặp"),
+                                                value: "Đã gặp",
                                               ),
                                               DropdownMenuItem(
-                                                child: new Text("Bệnh viện 116"),
-                                                value: 1,
+                                                child: new Text("Chưa gặp"),
+                                                value: "Chưa gặp",
                                               ),
                                               DropdownMenuItem(
-                                                child: new Text("Bệnh viện 117"),
-                                                value: 1,
+                                                child: new Text("Hẹn lần sau"),
+                                                value: "Hẹn lần sau",
                                               )
                                             ],
                                             onChanged: (value){
+                                              setState(() {
+                                                _status = value;
+                                              });
 
                                             },
                                             style: new TextStyle(
@@ -438,7 +440,7 @@ class ManageAreaState extends State<ManageArea> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       new Text(
-                                        "Mục tiêu",
+                                        "Kết quả",
                                         style: new TextStyle(
                                             color: Colors.black54,
                                             fontWeight: FontWeight.bold,
@@ -506,3 +508,19 @@ class ManageAreaState extends State<ManageArea> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
