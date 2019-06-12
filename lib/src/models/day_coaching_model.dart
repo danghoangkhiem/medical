@@ -31,19 +31,32 @@ class DayCoachingModel {
       this.feedback});
 
   DayCoachingModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        startTime = DateTime.fromMillisecondsSinceEpoch(json['startTime']),
-        endTime = DateTime.fromMillisecondsSinceEpoch(json['endTime']),
+      : /*id = json['id'],
+        startTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['from']),
+        endTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['end']),
         realStartTime =
-            DateTime.fromMillisecondsSinceEpoch(json['realStartTime']),
-        realEndTime = DateTime.fromMillisecondsSinceEpoch(json['realEndTime']),
-        position = json['position'] as String,
-        doctorName = json['doctorName'] as String,
-        addressType = json['addressType'] as String,
-        addressName = json['addressName'] as String,
+            DateTime.fromMillisecondsSinceEpoch(json['realHours']['from']),
+        realEndTime = DateTime.fromMillisecondsSinceEpoch(json['realHours']['end']),
+        position = json['partner']['position'] as String,
+        doctorName = (json['partner']['first_name'] + ' ' + json['partner']['last_name']) as String,
+        addressType = json['partner']['department'] as String,
+        addressName = json['partner']['department'] as String,
         description = json['description'] as String,
-        evaluate = json['evaluate'] as String,
-        feedback = json['feedback'] as String;
+        evaluate = json['purpose'] as String,
+        feedback = json['purpose'] as String;*/
+
+        id = json['id'],
+        startTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['from']),
+        endTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['end']),
+        realStartTime = json['realHours']['from'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['from']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['from']),
+        realEndTime = json['realHours']['end'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['end']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['end']),
+        position = json['partner'] == null ? "" : json['partner']['position'] as String,
+        doctorName = json['partner'] == null ? "" : (json['partner']['first_name'] + json['partner']['last_name']) as String,
+        addressType = "not api",
+        addressName = "not api",
+        description = json['description'] as String,
+        evaluate = "not api",
+        feedback = "not api";
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

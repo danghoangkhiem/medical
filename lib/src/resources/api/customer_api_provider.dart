@@ -19,15 +19,9 @@ class CustomerApiProvider extends ApiProvider {
       'type': type,
       'status': status,
     };
-    print(timeIn);
-    print(offset);
-    print(limit);
-    print(type);
-    print(status);
     Response _resp =
         await httpClient.get('/consumers', queryParameters: _queryParameters);
     if (_resp.statusCode == 200) {
-      print(_resp.data['data']);
       return CustomerManagerListModel.fromJson(_resp.data['data']);
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));

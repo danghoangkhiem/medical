@@ -1,7 +1,11 @@
 import 'package:meta/meta.dart';
 import 'package:medical/src/models/day_coaching_model.dart';
+import 'package:medical/src/resources/api/day_coaching_api_provider.dart';
 
 class DayCoachingRepository {
+
+  final DayCoachingApiProvider _dayCoachingApiProvider = DayCoachingApiProvider();
+
   Future<DayCoachingListModel> getDayCoachingByDateTime({
     int offset = 10,
     int limit = 0,
@@ -26,11 +30,13 @@ class DayCoachingRepository {
     }).toList());
   }
 
+  Future<DayCoachingListModel> getDayCoaching(int offset, int limit,int userId) async {
+    await Future.delayed(Duration(seconds: 1));
+    return await _dayCoachingApiProvider.getDayCoaching(offset: offset, limit: limit, userId: userId);
+  }
+
   Future<bool> updateDayCoachingDetail(int id,{DateTime realStartTime, DateTime realEndTime, String description, String evaluate, String feedback}) async {
     await Future.delayed(Duration(seconds: 1));
-    print("Đã tới repo");
-    print(id);
-    print(evaluate);
     return true;
   }
 }

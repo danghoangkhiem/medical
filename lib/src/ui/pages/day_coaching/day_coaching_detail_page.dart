@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:medical/src/models/day_coaching_model.dart';
 import 'package:medical/src/blocs/day_coaching_detail/day_coaching_detail.dart';
@@ -19,18 +20,48 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _evaluateController = TextEditingController();
   TextEditingController _feedbackController = TextEditingController();
+  DateTime _realStartDay;
+  DateTime _realEndDate;
+  bool isStartDate = false;
 
   TimeOfDay _time = TimeOfDay.now();
+  DateTime time;
+  bool isLonHon12 = false;
 
-  Future<Null> _selectTime(BuildContext context) async {
+  final now = new DateTime.now();
+
+  Future<Null> _selectTime(BuildContext context, bool isStartDate) async {
     final TimeOfDay picked =
         await showTimePicker(context: context, initialTime: _time);
+    //&& picked != _time
+    if (picked != null) {
+      if (picked.hour > 12) {
+        setState(() {
+          isLonHon12 = true;
+          if (isStartDate == true) {
+            _realStartDay = new DateTime(now.year, now.month, now.day,
+                (picked.hour).toInt(), picked.minute);
+          } else {
+            _realEndDate = new DateTime(now.year, now.month, now.day,
+                (picked.hour).toInt(), picked.minute);
+          }
+        });
+      } else {
+        setState(() {
+          isLonHon12 = false;
+          if (isStartDate == true) {
+            _realStartDay = new DateTime(
+                now.year, now.month, now.day, picked.hour, picked.minute);
+          } else {
+            _realEndDate = new DateTime(
+                now.year, now.month, now.day, picked.hour, picked.minute);
+          }
+        });
+      }
 
-    if (picked != null && picked != _time) {
-      setState(() {
-        _time = picked;
-      });
-      print("${_time.hour}:${_time.minute}");
+      //print(DateFormat("yyyy-MM-dd hh:mm:ss a").format(time));
+      //print("${_time.hour}:${_time.minute}");
+      //print(_time);
     }
   }
 
@@ -95,11 +126,12 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                     SizedBox(
                       height: 17,
                     ),
-                    timeText(),
+                    timeText(_dayCoaching.startTime, _dayCoaching.endTime),
                     SizedBox(
                       height: 17,
                     ),
-                    realTimeInput(),
+                    realTimeInput(_dayCoaching.startTime, _dayCoaching.endTime,
+                        _dayCoaching.realStartTime, _dayCoaching.realEndTime),
                     SizedBox(
                       height: 17,
                     ),
@@ -170,7 +202,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
     );
   }
 
-  Widget timeText() {
+  Widget timeText(DateTime startDay, DateTime endDate) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +234,9 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                             style: BorderStyle.solid),
                         borderRadius: BorderRadius.circular(4)),
                     child: new Text(
-                      "10:20 AM",
+                      startDay.hour > 12
+                          ? "${startDay.hour - 12}:${startDay.minute} PM"
+                          : "${startDay.hour}:${startDay.minute.toString()} AM",
                       style: new TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -221,7 +255,9 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                             style: BorderStyle.solid),
                         borderRadius: BorderRadius.circular(4)),
                     child: new Text(
-                      "11:00 PM",
+                      endDate.hour > 12
+                          ? "${endDate.hour - 12}:${endDate.minute} PM"
+                          : "${endDate.hour}:${endDate.minute.toString()} AM",
                       style: new TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -235,7 +271,8 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
     );
   }
 
-  Widget realTimeInput() {
+  Widget realTimeInput(DateTime startDay, DateTime endDate,
+      DateTime realStartDate, DateTime realEndDate) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,7 +296,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                   padding: EdgeInsets.only(right: 5),
                   child: InkWell(
                     onTap: () {
-                      _selectTime(context);
+                      _selectTime(context, isStartDate = true);
                     },
                     child: new Container(
                       alignment: Alignment.center,
@@ -270,11 +307,25 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                               width: 1,
                               style: BorderStyle.solid),
                           borderRadius: BorderRadius.circular(4)),
-                      child: new Text(
-                        _time.toString(),
-                        style: new TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
+                      child: _realStartDay == null
+                          ? new Text(
+                              realStartDate.hour > 12
+                                  ? "${realStartDate.hour - 12}:${realStartDate.minute} PM"
+                                  : "${realStartDate.hour}:${realStartDate.minute.toString()} AM",
+                              style: new TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          : new Text(
+                              _realStartDay.hour > 12
+                                  ? "${(_realStartDay.hour - 12).toInt()}:${_realStartDay.minute} PM"
+                                  : "${_realStartDay.hour}:${_realStartDay.minute} AM",
+                              style: new TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
                 )),
@@ -283,7 +334,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                     padding: EdgeInsets.only(left: 5),
                     child: InkWell(
                       onTap: () {
-                        _selectTime(context);
+                        _selectTime(context, isStartDate = false);
                       },
                       child: new Container(
                         alignment: Alignment.center,
@@ -294,11 +345,25 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                                 width: 1,
                                 style: BorderStyle.solid),
                             borderRadius: BorderRadius.circular(4)),
-                        child: new Text(
-                          _time.toString(),
-                          style: new TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
+                        child: _realEndDate == null
+                            ? new Text(
+                                realEndDate.hour > 12
+                                    ? "${realEndDate.hour - 12}:${realEndDate.minute} PM"
+                                    : "${realEndDate.hour}:${realEndDate.minute.toString()} AM",
+                                style: new TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            : new Text(
+                                _realEndDate.hour > 12
+                                    ? "${(_realEndDate.hour - 12).toInt()}:${_realEndDate.minute} PM"
+                                    : "${_realEndDate.hour}:${_realEndDate.minute} AM",
+                                style: new TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.bold),
+                              ),
                       ),
                     ),
                   ),
@@ -428,9 +493,16 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                 child: new FlatButton(
                   padding: EdgeInsets.symmetric(vertical: 13),
                   onPressed: () {
+                    print(_realEndDate);
                     _dayCoachingDetailBloc.dispatch(
                       ButtonPressed(
                           id: _dayCoaching.id,
+                          realStartTime: _realStartDay == null
+                              ? _dayCoaching.realStartTime
+                              : _realStartDay,
+                          realEndTime: _realEndDate == null
+                              ? _dayCoaching.realEndTime
+                              : _realEndDate,
                           description: _descriptionController.text,
                           evaluate: _evaluateController.text,
                           feedback: _feedbackController.text),

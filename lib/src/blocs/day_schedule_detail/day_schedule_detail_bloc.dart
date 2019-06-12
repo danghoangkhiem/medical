@@ -20,12 +20,15 @@ class DayScheduleDetailBloc
     if (event is ButtonPressed) {
       yield Loading();
       try {
-        await _dayScheduleRepository.updateDayScheduleDetail(event.id,
-            status: event.dayScheduleStatus,
-            realStartTime: event.realStartTime,
-            realEndTime: event.realEndTime,
-            purpose: event.purpose,
-            description: event.description);
+        await _dayScheduleRepository.updateDayScheduleDetail(
+          userId: 5,
+          scheduleId: event.scheduleId,
+          realStartTime: event.realStartTime,
+          realEndTime: event.realEndTime,
+          purpose: event.purpose,
+          status: event.dayScheduleStatus,
+          description: event.description
+        );
         yield Loaded(dayScheduleStatus: event.dayScheduleStatus);
       } catch (error) {
         yield Failure(errorMessage: error.toString());

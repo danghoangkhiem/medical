@@ -29,7 +29,7 @@ class DayScheduleModel {
       this.description});
 
   DayScheduleModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : /*id = json['id'],
         startTime = DateTime.fromMillisecondsSinceEpoch(json['startTime']),
         endTime = DateTime.fromMillisecondsSinceEpoch(json['endTime']),
         position = json['position'] as String,
@@ -40,6 +40,19 @@ class DayScheduleModel {
         realEndTime = DateTime.fromMillisecondsSinceEpoch(json['realEndTime']),
         status = DayScheduleStatus.from( json['status']),
         purpose = json['purpose'] as String,
+        description = json['description'] as String;*/
+
+        id = json['id'],
+        startTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['from']),
+        endTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['end']),
+        position = json['partner'] == null ? "" : json['partner']['position'] as String,
+        doctorName = json['partner'] == null ? "" : (json['partner']['first_name'] + json['partner']['last_name']) as String,
+        addressType = "not api",
+        addressName = "not api",
+        realStartTime = json['realHours']['from'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['from']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['from']),
+        realEndTime = json['realHours']['end'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['end']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['end']),
+        status = DayScheduleStatus.from(json['status']),
+        purpose =  json['purpose'] as String,
         description = json['description'] as String;
 
   Map<String, dynamic> toJson() {
@@ -96,8 +109,8 @@ class DayScheduleListModel extends ListMixin<DayScheduleModel> {
 
 class DayScheduleStatus {
   static const DayScheduleStatus later = DayScheduleStatus._('later');
-  static const DayScheduleStatus notMet = DayScheduleStatus._('not_met');
-  static const DayScheduleStatus met = DayScheduleStatus._('met');
+  static const DayScheduleStatus notMet = DayScheduleStatus._('not_meet');
+  static const DayScheduleStatus met = DayScheduleStatus._('meet');
 
   final String value;
 

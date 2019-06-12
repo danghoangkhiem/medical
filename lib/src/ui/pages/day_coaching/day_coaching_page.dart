@@ -26,6 +26,7 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
   DayCoachingBloc _dayCoachingBloc;
 
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   @override
   void initState() {
@@ -70,11 +71,18 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
               child: BlocListener(
                 bloc: _dayCoachingBloc,
                 listener: (BuildContext context, DayCoachingState state) {
+                  if (state is NoRecordsFound) {
+                    Scaffold.of(context).removeCurrentSnackBar();
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Không có dữ liệu được tìm thấy!'),
+                    ));
+                  }
                   if (state is ReachMax) {
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Got all the data!'),
+                      content: Text('Đã hiển thị tất cả dữ liệu!'),
                     ));
-                    _controller.removeListener(_scrollListener);
+                    _isLoading = false;
+                    _isReachMax = true;
                   }
                   if (state is Failure) {
                     Scaffold.of(context).showSnackBar(SnackBar(
@@ -84,10 +92,14 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      _dayCoachingList.addAll(state.dayCoachingList);
+                      if (state.dayCoachingList != null) {
+                        _dayCoachingList.addAll(state.dayCoachingList);
+                        _isLoading = false;
+                      }
                       _isLoading = false;
                     } else {
                       _dayCoachingList = state.dayCoachingList;
+                      _isReachMax = false;
                     }
                   }
                 },
@@ -143,14 +155,23 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
                                     children: <Widget>[
                                       Container(
                                         child: new Text(
-                                          "Từ " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayCoachingList[index]
-                                                      .startTime) +
+                                          (_dayCoachingList[index]
+                                                  .startTime.hour > 12
+                                              ? "${_dayCoachingList[index]
+                                                  .startTime.hour - 12}:${_dayCoachingList[index]
+                                                  .startTime.minute} PM"
+                                              : "${_dayCoachingList[index]
+                                                  .startTime.hour}:${_dayCoachingList[index]
+                                                  .startTime.minute.toString()} AM") +
                                               " đến " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayCoachingList[index]
-                                                      .endTime),
+                                              (_dayCoachingList[index]
+                                                  .endTime.hour > 12
+                                                  ? "${_dayCoachingList[index]
+                                                  .endTime.hour - 12}:${_dayCoachingList[index]
+                                                  .endTime.minute} PM"
+                                                  : "${_dayCoachingList[index]
+                                                  .endTime.hour}:${_dayCoachingList[index]
+                                                  .endTime.minute.toString()} AM"),
                                           style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,

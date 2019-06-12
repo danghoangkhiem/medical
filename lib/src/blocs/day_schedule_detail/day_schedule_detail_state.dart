@@ -15,6 +15,11 @@ class Loaded extends DayScheduleDetailState {
   Loaded({@required this.dayScheduleStatus});
 }
 
+class Updated extends DayScheduleDetailState {
+  @override
+  String toString() => 'Updated';
+}
+
 class Failure extends DayScheduleDetailState {
   final String errorMessage;
 

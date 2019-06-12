@@ -26,6 +26,7 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
   DayScheduleBloc _dayScheduleBloc;
 
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   @override
   void initState() {
@@ -70,11 +71,18 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
               child: BlocListener(
                 bloc: _dayScheduleBloc,
                 listener: (BuildContext context, DayScheduleState state) {
+                  if (state is NoRecordsFound) {
+                    Scaffold.of(context).removeCurrentSnackBar();
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Không có dữ liệu được tìm thấy!'),
+                    ));
+                  }
                   if (state is ReachMax) {
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Got all the data!'),
+                      content: Text('Đã hiển thị tất cả dữ liệu!'),
                     ));
-                    _controller.removeListener(_scrollListener);
+                    _isLoading = false;
+                    _isReachMax = true;
                   }
                   if (state is Failure) {
                     Scaffold.of(context).showSnackBar(SnackBar(
@@ -84,10 +92,14 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      _dayScheduleList.addAll(state.dayScheduleList);
+                      if (state.dayScheduleList != null) {
+                        _dayScheduleList.addAll(state.dayScheduleList);
+                        _isLoading = false;
+                      }
                       _isLoading = false;
                     } else {
                       _dayScheduleList = state.dayScheduleList;
+                      _isReachMax = false;
                     }
                   }
                 },
@@ -143,14 +155,19 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                     children: <Widget>[
                                       Container(
                                         child: new Text(
-                                          "Từ " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayScheduleList[index]
-                                                      .startTime) +
+                                          (_dayScheduleList[index]
+                                                          .startTime
+                                                          .hour >
+                                                      12
+                                                  ? "${_dayScheduleList[index].startTime.hour - 12}:${_dayScheduleList[index].startTime.minute} PM"
+                                                  : "${_dayScheduleList[index].startTime.hour}:${_dayScheduleList[index].startTime.minute.toString()} AM") +
                                               " đến " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayScheduleList[index]
-                                                      .endTime),
+                                              (_dayScheduleList[index]
+                                                          .endTime
+                                                          .hour >
+                                                      12
+                                                  ? "${_dayScheduleList[index].endTime.hour - 12}:${_dayScheduleList[index].endTime.minute} PM"
+                                                  : "${_dayScheduleList[index].endTime.hour}:${_dayScheduleList[index].endTime.minute.toString()} AM"),
                                           style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,

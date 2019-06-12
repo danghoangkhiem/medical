@@ -1,7 +1,10 @@
 import 'package:meta/meta.dart';
 import 'package:medical/src/models/day_schedule_model.dart';
+import 'package:medical/src/resources/api/day_schedule_api_provider.dart';
 
 class DayScheduleRepository {
+  final DayScheduleApiProvider _dayScheduleApiProvider = DayScheduleApiProvider();
+
   Future<DayScheduleListModel> getDayScheduleByDateTime({
     int offset = 10,
     int limit = 0,
@@ -26,8 +29,23 @@ class DayScheduleRepository {
     }).toList());
   }
 
-  Future<bool> updateDayScheduleDetail(int id,{@required DayScheduleStatus status, DateTime realStartTime, DateTime realEndTime, String purpose, String description}) async {
+  Future<DayScheduleListModel> getDaySchedule(int offset, int limit,int userId) async {
     await Future.delayed(Duration(seconds: 1));
-    return true;
+    return await _dayScheduleApiProvider.getDaySchedule(offset: offset, limit: limit, userId: userId);
+  }
+
+  Future<bool> updateDayScheduleDetail({int userId = 5, int scheduleId,@required DayScheduleStatus status, DateTime realStartTime, DateTime realEndTime, String purpose, String description}) async {
+    print(status);
+    print(realEndTime.millisecondsSinceEpoch);
+    await Future.delayed(Duration(seconds: 1));
+    return await _dayScheduleApiProvider.updateSchedule(
+      userId: userId,
+      scheduleId: scheduleId,
+      startTime: realStartTime,
+      endTime: realEndTime,
+      purpose: purpose,
+      status: status,
+      description: description
+    );
   }
 }
