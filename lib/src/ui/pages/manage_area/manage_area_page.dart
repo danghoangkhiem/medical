@@ -16,72 +16,76 @@ class ManageArea extends StatefulWidget {
 }
 
 class ManageAreaState extends State<ManageArea> {
+  //form data
+  bool _autoValidate = false;
+  final _targetController = TextEditingController();
+  final _resultController = TextEditingController();
+  int _status;  //vd Đã gặp, chưa gặp...
+
   ManageAreaItem item;
 
 
   ManageAreaState(this.item);
 
-  //vd Đã gặp, chưa gặp...
-  String _status ;
+
 
 
 
   TimeOfDay _time = TimeOfDay.now();
-  DateTime time;
-  bool isLonHon12 = false;
+  DateTime _timeStartTarget;
+  DateTime _timeEndTarget;
+  //bool isLonHon12 = false;
+
+
 
   final now = new DateTime.now();
 
 
 
-  Future<Null> _selectTime(BuildContext context) async{
+  Future<Null> _selectTimeStart(BuildContext context) async{
     final TimeOfDay picked = await showTimePicker(
         context: context,
         initialTime: _time
     );
     //&& picked != _time
     if(picked !=null){
-      if(picked.hour > 12){
-        setState(() {
-          isLonHon12 = true;
-          time = new DateTime(now.year, now.month, now.day, (picked.hour - 12).toInt(), picked.minute);
-        });
-      }
-      else{
-        setState(() {
-          isLonHon12 = false;
-          time = new DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
-        });
-      }
-
-      //print(DateFormat("yyyy-MM-dd hh:mm:ss a").format(time));
-      //print("${_time.hour}:${_time.minute}");
-      //print(_time);
+      setState(() {
+        //isLonHon12 = true;
+        _timeStartTarget = new DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+      });
     }
   }
+
+  //viết 2 hàm cho dễ hiểu
+  Future<Null> _selectTimeEnd(BuildContext context) async{
+    final TimeOfDay picked = await showTimePicker(
+        context: context,
+        initialTime: _time
+    );
+    //&& picked != _time
+    if(picked !=null){
+      setState(() {
+        //isLonHon12 = true;
+        _timeEndTarget = new DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+      });
+    }
+  }
+
+
+
 
   @override
   void initState() {
 
-    print("ok thong");
-    print(item.toJson());
+//    print("ok thong");
+//    print(item.toJson());
+
+    _timeStartTarget = item.startTime;
+    _timeEndTarget = item.endTime;
 
 
     super.initState();
-    time  = DateTime.now();
 
-    if(time.hour > 12){
-      setState(() {
-        isLonHon12 = true;
-        time = new DateTime(time.year, time.month, time.day, (time.hour - 12).toInt(), time.minute);
-      });
-    }
-    else{
-      setState(() {
-        isLonHon12 = false;
-        time = new DateTime(time.year, time.month, time.day, time.hour, time.minute);
-      });
-    }
   }
 
 
@@ -101,6 +105,7 @@ class ManageAreaState extends State<ManageArea> {
             new Expanded(
                 child: new Form(
                     key: _formKey,
+                    autovalidate: _autoValidate,
                     child: new Container(
                       child: new ListView(
                         children: <Widget>[
@@ -117,7 +122,7 @@ class ManageAreaState extends State<ManageArea> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       new Text(
-                                        "Chọn loại địa điểm",
+                                        "Loại địa điểm",
                                         style: new TextStyle(
                                             color: Colors.black54,
                                             fontWeight: FontWeight.bold,
@@ -129,6 +134,40 @@ class ManageAreaState extends State<ManageArea> {
                                       ),
                                       new TextFormField(
                                         initialValue: item.addressType,
+                                        enabled: false,
+                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey[400],
+                                                  width: 1)),
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                new SizedBox(height: 17,),
+                                new Container(
+                                  child: new Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      new Text(
+                                        "Tên địa điểm",
+                                        style: new TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16
+                                        ),
+                                      ),
+                                      new SizedBox(
+                                        height: 5,
+                                      ),
+                                      new TextFormField(
+                                        initialValue: item.addressName,
                                         enabled: false,
                                         style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
                                         keyboardType: TextInputType.multiline,
@@ -229,7 +268,7 @@ class ManageAreaState extends State<ManageArea> {
                                                   padding: EdgeInsets.only(right: 5),
                                                   child: InkWell(
                                                     onTap: (){
-                                                      _selectTime(context);
+                                                      _selectTimeStart(context);
                                                     },
                                                     child: new Container(
                                                       alignment: Alignment.center,
@@ -240,7 +279,7 @@ class ManageAreaState extends State<ManageArea> {
                                                               width: 1,
                                                               style: BorderStyle.solid),
                                                           borderRadius: BorderRadius.circular(4)),
-                                                      child: !isLonHon12 ? new Text("${time.hour.toString()}:${time.minute.toString()} AM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),): new Text("${time.hour.toString()}:${time.minute.toString()} PM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),),
+                                                      child: _timeStartTarget.hour > 12 ? new Text("${_timeStartTarget.hour - 12}:${_timeStartTarget.minute.toString()} PM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),): new Text("${_timeStartTarget.hour}:${_timeStartTarget.minute} AM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),),
                                                     ),
                                                   ),
                                                 )
@@ -251,7 +290,7 @@ class ManageAreaState extends State<ManageArea> {
                                                   padding: EdgeInsets.only(left: 5),
                                                   child: InkWell(
                                                     onTap: (){
-                                                      _selectTime(context);
+                                                      _selectTimeEnd(context);
                                                     },
                                                     child: new Container(
                                                       alignment: Alignment.center,
@@ -262,7 +301,7 @@ class ManageAreaState extends State<ManageArea> {
                                                               width: 1,
                                                               style: BorderStyle.solid),
                                                           borderRadius: BorderRadius.circular(4)),
-                                                      child: !isLonHon12 ? new Text("${time.hour.toString()}:${time.minute.toString()} AM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),): new Text("${time.hour.toString()}:${time.minute.toString()} PM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),),
+                                                      child: _timeEndTarget.hour > 12 ? new Text("${_timeEndTarget.hour - 12}:${_timeEndTarget.minute.toString()} PM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),): new Text("${_timeEndTarget.hour}:${_timeEndTarget.minute.toString()} AM", style: new TextStyle(fontSize: 18, color: Colors.blueAccent,fontWeight: FontWeight.bold),),
                                                     ),
                                                   ),
                                                 )
@@ -274,40 +313,7 @@ class ManageAreaState extends State<ManageArea> {
                                     ],
                                   ),
                                 ),
-                                new SizedBox(height: 17,),
-                                new Container(
-                                  child: new Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      new Text(
-                                        "Tên địa điểm",
-                                        style: new TextStyle(
-                                            color: Colors.black54,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16
-                                        ),
-                                      ),
-                                      new SizedBox(
-                                        height: 5,
-                                      ),
-                                      new TextFormField(
-                                        initialValue: item.addressName,
-                                        enabled: false,
-                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
-                                        keyboardType: TextInputType.multiline,
-                                        decoration: InputDecoration(
-                                          enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey[400],
-                                                  width: 1)),
-                                          border: OutlineInputBorder(),
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
+
                                 new SizedBox(height: 17,),
                                 new Container(
                                   child: new Column(
@@ -348,39 +354,6 @@ class ManageAreaState extends State<ManageArea> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       new Text(
-                                        "Mục tiêu",
-                                        style: new TextStyle(
-                                            color: Colors.black54,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16
-                                        ),
-                                      ),
-                                      new SizedBox(
-                                        height: 5,
-                                      ),
-                                      new TextFormField(
-                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
-
-                                        keyboardType: TextInputType.multiline,
-                                        decoration: InputDecoration(
-                                          enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey[400],
-                                                  width: 1)),
-                                          border: OutlineInputBorder(),
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                new SizedBox(height: 17,),
-                                new Container(
-                                  child: new Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      new Text(
                                         "Chọn trạng thái",
                                         style: new TextStyle(
                                             color: Colors.black54,
@@ -401,27 +374,28 @@ class ManageAreaState extends State<ManageArea> {
                                                 style: BorderStyle.solid),
                                             borderRadius: BorderRadius.circular(4)),
                                         child: DropdownButtonHideUnderline(
-                                          child: new DropdownButton<String>(
+                                          child: new DropdownButton(
                                             isExpanded: true,
                                             value: _status,
                                             items: [
                                               DropdownMenuItem(
                                                 child: new Text("Đã gặp"),
-                                                value: "Đã gặp",
+                                                value: 1,
                                               ),
                                               DropdownMenuItem(
                                                 child: new Text("Chưa gặp"),
-                                                value: "Chưa gặp",
+                                                value: 2,
                                               ),
                                               DropdownMenuItem(
                                                 child: new Text("Hẹn lần sau"),
-                                                value: "Hẹn lần sau",
+                                                value: 3,
                                               )
                                             ],
-                                            onChanged: (value){
+                                            onChanged: (int value){
                                               setState(() {
                                                 _status = value;
                                               });
+                                              print(value);
 
                                             },
                                             style: new TextStyle(
@@ -440,6 +414,47 @@ class ManageAreaState extends State<ManageArea> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       new Text(
+                                        "Mục tiêu",
+                                        style: new TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16
+                                        ),
+                                      ),
+                                      new SizedBox(
+                                        height: 5,
+                                      ),
+                                      new TextFormField(
+                                        validator: (value){
+                                          if(value.isEmpty){
+                                            return 'Vui lòng nhập mục tiêu cuộc hẹn';
+                                          }
+                                          return null;
+                                        },
+                                        controller: _targetController,
+
+                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey[400],
+                                                  width: 1)),
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+
+                                new SizedBox(height: 17,),
+                                new Container(
+                                  child: new Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      new Text(
                                         "Kết quả",
                                         style: new TextStyle(
                                             color: Colors.black54,
@@ -451,6 +466,13 @@ class ManageAreaState extends State<ManageArea> {
                                         height: 5,
                                       ),
                                       new TextFormField(
+                                        validator: (value){
+                                          if(value.isEmpty){
+                                            return "Vui lòng nhập kết quả cuộc hẹn";
+                                          }
+                                          return null;
+                                        },
+                                        controller: _resultController,
                                         style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
                                         maxLines: 4,
                                         keyboardType: TextInputType.multiline,
@@ -491,7 +513,52 @@ class ManageAreaState extends State<ManageArea> {
                               borderRadius: BorderRadius.circular(4)),
                           child: new FlatButton(
                               padding: EdgeInsets.symmetric(vertical: 10),
-                              onPressed: () {},
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+
+                                  if(_status != null){
+
+                                    ManageAreaItem manageAreaItem = new ManageAreaItem(
+                                      id: item.id,
+                                      addressType: item.addressType,
+                                      addressName: item.addressName,
+                                      doctorName: item.doctorName,
+                                      startTime: item.startTime,
+                                      endTime: item.startTime,
+                                      realStartTime: _timeStartTarget,
+                                      realEndTime: _timeEndTarget,
+                                      status: _status,
+                                      targetBefore: _targetController.text,
+                                      targetAfter: _resultController.text
+                                    );
+
+                                  }
+                                  else{
+                                    showDialog(
+                                        context: context,
+                                      builder: (BuildContext context){
+                                          return AlertDialog(
+                                            title: new Text("Thiếu thông tin"),
+                                            content: new Text("Vui lòng chọn trạng thái cuộc hẹn"),
+                                            actions: <Widget>[
+                                              new FlatButton(
+                                                  onPressed: (){
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: new Text("OK")
+                                              )
+                                            ],
+                                          );
+                                      }
+                                    );
+                                  }
+                                }
+                                else{
+                                  setState(() {
+                                    _autoValidate = true;
+                                  });
+                                }
+                              },
                               child: new Text(
                                 "Lưu",
                                 style: TextStyle(

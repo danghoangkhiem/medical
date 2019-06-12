@@ -23,7 +23,8 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   @override
   Stream<AttendanceState> mapEventToState(AttendanceEvent event) async* {
     if (event is GetAttendance) {
-      yield AttendanceLoading();
+
+      yield AttendanceLoading();//khi goi ham nay thi isLoading = false;
       try {
         if (event.startDate == null || event.endDate == null) {
           throw 'Phải chọn thời gian';
