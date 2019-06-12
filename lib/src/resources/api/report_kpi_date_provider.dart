@@ -3,9 +3,9 @@ import 'api_provider.dart';
 
 class ReportKpiDayApiProvider extends ApiProvider {
 
-  Future<ReportKpiDayModel> getReportKpiDay() async {
+  Future<ReportKpiDateModel> getReportKpiDay() async {
     await Future.delayed(Duration(milliseconds: 500));
-    return ReportKpiDayModel.fromJson([
+    return ReportKpiDateModel.fromJson([
       {
         "date": 1558112400000 ,
         "countVisit": 4

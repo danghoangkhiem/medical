@@ -10,9 +10,6 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
 
   final ReportKpiMonthRepository _reportKpiMonthRepository;
 
-  DateTime _currentStartMonth;
-  int _currentOffset;
-  int _currentLimit;
   int count;
 
   ReportKpiMonthBloc({
@@ -33,9 +30,9 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
         }
         else{
           ReportKpiMonthModel listKpiMonth = await _reportKpiMonthRepository.getReportKpiMonth(
-              startMonth: _currentStartMonth = event.starMonth,
-              offset: _currentOffset = event.offset,
-              limit:  _currentLimit = event.limit
+              startMonth: event.starMonth,
+              offset: event.offset,
+              limit: event.limit
           );
 
           //viet ham lấy tổng lượt viếng thăm
@@ -47,24 +44,7 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
         yield ReportKpiMonthFailure(error: error.toString());
       }
     }
-    if(event is GetReportKpiMonthMore){
-      yield ReportKpiMonthLoading(isLoadMore: true);
-      try {
-        ReportKpiMonthModel listKpiMonth = await _reportKpiMonthRepository.getReportKpiMonth(
-            startMonth: _currentStartMonth,
-            offset: _currentOffset = _currentOffset + _currentLimit,
-            limit:  _currentLimit
-        );
-        if (listKpiMonth.listKpiMonthItem.length == 0) {
-          yield ReachMaxx();
-        } else {
-          yield ReportKpiMonthLoaded(reportKpiMonthModel: listKpiMonth, isLoadMore: true, countKpi: count);
-        }
-      } catch (error) {
-        yield ReportKpiMonthFailure(error: error.toString());
-      }
 
-    }
   }
 
 }

@@ -6,19 +6,15 @@ import 'package:medical/src/resources/report_kpi_date_repository.dart';
 
 import 'package:meta/meta.dart';
 
-class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
+class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
 
-  final ReportKpiDayRepository _reportKpiDayRepository;
+  final ReportKpiDateRepository _reportKpiDateRepository;
 
-  DateTime _currentStartDate;
-  DateTime _currentEndDate;
-  int _currentOffset;
-  int _currentLimit;
   int count;
 
-  ReportKpiDayBloc({
-    @required reportKpiDayRepository,
-  }) : _reportKpiDayRepository = reportKpiDayRepository;
+  ReportKpiDateBloc({
+    @required reportKpiDateRepository,
+  }) : _reportKpiDateRepository = reportKpiDateRepository;
 
   @override
   ReportKpiDayState get initialState => ReportKpiDayInitial();
@@ -27,47 +23,29 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
   Stream<ReportKpiDayState> mapEventToState(ReportKpiDayEvent event) async* {
     if (event is GetReportKpiDay) {
 
-      yield ReportKpiDayLoading();
+      yield ReportKpiDateLoading();
       try {
         if(event.starDay ==null || event.endDay ==null){
           throw 'Phải chọn thời gian';
         }
         else{
-          ReportKpiDayModel listKpiDay = await _reportKpiDayRepository.getReportKpiDay(
-              startDate: _currentStartDate = event.starDay,
-              endDate: _currentEndDate = event.endDay,
-              offset: _currentOffset = event.offset,
-              limit:  _currentLimit = event.limit
+          ReportKpiDateModel listKpiDay = await _reportKpiDateRepository.getReportKpiDay(
+              startDate:  event.starDay,
+              endDate:  event.endDay,
+              offset:  event.offset,
+              limit:   event.limit
           );
 
           //viet ham lấy tổng lượt viếng thăm
           count = 26;
-          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, countKpi: count);
+          yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDay, countKpi: count);
         }
 
       } catch (error) {
-        yield ReportKpiDayFailure(error: error.toString());
+        yield ReportKpiDateFailure(error: error.toString());
       }
     }
-    if(event is GetReportKpiDayMore){
-      yield ReportKpiDayLoading(isLoadMore: true);
-      try {
-        final listKpiDay = await _reportKpiDayRepository.getReportKpiDay(
-            startDate: _currentStartDate,
-            endDate: _currentEndDate,
-            offset: _currentOffset = _currentOffset + _currentLimit,
-            limit:  _currentLimit
-        );
-        if (listKpiDay.listKpiDayItem.length == 0) {
-          yield ReachMax();
-        } else {
-          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, isLoadMore: true, countKpi: count);
-        }
-      } catch (error) {
-        yield ReportKpiDayFailure(error: error.toString());
-      }
 
-    }
   }
 
 }

@@ -22,11 +22,11 @@ class ReportKpiMonthLoading extends ReportKpiMonthState {
 }
 
 class ReportKpiMonthLoaded extends ReportKpiMonthState {
-  final bool isLoadMore;
+
   final ReportKpiMonthModel reportKpiMonthModel;
   final int countKpi;
 
-  ReportKpiMonthLoaded({@required this.reportKpiMonthModel,this.isLoadMore = false, @required this.countKpi}) : super([reportKpiMonthModel, isLoadMore, countKpi]);
+  ReportKpiMonthLoaded({@required this.reportKpiMonthModel, @required this.countKpi}) : super([reportKpiMonthModel, countKpi]);
 
   @override
   String toString() => 'ReportKpiMonthLoaded';
