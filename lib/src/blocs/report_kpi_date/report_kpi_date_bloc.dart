@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_event.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_state.dart';
-import 'package:medical/src/models/report_kpi_day_model.dart';
+import 'package:medical/src/models/report_kpi_date_model.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 
 import 'package:meta/meta.dart';
@@ -34,15 +34,16 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
               endDate:  event.endDay,
           );
 
-          if(listKpiDate != null){
+          if(listKpiDate.listKpiDateItem.length > 0){
 
-            listKpiDate.listKpiDayItem.forEach((item){
+            listKpiDate.listKpiDateItem.forEach((item){
               count += item.countVisit;
             });
 
             yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDate, countKpi: count);
           }
           else{
+
             yield ReportKpiEmpty();
           }
         }

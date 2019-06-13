@@ -6,15 +6,11 @@ abstract class ReportKpiMonthEvent extends Equatable {
 }
 
 class GetReportKpiMonth extends ReportKpiMonthEvent {
-  final DateTime starMonth;
-  final int offset;
-  final int limit;
+  final DateTime startMonth;
 
   GetReportKpiMonth({
-    @required this.starMonth,
-    @required this.offset,
-    this.limit = 10,
-  }) : super([starMonth, offset, limit]);
+    @required this.startMonth,
+  }) : super([startMonth]);
 
   @override
   String toString() {

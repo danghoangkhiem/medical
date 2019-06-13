@@ -1,4 +1,4 @@
-import 'package:medical/src/models/report_kpi_day_model.dart';
+import 'package:medical/src/models/report_kpi_date_model.dart';
 import 'package:medical/src/resources/api/api_response_error.dart';
 import 'api_provider.dart';
 
@@ -22,7 +22,8 @@ class ReportKpiDayApiProvider extends ApiProvider {
         queryParameters: _queryParameters);
 
     if (_resp.statusCode == 200) {
-      return ReportKpiDateModel.fromJson(_resp.data["data"]);
+
+      return ReportKpiDateModel.fromJson(_resp.data["date"]);
 
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));

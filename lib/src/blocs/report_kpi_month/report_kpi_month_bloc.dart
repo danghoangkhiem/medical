@@ -25,19 +25,26 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
 
       yield ReportKpiMonthLoading();
       try {
-        if(event.starMonth == null){
+        if(event.startMonth == null){
           throw 'Phải chọn thời gian';
         }
         else{
           ReportKpiMonthModel listKpiMonth = await _reportKpiMonthRepository.getReportKpiMonth(
-              startMonth: event.starMonth,
-              offset: event.offset,
-              limit: event.limit
+              startMonth: event.startMonth,
           );
 
+          if(listKpiMonth.listKpiMonthItem.length > 0){
+            print("co du lieu");
+            count = 26;
+            yield ReportKpiMonthLoaded(reportKpiMonthModel: listKpiMonth, countKpi: count);
+          }
+          else{
+
+            yield ReportKpiMonthEmpty();
+          }
+
           //viet ham lấy tổng lượt viếng thăm
-          count = 26;
-          yield ReportKpiMonthLoaded(reportKpiMonthModel: listKpiMonth, countKpi: count);
+
         }
 
       } catch (error) {

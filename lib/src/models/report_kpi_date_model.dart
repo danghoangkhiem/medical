@@ -1,19 +1,19 @@
 class ReportKpiDateModel {
-  List<ReportKpiDateItemModel> listKpiDayItem;
+  List<ReportKpiDateItemModel> listKpiDateItem;
 
-  ReportKpiDateModel(this.listKpiDayItem);
+  ReportKpiDateModel(this.listKpiDateItem);
 
   factory ReportKpiDateModel.fromJson(List<dynamic> json) {
-    List<ReportKpiDateItemModel> mapKpiDayItem;
+    List<ReportKpiDateItemModel> mapKpiDateItem;
 
     if (json != null) {
-      mapKpiDayItem = List<ReportKpiDateItemModel>.from(json.map((item) {
+      mapKpiDateItem = List<ReportKpiDateItemModel>.from(json.map((item) {
         return ReportKpiDateItemModel.fromJson(item);
       }));
 
-      return ReportKpiDateModel(mapKpiDayItem.toList());
+      return ReportKpiDateModel(mapKpiDateItem.toList());
     } else {
-      return null;
+      return ReportKpiDateModel(null);
     }
   }
 }
