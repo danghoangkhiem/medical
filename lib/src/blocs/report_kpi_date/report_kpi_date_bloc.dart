@@ -10,7 +10,7 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
 
   final ReportKpiDateRepository _reportKpiDateRepository;
 
-  int count;
+  int count = 0;
 
   ReportKpiDateBloc({
     @required reportKpiDateRepository,
@@ -29,16 +29,22 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
           throw 'Phải chọn thời gian';
         }
         else{
-          ReportKpiDateModel listKpiDay = await _reportKpiDateRepository.getReportKpiDay(
+          ReportKpiDateModel listKpiDate = await _reportKpiDateRepository.getReportKpiDay(
               startDate:  event.starDay,
               endDate:  event.endDay,
-              offset:  event.offset,
-              limit:   event.limit
           );
 
-          //viet ham lấy tổng lượt viếng thăm
-          count = 26;
-          yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDay, countKpi: count);
+          if(listKpiDate != null){
+
+            listKpiDate.listKpiDayItem.forEach((item){
+              count += item.countVisit;
+            });
+
+            yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDate, countKpi: count);
+          }
+          else{
+            yield ReportKpiEmpty();
+          }
         }
 
       } catch (error) {

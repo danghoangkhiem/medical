@@ -64,7 +64,6 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
         ReportKpiDateBloc(reportKpiDateRepository: _reportKpiDayRepository);
     _blocReportKpiMonth =
         ReportKpiMonthBloc(reportKpiMonthRepository: _reportKpiMonthRepository);
-
   }
 
   @override
@@ -136,9 +135,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                     width: 2)),
                                             border: OutlineInputBorder(),
                                             contentPadding:
-                                            EdgeInsets.symmetric(
-                                                vertical: 10,
-                                                horizontal: 10),
+                                                EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 10),
                                           ),
                                           style: new TextStyle(
                                               fontSize: 18,
@@ -191,9 +190,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                     width: 2)),
                                             border: OutlineInputBorder(),
                                             contentPadding:
-                                            EdgeInsets.symmetric(
-                                                vertical: 10,
-                                                horizontal: 10),
+                                                EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 10),
                                           ),
                                           style: new TextStyle(
                                               fontSize: 18,
@@ -250,89 +249,109 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                   ),
                   new Expanded(
                       child: new Container(
-                        child: new Column(
-                          children: <Widget>[
-                            new Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 15),
-                              height: 50,
-                              color: Colors.grey[200],
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  new Container(
-                                    child: new Text("Ngày", style: new TextStyle(fontSize: 16),),
-                                  ),
-                                  new Container(
-                                    child: new Text("Lượt viếng thăm", style: new TextStyle(fontSize: 16),),
-                                  )
-                                ],
+                    child: new Column(
+                      children: <Widget>[
+                        new Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          height: 50,
+                          color: Colors.grey[200],
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Container(
+                                child: new Text(
+                                  "Ngày",
+                                  style: new TextStyle(fontSize: 16),
+                                ),
                               ),
-                            ),
-                      //DateFormat('dd-MM-yyyy').format(item.date)
-                            new Expanded(
-                              child: Container(
-                                child: BlocBuilder(
-                                    bloc: _blocReportKpiDay,
-                                    builder: (BuildContext context, state) {
-                                      if (state is ReportKpiDateLoading) {
-                                        return LoadingIndicator(opacity: 0,);
-                                      }
-                                      if(state is ReportKpiDateLoaded){
-                                        return ListView(
-                                          children: <Widget>[
-                                            new Container(
-                                              decoration: BoxDecoration(
-                                                border: Border(bottom: BorderSide(color: Colors.grey[200], width: 1, style: BorderStyle.solid))
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 20),
-                                              height: 50,
-                                              child: new Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  new Container(
-                                                    child: new Text("24-5-2019" , style: new TextStyle(fontSize: 16),),
-                                                  ),
-                                                  new Container(
-                                                    child: new Text("5" , style: new TextStyle(fontSize: 16),),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      }
-                                      if(state is ReportKpiDateFailure){
-                                        return Container(
-                                          child: new Center(
-                                            child: Text(state.error),
-                                          ),
-                                        );
-                                      }
-                                      return Container();
-                                    }),
-                              ),
-                            )
-                          ],
+                              new Container(
+                                child: new Text(
+                                  "Lượt viếng thăm",
+                                  style: new TextStyle(fontSize: 16),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      )),
+
+                        new Expanded(
+                          child: Container(
+                            child: BlocListener(
+                                bloc: _blocReportKpiDay,
+                                listener: (BuildContext context, state){
+                                  if (state is ReportKpiEmpty) {
+                                    Scaffold.of(context).removeCurrentSnackBar();
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      duration: Duration(milliseconds: 1500),
+                                      content: Text('Không có dữ liệu'),
+                                    ));
+                                  }
+                                },
+                              child: BlocBuilder(
+                                  bloc: _blocReportKpiDay,
+                                  builder: (BuildContext context, state) {
+                                    if (state is ReportKpiDateLoading) {
+                                      return LoadingIndicator(
+                                        opacity: 0,
+                                      );
+                                    }
+                                    if (state is ReportKpiDateLoaded) {
+                                      return ListView.builder(
+                                          itemCount: state.reportKpiDateModel
+                                              .listKpiDayItem.length,
+                                          itemBuilder:
+                                              (BuildContext context, index) {
+                                            return buildContainer(state.reportKpiDateModel.listKpiDayItem[index]);
+                                          });
+                                    }
+                                    if (state is ReportKpiDateFailure) {
+                                      return Container(
+                                        child: new Center(
+                                          child: Text(state.error),
+                                        ),
+                                      );
+                                    }
+                                    return Container();
+                                  }),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
                   new Container(
                     height: 40,
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     width: double.infinity,
                     color: Colors.grey[200],
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new Container(
-                          child: new Text("Tổng", style: new TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                        ),
-                        new Container(
-
-                          child: new Text("0", style: new TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                        )
-                      ],
+                    child: BlocBuilder(
+                        bloc: _blocReportKpiDay,
+                        builder: (BuildContext context, state){
+                          if(state is ReportKpiDateLoaded){
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                new Container(
+                                  child: new Text(
+                                    "Tổng",
+                                    style: new TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                new Container(
+                                  child: new Text(
+                                    state.countKpi.toString(),
+                                    style: new TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                )
+                              ],
+                            );
+                          }
+                          return Container();
+                        }
                     ),
                   )
                 ],
@@ -359,34 +378,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                           child: new FlatButton(
                               onPressed: () {
                                 showMonthPicker(
-                                    context: context,
-                                    initialDate:
-                                    selectedDate ?? initialDate)
+                                        context: context,
+                                        initialDate:
+                                            selectedDate ?? initialDate)
                                     .then((date) => setState(() {
-                                  selectedDate = date;
-                                  print(selectedDate);
-                                  if (selectedDate.year.toInt() > 0) {
-                                    existDate = true;
-                                  } else {
-                                    existDate = false;
-                                  }
-                                }));
+                                          selectedDate = date;
+                                          print(selectedDate);
+                                          if (selectedDate.year.toInt() > 0) {
+                                            existDate = true;
+                                          } else {
+                                            existDate = false;
+                                          }
+                                        }));
                               },
                               child: existDate
                                   ? new Text(
-                                "${selectedDate?.month}/${selectedDate?.year}",
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.blueAccent),
-                              )
+                                      "${selectedDate?.month}/${selectedDate?.year}",
+                                      style: new TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.blueAccent),
+                                    )
                                   : new Text(
-                                "Chọn tháng",
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.blueAccent),
-                              )),
+                                      "Chọn tháng",
+                                      style: new TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.blueAccent),
+                                    )),
                         ),
                         new Container(
                           margin: EdgeInsets.symmetric(horizontal: 20),
@@ -477,12 +496,15 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                   bloc: _blocReportKpiMonth,
                                   builder: (BuildContext context,
                                       ReportKpiMonthState state) {
-                                    if (state is ReportKpiMonthLoading ) {
-                                      return LoadingIndicator(opacity: 0,);
+                                    if (state is ReportKpiMonthLoading) {
+                                      return LoadingIndicator(
+                                        opacity: 0,
+                                      );
                                     }
-                                    if(state is ReportKpiMonthLoaded){
+                                    if (state is ReportKpiMonthLoaded) {
                                       return new Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20),
                                         child: SingleChildScrollView(
                                           child: Table(
                                             columnWidths: {
@@ -492,23 +514,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -516,42 +534,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -561,23 +571,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -585,42 +591,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -630,23 +628,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -654,42 +648,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -699,23 +685,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -723,42 +705,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -768,23 +742,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -792,42 +762,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -837,23 +799,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -861,42 +819,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -906,23 +856,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -930,42 +876,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -975,23 +913,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -999,42 +933,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -1044,23 +970,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -1068,42 +990,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -1113,23 +1027,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -1137,42 +1047,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -1182,23 +1084,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -1206,42 +1104,34 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
@@ -1251,23 +1141,19 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                               TableRow(children: [
                                                 SingleChildScrollView(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                        MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .symmetric(
-                                                            vertical:
-                                                            10),
+                                                                vertical: 10),
                                                         child: new Text(
                                                           "Hoàng Kiều Thị",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ],
@@ -1275,49 +1161,40 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new Text(
                                                         "B",
-                                                        style:
-                                                        new TextStyle(
-                                                            fontSize:
-                                                            16),
+                                                        style: new TextStyle(
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 new Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .end,
+                                                      MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
                                                       child: new InkWell(
                                                         onTap: () {},
                                                         child: new Text(
                                                           "5",
-                                                          style:
-                                                          new TextStyle(
-                                                              fontSize:
-                                                              16),
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ]),
-
                                             ],
                                           ),
                                         ),
@@ -1346,8 +1223,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                             children: [
                               TableRow(children: [
                                 new Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     new Text(
                                       "Tổng",
@@ -1358,8 +1234,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                   ],
                                 ),
                                 new Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: <Widget>[
                                     new Padding(
                                       padding: EdgeInsets.only(left: 15),
@@ -1373,8 +1248,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                   ],
                                 ),
                                 new Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     new Text(
                                       "",
@@ -1385,8 +1259,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                   ],
                                 ),
                                 new Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     new Text(
                                       "",
@@ -1407,4 +1280,36 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
           ]),
         ));
   }
+
+  Widget buildContainer(ReportKpiDateItemModel item) {
+    return new Container(
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+                  color: Colors.grey[200],
+                  width: 1,
+                  style: BorderStyle.solid))),
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      height: 50,
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Container(
+            child: new Text(
+              DateFormat('dd-MM-yyyy').format(item.date),
+              style: new TextStyle(fontSize: 16),
+            ),
+          ),
+          new Container(
+            child: new Text(
+              item.countVisit.toString(),
+              style: new TextStyle(fontSize: 16),
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }
+
+

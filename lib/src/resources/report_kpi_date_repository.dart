@@ -5,8 +5,7 @@ class ReportKpiDateRepository {
 
   final ReportKpiDayApiProvider _reportKpiDayApiProvider = ReportKpiDayApiProvider();
 
-  Future<ReportKpiDateModel> getReportKpiDay({DateTime startDate, DateTime endDate, int offset, int limit}) async {
-    return await _reportKpiDayApiProvider.getReportKpiDay();
+  Future<ReportKpiDateModel> getReportKpiDay({DateTime startDate, DateTime endDate}) async {
+    return await _reportKpiDayApiProvider.getReportKpiDate(startDate: startDate, endDate: endDate);
   }
-
 }

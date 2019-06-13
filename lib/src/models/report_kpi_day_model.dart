@@ -1,29 +1,32 @@
-class ReportKpiDateModel{
-  List<ReportKpiDayItemModel> listKpiDayItem;
+class ReportKpiDateModel {
+  List<ReportKpiDateItemModel> listKpiDayItem;
 
   ReportKpiDateModel(this.listKpiDayItem);
 
-  factory ReportKpiDateModel.fromJson(List<dynamic> json){
-    List<ReportKpiDayItemModel> mapKpiDayItem = List<ReportKpiDayItemModel>.from(json.map((item){
-      return ReportKpiDayItemModel.fromJson(item);
-    }));
+  factory ReportKpiDateModel.fromJson(List<dynamic> json) {
+    List<ReportKpiDateItemModel> mapKpiDayItem;
 
-    return ReportKpiDateModel(mapKpiDayItem.toList());
+    if (json != null) {
+      mapKpiDayItem = List<ReportKpiDateItemModel>.from(json.map((item) {
+        return ReportKpiDateItemModel.fromJson(item);
+      }));
+
+      return ReportKpiDateModel(mapKpiDayItem.toList());
+    } else {
+      return null;
+    }
   }
 }
 
-class ReportKpiDayItemModel{
+class ReportKpiDateItemModel {
   final DateTime date;
   final int countVisit;
 
-  ReportKpiDayItemModel({this.date, this.countVisit});
+  ReportKpiDateItemModel({this.date, this.countVisit});
 
-  factory ReportKpiDayItemModel.fromJson(Map<String, dynamic> json){
-    return ReportKpiDayItemModel(
-      date: DateTime.fromMillisecondsSinceEpoch(json["date"])  ,
-      countVisit: json["countVisit"]
-    );
+  factory ReportKpiDateItemModel.fromJson(Map<String, dynamic> json) {
+    return ReportKpiDateItemModel(
+        date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
+        countVisit: json["countVisit"]);
   }
-
-
 }

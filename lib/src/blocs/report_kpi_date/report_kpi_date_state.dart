@@ -33,7 +33,7 @@ class ReportKpiDateLoaded extends ReportKpiDayState {
   String toString() => 'ReportKpiDateLoaded';
 }
 
-class ReachMax extends ReportKpiDayState {}
+class ReportKpiEmpty extends ReportKpiDayState {}
 
 class ReportKpiDateFailure extends ReportKpiDayState {
   final String error;
