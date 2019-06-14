@@ -96,7 +96,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
 
   Widget updateForm() {
     return Expanded(
-      flex: 12,
+      flex: 6,
       child: new Form(
         key: _formKey,
         child: new Container(
@@ -104,44 +104,40 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
           child: new ListView(
             children: <Widget>[
               new SizedBox(
-                height: 30,
+                height: 16,
               ),
               new Container(
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    infoText("Địa điểm", _daySchedule.addressType),
+                    outputInfo("Địa điểm", _daySchedule.location),
                     new SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
-                    infoText("Tên địa điểm", _daySchedule.addressName),
+                    outputInfo("Tên khách hàng", _daySchedule.doctorName),
                     new SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
-                    infoText("Tên khách hàng", _daySchedule.doctorName),
+                    outputTime(_daySchedule.startTime, _daySchedule.endTime),
                     new SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
-                    timeText(_daySchedule.startTime, _daySchedule.endTime),
-                    new SizedBox(
-                      height: 17,
-                    ),
-                    realTimeInput(_daySchedule.startTime, _daySchedule.endTime,
+                    inputRealTime(
                         _daySchedule.realStartTime, _daySchedule.realEndTime),
                     new SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                     purposeInput(),
                     new SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                     statusInput(),
                     new SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                     descriptionInput(),
                     new SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                   ],
                 ),
@@ -153,7 +149,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
     );
   }
 
-  Widget infoText(String title, String content) {
+  Widget outputInfo(String title, String content) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +162,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                 fontSize: 16),
           ),
           new SizedBox(
-            height: 5,
+            height: 4,
           ),
           new Container(
             height: 40,
@@ -186,7 +182,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                   child: new Text(
                     content,
                     style: new TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 )),
               ],
@@ -197,7 +193,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
     );
   }
 
-  Widget timeText(DateTime startDay, DateTime endDate) {
+  Widget outputTime(DateTime startDay, DateTime endDate) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,12 +224,9 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                             width: 1,
                             style: BorderStyle.solid),
                         borderRadius: BorderRadius.circular(4)),
-                    child: new Text(
-                      startDay.hour > 12
-                          ? "${startDay.hour - 12}:${startDay.minute} PM"
-                          : "${startDay.hour}:${startDay.minute.toString()} AM",
+                    child: new Text(convertTime(startDay),
                       style: new TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 )),
@@ -249,12 +242,9 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                             width: 1,
                             style: BorderStyle.solid),
                         borderRadius: BorderRadius.circular(4)),
-                    child: new Text(
-                      endDate.hour > 12
-                          ? "${endDate.hour - 12}:${endDate.minute} PM"
-                          : "${endDate.hour}:${endDate.minute.toString()} AM",
+                    child: new Text(convertTime(endDate),
                       style: new TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ))
@@ -266,8 +256,13 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
     );
   }
 
-  Widget realTimeInput(DateTime startDay, DateTime endDate,
-      DateTime realStartDate, DateTime realEndDate) {
+  String convertTime(DateTime time) {
+    return time.hour > 12
+        ? "${time.hour - 12}:${time.minute} PM"
+        : "${time.hour}:${time.minute.toString()} AM";
+  }
+
+  Widget inputRealTime(DateTime realStartDate, DateTime realEndDate) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,21 +298,17 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                               style: BorderStyle.solid),
                           borderRadius: BorderRadius.circular(4)),
                       child: _realStartDay == null
-                          ? new Text(
-                              realStartDate.hour > 12
-                                  ? "${realStartDate.hour - 12}:${realStartDate.minute} PM"
-                                  : "${realStartDate.hour}:${realStartDate.minute.toString()} AM",
+                          ? Text(
+                              convertTime(realStartDate),
                               style: new TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   color: Colors.blueAccent,
                                   fontWeight: FontWeight.bold),
                             )
-                          : new Text(
-                              _realStartDay.hour > 12
-                                  ? "${(_realStartDay.hour - 12).toInt()}:${_realStartDay.minute} PM"
-                                  : "${_realStartDay.hour}:${_realStartDay.minute} AM",
+                          : Text(
+                              convertTime(_realStartDay),
                               style: new TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   color: Colors.blueAccent,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -342,20 +333,16 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                             borderRadius: BorderRadius.circular(4)),
                         child: _realEndDate == null
                             ? new Text(
-                                realEndDate.hour > 12
-                                    ? "${realEndDate.hour - 12}:${realEndDate.minute} PM"
-                                    : "${realEndDate.hour}:${realEndDate.minute.toString()} AM",
+                                convertTime(realEndDate),
                                 style: new TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     color: Colors.blueAccent,
                                     fontWeight: FontWeight.bold),
                               )
                             : new Text(
-                                _realEndDate.hour > 12
-                                    ? "${(_realEndDate.hour - 12).toInt()}:${_realEndDate.minute} PM"
-                                    : "${_realEndDate.hour}:${_realEndDate.minute} AM",
+                                convertTime(_realEndDate),
                                 style: new TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     color: Colors.blueAccent,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -389,7 +376,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
           new TextFormField(
             controller: _descriptionController..text = _daySchedule.description,
             style: new TextStyle(
-                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
             maxLines: 4,
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
@@ -453,7 +440,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                   });
                 },
                 style: new TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent),
               ),
@@ -482,7 +469,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
           new TextFormField(
             controller: _purposeController..text = _daySchedule.purpose,
             style: new TextStyle(
-                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -498,38 +485,40 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
   }
 
   Widget updateButton() {
-    return Expanded(
-      flex: 2,
-      child: new Container(
-        color: Colors.grey.withOpacity(0.1),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        child: new Row(
-          children: <Widget>[
-            new Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(4)),
-                child: new FlatButton(
-                    padding: EdgeInsets.symmetric(vertical: 13),
-                    onPressed: () {
-                      _dayScheduleDetailBloc.dispatch(ButtonPressed(
+    return Container(
+      height: 60,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 30),
+      child: new Row(
+        children: <Widget>[
+          new Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(4)),
+              child: new FlatButton(
+                  padding: EdgeInsets.symmetric(vertical: 13),
+                  onPressed: () {
+                    _dayScheduleDetailBloc.dispatch(ButtonPressed(
                         scheduleId: _daySchedule.id,
-                        realStartTime: _realStartDay == null ? _daySchedule.startTime : _realStartDay,
-                        realEndTime: _realEndDate == null ? _daySchedule.endTime : _realEndDate,
+                        realStartTime: _realStartDay == null
+                            ? _daySchedule.startTime
+                            : _realStartDay,
+                        realEndTime: _realEndDate == null
+                            ? _daySchedule.endTime
+                            : _realEndDate,
                         purpose: _purposeController.toString(),
-                        dayScheduleStatus: status == null ? _daySchedule.status : status,
-                        description: _descriptionController.text
-                      ));
-                    },
-                    child: new Text(
-                      "Cập nhật",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    )),
-              ),
-            )
-          ],
-        ),
+                        dayScheduleStatus:
+                        status == null ? _daySchedule.status : status,
+                        description: _descriptionController.text));
+                  },
+                  child: new Text(
+                    "Cập nhật",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  )),
+            ),
+          )
+        ],
       ),
     );
   }

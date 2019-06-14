@@ -7,10 +7,9 @@ class DayCoachingModel {
   final DateTime realStartTime;
   final DateTime realEndTime;
 
-  final String position;
+  final String role;
   final String doctorName;
-  final String addressType;
-  final String addressName;
+  final String location;
 
   final String description;
   final String evaluate;
@@ -22,10 +21,9 @@ class DayCoachingModel {
       this.endTime,
       this.realStartTime,
       this.realEndTime,
-      this.position,
+      this.role,
       this.doctorName,
-      this.addressType,
-      this.addressName,
+      this.location,
       this.description,
       this.evaluate,
       this.feedback});
@@ -48,12 +46,11 @@ class DayCoachingModel {
         id = json['id'],
         startTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['from']),
         endTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['end']),
+        role = json['partner'] == null ? "" : json['partner']['role'] as String,
+        doctorName = json['partner'] == null ? "" : json['partner']['name'] as String,
+        location = json['partner'] == null ? "" : json['partner']['location']['name'] as String,
         realStartTime = json['realHours']['from'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['from']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['from']),
         realEndTime = json['realHours']['end'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['end']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['end']),
-        position = json['partner'] == null ? "" : json['partner']['position'] as String,
-        doctorName = json['partner'] == null ? "" : (json['partner']['first_name'] + json['partner']['last_name']) as String,
-        addressType = "not api",
-        addressName = "not api",
         description = json['description'] as String,
         evaluate = "not api",
         feedback = "not api";
@@ -63,10 +60,9 @@ class DayCoachingModel {
       'id': id,
       'startTime': startTime,
       'endTime': endTime,
-      'position': position,
+      'role': role,
       'doctorName': doctorName,
-      'addressName': addressName,
-      'addressType': addressType,
+      'addressType': location,
       'realStartTime': realStartTime,
       'realEndTime': realEndTime,
       'description': description,

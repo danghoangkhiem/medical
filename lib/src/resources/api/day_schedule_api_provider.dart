@@ -42,7 +42,6 @@ class DayScheduleApiProvider extends ApiProvider {
         '/users/$userId/schedules/$scheduleId',
         data: _requestBody);
     if (_resp.statusCode == 200) {
-      print(_resp);
       return true;
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));

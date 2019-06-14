@@ -36,7 +36,6 @@ class DayCoachingBloc extends Bloc<DayCoachingEvent, DayCoachingState> {
         _currentLimit = event.limit;
         final _dayCoachingList = await _dayCoachingRepository.getDayCoaching(
             _currentOffset, _currentLimit, userId);
-        print("bac");
         print(_dayCoachingList);
         if (_dayCoachingList.length == 0) {
           yield NoRecordsFound();
