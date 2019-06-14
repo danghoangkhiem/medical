@@ -4,10 +4,9 @@ class DayScheduleModel {
   final int id;
   final DateTime startTime;
   final DateTime endTime;
-  final String position;
+  final String role;
   final String doctorName;
-  final String addressType;
-  final String addressName;
+  final String location;
   final DateTime realStartTime;
   final DateTime realEndTime;
   final DayScheduleStatus status;
@@ -18,10 +17,9 @@ class DayScheduleModel {
       {this.id,
       this.startTime,
       this.endTime,
-      this.position,
+      this.role,
       this.doctorName,
-      this.addressType,
-      this.addressName,
+      this.location,
       this.realStartTime,
       this.realEndTime,
       this.status,
@@ -29,7 +27,7 @@ class DayScheduleModel {
       this.description});
 
   DayScheduleModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : /*id = json['id'],
         startTime = DateTime.fromMillisecondsSinceEpoch(json['startTime']),
         endTime = DateTime.fromMillisecondsSinceEpoch(json['endTime']),
         position = json['position'] as String,
@@ -40,6 +38,18 @@ class DayScheduleModel {
         realEndTime = DateTime.fromMillisecondsSinceEpoch(json['realEndTime']),
         status = DayScheduleStatus.from( json['status']),
         purpose = json['purpose'] as String,
+        description = json['description'] as String;*/
+
+        id = json['id'],
+        startTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['from']),
+        endTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['end']),
+        role = json['partner'] == null ? "" : json['partner']['role'] as String,
+        doctorName = json['partner'] == null ? "" : json['partner']['name'] as String,
+        location = json['partner'] == null ? "" : json['partner']['location']['name'] as String,
+        realStartTime = json['realHours']['from'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['from']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['from']),
+        realEndTime = json['realHours']['end'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['end']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['end']),
+        status = DayScheduleStatus.from(json['status']),
+        purpose =  json['purpose'] as String,
         description = json['description'] as String;
 
   Map<String, dynamic> toJson() {
@@ -47,10 +57,9 @@ class DayScheduleModel {
       'id': id,
       'startTime': startTime,
       'endTime': endTime,
-      'position': position,
+      'position': role,
       'doctorName': doctorName,
-      'addressName': addressName,
-      'addressType': addressType,
+      'location': location,
       'realStartTime': realStartTime,
       'realEndTime': realEndTime,
       'status': status.value,
@@ -96,8 +105,8 @@ class DayScheduleListModel extends ListMixin<DayScheduleModel> {
 
 class DayScheduleStatus {
   static const DayScheduleStatus later = DayScheduleStatus._('later');
-  static const DayScheduleStatus notMet = DayScheduleStatus._('not_met');
-  static const DayScheduleStatus met = DayScheduleStatus._('met');
+  static const DayScheduleStatus notMet = DayScheduleStatus._('not_meet');
+  static const DayScheduleStatus met = DayScheduleStatus._('meet');
 
   final String value;
 

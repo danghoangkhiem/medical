@@ -7,7 +7,6 @@ import 'customer_manage.dart';
 import 'package:medical/src/resources/customer_manage_repository.dart';
 import 'package:medical/src/models/attendance_model.dart';
 import 'package:medical/src/resources/user_repository.dart';
-import 'package:medical/src/models/user_model.dart';
 
 class CustomerManageBloc
     extends Bloc<CustomerManageEvent, CustomerManageState> {
@@ -20,6 +19,7 @@ class CustomerManageBloc
   String _customerStatus;
   int _currentOffset;
   int _currentLimit;
+  int _timeIn;
 
   @override
   CustomerManageState get initialState => InitialCustomerManageState();
@@ -34,17 +34,20 @@ class CustomerManageBloc
         if (event.customerType == null || event.customerStatus == null) {
           throw 'Phải chọn loại và tình trạng';
         }
-        AttendanceModel attendanceModel =
+        AttendanceModel attendance =
         await _userRepository.getAttendanceLastTimeLocally();
-        UserModel userModel = await _userRepository.getInfo();
-        int userId = userModel.id;
-        int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
+
+        if (attendance == null || attendance.timeOut != null) {
+          throw 'Bạn chưa chấm công vào';
+        }
         _currentOffset = event.offset;
         _currentLimit = event.limit;
         _customerType = event.customerType;
         _customerStatus = event.customerStatus;
+        _timeIn = attendance.timeIn.millisecondsSinceEpoch~/1000;
+
         final _customerManagerList =
-            await _customerManageRepository.getCustomerByTypeAndStatus(timeIn, _currentOffset, _currentLimit, _customerType, _customerStatus);
+            await _customerManageRepository.getCustomerByTypeAndStatus(_timeIn, _currentOffset, _currentLimit, _customerType, _customerStatus);
         if (_customerManagerList.length == 0) {
           yield NoRecordsFound();
         } else {
@@ -57,23 +60,22 @@ class CustomerManageBloc
     if (event is LoadMore) {
       yield Loading(isLoadMore: true);
       try {
-        AttendanceModel attendanceModel =
+        AttendanceModel attendance =
         await _userRepository.getAttendanceLastTimeLocally();
-        UserModel userModel = await _userRepository.getInfo();
-        int userId = userModel.id;
-        int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch~/1000;
+
         _currentOffset = _currentOffset + _currentLimit;
         _currentLimit = _currentLimit;
+        _timeIn = attendance.timeIn.millisecondsSinceEpoch~/1000;
+
         final _customerManagerList =
-        await _customerManageRepository.getCustomerByTypeAndStatus(timeIn, _currentOffset, _currentLimit, _customerType, _customerStatus);
+        await _customerManageRepository.getCustomerByTypeAndStatus(_timeIn, _currentOffset, _currentLimit, _customerType, _customerStatus);
         if (_customerManagerList == null || _customerManagerList.length == 0) {
           yield ReachMax();
         } else {
           yield Loaded(
               customerManagerList: _customerManagerList, isLoadMore: true);
         }
-      } catch (error,stack) {
-        print(stack);
+      } catch (error) {
         yield Failure(errorMessage: error.toString());
       }
     }

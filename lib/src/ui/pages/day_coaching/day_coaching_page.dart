@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medical/src/utils.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
-
 import 'package:medical/src/models/day_coaching_model.dart';
 import 'package:medical/src/blocs/day_coaching/day_coaching.dart';
 import 'package:medical/src/ui/pages/day_coaching/day_coaching_detail_page.dart';
 
 class DateCoachingPage extends StatefulWidget {
+  //define
   final DateTime date;
 
   DateCoachingPage({this.date});
@@ -20,12 +20,12 @@ class DateCoachingPage extends StatefulWidget {
 }
 
 class _DateCoachingPageState extends State<DateCoachingPage> {
+  //define
   final ScrollController _controller = ScrollController();
-
   DayCoachingListModel _dayCoachingList;
   DayCoachingBloc _dayCoachingBloc;
-
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   @override
   void initState() {
@@ -54,13 +54,56 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
     }
   }
 
+  Widget inputDate(DateTime startTime, DateTime endTime) {
+    return Container(
+      child: new Text(
+        convertTime(startTime) + ' đến ' + convertTime(endTime),
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.blueAccent),
+      ),
+    );
+  }
+
+  String convertTime(DateTime time) {
+    return time.hour > 12
+        ? "${time.hour - 12}:${time.minute} PM"
+        : "${time.hour}:${time.minute.toString()} AM";
+  }
+
+  Widget inputName(String role, String name) {
+    return Container(
+      margin: EdgeInsets.only(left: 20),
+      child: Text(
+        role + " : " + name,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget inputAddress(String address) {
+    return Container(
+      margin: EdgeInsets.only(left: 20),
+      child: new Text(
+        'Địa điểm : ' + address,
+        style: new TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 // TODO: implement build
     return Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text("Lịch Coaching trong ngày"),
+        title: Text("Lịch Coaching " +
+            widget.date.day.toString() +
+            '/' +
+            widget.date.month.toString() +
+            '/' +
+            widget.date.year.toString()),
       ),
       body: Container(
         child: new Column(
@@ -70,11 +113,20 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
               child: BlocListener(
                 bloc: _dayCoachingBloc,
                 listener: (BuildContext context, DayCoachingState state) {
+                  Scaffold.of(context).removeCurrentSnackBar();
+                  if (state is NoRecordsFound) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Không có dữ liệu được tìm thấy!'),
+                      backgroundColor: Colors.redAccent,
+                    ));
+                  }
                   if (state is ReachMax) {
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Got all the data!'),
+                      content: Text('Đã hiển thị tất cả dữ liệu!'),
+                      backgroundColor: Colors.blueAccent,
                     ));
-                    _controller.removeListener(_scrollListener);
+                    _isLoading = false;
+                    _isReachMax = true;
                   }
                   if (state is Failure) {
                     Scaffold.of(context).showSnackBar(SnackBar(
@@ -84,10 +136,13 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      _dayCoachingList.addAll(state.dayCoachingList);
+                      if (state.dayCoachingList != null) {
+                        _dayCoachingList.addAll(state.dayCoachingList);
+                      }
                       _isLoading = false;
                     } else {
                       _dayCoachingList = state.dayCoachingList;
+                      _isReachMax = false;
                     }
                   }
                 },
@@ -141,52 +196,18 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Container(
-                                        child: new Text(
-                                          "Từ " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayCoachingList[index]
-                                                      .startTime) +
-                                              " đến " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayCoachingList[index]
-                                                      .endTime),
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black54),
-                                        ),
-                                      ),
+                                      inputDate(
+                                          _dayCoachingList[index].realStartTime,
+                                          _dayCoachingList[index].realEndTime),
                                       SizedBox(
                                         height: 7,
                                       ),
-                                      Container(
-                                        margin: EdgeInsets.only(left: 20),
-                                        child: new Text(
-                                          _dayCoachingList[index].position +
-                                              " : " +
-                                              _dayCoachingList[index]
-                                                  .doctorName,
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
+                                      inputName(_dayCoachingList[index].role,
+                                          _dayCoachingList[index].doctorName),
                                       new SizedBox(
                                         height: 2,
                                       ),
-                                      Container(
-                                        margin: EdgeInsets.only(left: 20),
-                                        child: new Text(
-                                          _dayCoachingList[index].addressType +
-                                              " : " +
-                                              _dayCoachingList[index]
-                                                  .addressName,
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
+                                      inputAddress(_dayCoachingList[index].location)
                                     ],
                                   ),
                                 ),
@@ -196,7 +217,7 @@ class _DateCoachingPageState extends State<DateCoachingPage> {
                                     new Padding(
                                       padding: EdgeInsets.only(right: 20),
                                       child: new Icon(
-                                        Icons.flash_on,
+                                        Icons.edit,
                                         color: Colors.green,
                                       ),
                                     )

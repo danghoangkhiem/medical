@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medical/src/utils.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
-
 import 'package:medical/src/models/day_schedule_model.dart';
 import 'package:medical/src/blocs/day_schedule/day_schedule.dart';
 import 'package:medical/src/ui/pages/day_schedule/day_schedule_detail_page.dart';
 
 class DateSchedulePage extends StatefulWidget {
-  final DateTime date;
 
+  //define
+  final DateTime date;
   DateSchedulePage({this.date});
 
   @override
@@ -20,12 +20,12 @@ class DateSchedulePage extends StatefulWidget {
 }
 
 class _DateSchedulePageState extends State<DateSchedulePage> {
+  //define
   final ScrollController _controller = ScrollController();
-
   DayScheduleListModel _dayScheduleList;
   DayScheduleBloc _dayScheduleBloc;
-
   bool _isLoading = false;
+  bool _isReachMax = false;
 
   @override
   void initState() {
@@ -54,13 +54,58 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
     }
   }
 
+  Widget inputDate(DateTime startTime, DateTime endTime) {
+    return Container(
+      child: new Text(
+        convertTime(startTime) + ' đến ' + convertTime(endTime),
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.blueAccent),
+      ),
+    );
+  }
+
+  String convertTime(DateTime time) {
+    return time.hour > 12
+        ? "${time.hour - 12}:${time.minute} PM"
+        : "${time.hour}:${time.minute.toString()} AM";
+  }
+
+  Widget inputName(String role, String name) {
+    return Container(
+      margin: EdgeInsets.only(left: 20),
+      child: Text(
+        role + " : " + name,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget inputAddress(String address){
+    return Container(
+      margin: EdgeInsets.only(left: 20),
+      child: new Text(
+        'Địa điểm : ' + address,
+        style: new TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 // TODO: implement build
     return Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text("Lịch làm việc trong ngày"),
+        title: Text("Lịch làm việc " +
+            widget.date.day.toString() +
+            '/' +
+            widget.date.month.toString() +
+            '/' +
+            widget.date.year.toString()),
       ),
       body: Container(
         child: new Column(
@@ -70,11 +115,20 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
               child: BlocListener(
                 bloc: _dayScheduleBloc,
                 listener: (BuildContext context, DayScheduleState state) {
+                  Scaffold.of(context).removeCurrentSnackBar();
+                  if (state is NoRecordsFound) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Không có dữ liệu được tìm thấy!'),
+                      backgroundColor: Colors.redAccent,
+                    ));
+                  }
                   if (state is ReachMax) {
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Got all the data!'),
+                      content: Text('Đã hiển thị tất cả dữ liệu!'),
+                      backgroundColor: Colors.blueAccent,
                     ));
-                    _controller.removeListener(_scrollListener);
+                    _isLoading = false;
+                    _isReachMax = true;
                   }
                   if (state is Failure) {
                     Scaffold.of(context).showSnackBar(SnackBar(
@@ -84,10 +138,13 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                   }
                   if (state is Loaded) {
                     if (state.isLoadMore) {
-                      _dayScheduleList.addAll(state.dayScheduleList);
+                      if (state.dayScheduleList != null) {
+                        _dayScheduleList.addAll(state.dayScheduleList);
+                      }
                       _isLoading = false;
                     } else {
                       _dayScheduleList = state.dayScheduleList;
+                      _isReachMax = false;
                     }
                   }
                 },
@@ -141,52 +198,17 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Container(
-                                        child: new Text(
-                                          "Từ " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayScheduleList[index]
-                                                      .startTime) +
-                                              " đến " +
-                                              DateFormat('hh:mm').format(
-                                                  _dayScheduleList[index]
-                                                      .endTime),
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black54),
-                                        ),
-                                      ),
+                                      inputDate(
+                                          _dayScheduleList[index].realStartTime,
+                                          _dayScheduleList[index].realEndTime),
                                       SizedBox(
-                                        height: 7,
+                                        height: 6,
                                       ),
-                                      Container(
-                                        margin: EdgeInsets.only(left: 20),
-                                        child: new Text(
-                                          _dayScheduleList[index].position +
-                                              " : " +
-                                              _dayScheduleList[index]
-                                                  .doctorName,
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
+                                      inputName(_dayScheduleList[index].role,_dayScheduleList[index].doctorName),
                                       new SizedBox(
                                         height: 2,
                                       ),
-                                      Container(
-                                        margin: EdgeInsets.only(left: 20),
-                                        child: new Text(
-                                          _dayScheduleList[index].addressType +
-                                              " : " +
-                                              _dayScheduleList[index]
-                                                  .addressName,
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
+                                      inputAddress(_dayScheduleList[index].location)
                                     ],
                                   ),
                                 ),
@@ -196,7 +218,7 @@ class _DateSchedulePageState extends State<DateSchedulePage> {
                                     new Padding(
                                       padding: EdgeInsets.only(right: 20),
                                       child: new Icon(
-                                        Icons.flash_on,
+                                        Icons.edit,
                                         color: Colors.green,
                                       ),
                                     )

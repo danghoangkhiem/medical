@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:medical/src/models/day_coaching_model.dart';
 import 'package:medical/src/blocs/day_coaching_detail/day_coaching_detail.dart';
@@ -19,18 +20,48 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _evaluateController = TextEditingController();
   TextEditingController _feedbackController = TextEditingController();
+  DateTime _realStartDay;
+  DateTime _realEndDate;
+  bool isStartDate = false;
 
   TimeOfDay _time = TimeOfDay.now();
+  DateTime time;
+  bool isLonHon12 = false;
 
-  Future<Null> _selectTime(BuildContext context) async {
+  final now = new DateTime.now();
+
+  Future<Null> _selectTime(BuildContext context, bool isStartDate) async {
     final TimeOfDay picked =
         await showTimePicker(context: context, initialTime: _time);
+    //&& picked != _time
+    if (picked != null) {
+      if (picked.hour > 12) {
+        setState(() {
+          isLonHon12 = true;
+          if (isStartDate == true) {
+            _realStartDay = new DateTime(now.year, now.month, now.day,
+                (picked.hour).toInt(), picked.minute);
+          } else {
+            _realEndDate = new DateTime(now.year, now.month, now.day,
+                (picked.hour).toInt(), picked.minute);
+          }
+        });
+      } else {
+        setState(() {
+          isLonHon12 = false;
+          if (isStartDate == true) {
+            _realStartDay = new DateTime(
+                now.year, now.month, now.day, picked.hour, picked.minute);
+          } else {
+            _realEndDate = new DateTime(
+                now.year, now.month, now.day, picked.hour, picked.minute);
+          }
+        });
+      }
 
-    if (picked != null && picked != _time) {
-      setState(() {
-        _time = picked;
-      });
-      print("${_time.hour}:${_time.minute}");
+      //print(DateFormat("yyyy-MM-dd hh:mm:ss a").format(time));
+      //print("${_time.hour}:${_time.minute}");
+      //print(_time);
     }
   }
 
@@ -83,37 +114,33 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    infoText('Loại địa điểm', _dayCoaching.addressType),
+                    outputInfo('Địa điểm', _dayCoaching.location),
                     SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
-                    infoText('Tên địa điểm', _dayCoaching.addressName),
+                    outputInfo('Tên khách hàng', _dayCoaching.doctorName),
                     SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
-                    infoText('Tên khách hàng', _dayCoaching.doctorName),
+                    outputTime(_dayCoaching.startTime, _dayCoaching.endTime),
                     SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
-                    timeText(),
+                    inputRealTime(_dayCoaching.realStartTime, _dayCoaching.realEndTime),
                     SizedBox(
-                      height: 17,
-                    ),
-                    realTimeInput(),
-                    SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                     descriptionInput(),
                     SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                     evaluateInput(),
                     SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                     feedbackInput(),
                     SizedBox(
-                      height: 17,
+                      height: 16,
                     ),
                   ],
                 ),
@@ -125,7 +152,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
     );
   }
 
-  Widget infoText(String title, String value) {
+  Widget outputInfo(String title, String content) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,30 +165,29 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                 fontSize: 16),
           ),
           new SizedBox(
-            height: 5,
+            height: 4,
           ),
           new Container(
             height: 40,
             child: new Row(
               children: <Widget>[
                 new Expanded(
-                  child: new Container(
-                    padding: EdgeInsets.only(left: 10),
-                    alignment: Alignment.centerLeft,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.grey[400],
-                            width: 1,
-                            style: BorderStyle.solid),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: new Text(
-                      value,
-                      style: new TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+                    child: new Container(
+                      padding: EdgeInsets.only(left: 10),
+                      alignment: Alignment.centerLeft,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.grey[400],
+                              width: 1,
+                              style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: new Text(
+                        content,
+                        style: new TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    )),
               ],
             ),
           )
@@ -170,7 +196,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
     );
   }
 
-  Widget timeText() {
+  Widget outputTime(DateTime startDay, DateTime endDate) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,42 +217,40 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
               children: <Widget>[
                 new Expanded(
                     child: Padding(
-                  padding: EdgeInsets.only(right: 5),
-                  child: new Container(
-                    alignment: Alignment.center,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.grey[400],
-                            width: 1,
-                            style: BorderStyle.solid),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: new Text(
-                      "10:20 AM",
-                      style: new TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                )),
+                      padding: EdgeInsets.only(right: 5),
+                      child: new Container(
+                        alignment: Alignment.center,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.grey[400],
+                                width: 1,
+                                style: BorderStyle.solid),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: new Text(convertTime(startDay),
+                          style: new TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )),
                 new Expanded(
                     child: Padding(
-                  padding: EdgeInsets.only(left: 5),
-                  child: new Container(
-                    alignment: Alignment.center,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.grey[400],
-                            width: 1,
-                            style: BorderStyle.solid),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: new Text(
-                      "11:00 PM",
-                      style: new TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ))
+                      padding: EdgeInsets.only(left: 5),
+                      child: new Container(
+                        alignment: Alignment.center,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.grey[400],
+                                width: 1,
+                                style: BorderStyle.solid),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: new Text(convertTime(endDate),
+                          style: new TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ))
               ],
             ),
           )
@@ -235,7 +259,13 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
     );
   }
 
-  Widget realTimeInput() {
+  String convertTime(DateTime time) {
+    return time.hour > 12
+        ? "${time.hour - 12}:${time.minute} PM"
+        : "${time.hour}:${time.minute.toString()} AM";
+  }
+
+  Widget inputRealTime(DateTime realStartDate, DateTime realEndDate) {
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,34 +286,44 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
               children: <Widget>[
                 new Expanded(
                     child: Padding(
-                  padding: EdgeInsets.only(right: 5),
-                  child: InkWell(
-                    onTap: () {
-                      _selectTime(context);
-                    },
-                    child: new Container(
-                      alignment: Alignment.center,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey[400],
-                              width: 1,
-                              style: BorderStyle.solid),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: new Text(
-                        _time.toString(),
-                        style: new TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      padding: EdgeInsets.only(right: 5),
+                      child: InkWell(
+                        onTap: () {
+                          _selectTime(context, isStartDate = true);
+                        },
+                        child: new Container(
+                          alignment: Alignment.center,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.grey[400],
+                                  width: 1,
+                                  style: BorderStyle.solid),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: _realStartDay == null
+                              ? Text(
+                            convertTime(realStartDate),
+                            style: new TextStyle(
+                                fontSize: 16,
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold),
+                          )
+                              : Text(
+                            convertTime(_realStartDay),
+                            style: new TextStyle(
+                                fontSize: 16,
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                )),
+                    )),
                 new Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: InkWell(
                       onTap: () {
-                        _selectTime(context);
+                        _selectTime(context, isStartDate = false);
                       },
                       child: new Container(
                         alignment: Alignment.center,
@@ -294,10 +334,20 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
                                 width: 1,
                                 style: BorderStyle.solid),
                             borderRadius: BorderRadius.circular(4)),
-                        child: new Text(
-                          _time.toString(),
+                        child: _realEndDate == null
+                            ? new Text(
+                          convertTime(realEndDate),
                           style: new TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 16,
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold),
+                        )
+                            : new Text(
+                          convertTime(_realEndDate),
+                          style: new TextStyle(
+                              fontSize: 16,
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -329,7 +379,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
           new TextFormField(
             controller: _descriptionController..text = _dayCoaching.description,
             style: new TextStyle(
-                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -362,7 +412,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
           new TextFormField(
             controller: _evaluateController..text = _dayCoaching.evaluate,
             style: new TextStyle(
-                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
             //maxLines: 4,
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
@@ -396,7 +446,7 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
           new TextFormField(
             controller: _feedbackController..text = _dayCoaching.feedback,
             style: new TextStyle(
-                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
             //maxLines: 4,
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
@@ -413,38 +463,42 @@ class _DayCoachingDetailPageState extends State<DayCoachingDetailPage> {
   }
 
   Widget updateButton() {
-    return Expanded(
-      flex: 2,
-      child: new Container(
-        color: Colors.grey.withOpacity(0.1),
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        child: new Row(
-          children: <Widget>[
-            new Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(4)),
-                child: new FlatButton(
-                  padding: EdgeInsets.symmetric(vertical: 13),
-                  onPressed: () {
-                    _dayCoachingDetailBloc.dispatch(
-                      ButtonPressed(
-                          id: _dayCoaching.id,
-                          description: _descriptionController.text,
-                          evaluate: _evaluateController.text,
-                          feedback: _feedbackController.text),
-                    );
-                  },
-                  child: new Text(
-                    "Cập nhật",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+    return Container(
+      height: 60,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 30),
+      child: new Row(
+        children: <Widget>[
+          new Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(4)),
+              child: new FlatButton(
+                padding: EdgeInsets.symmetric(vertical: 13),
+                onPressed: () {
+                  _dayCoachingDetailBloc.dispatch(
+                    ButtonPressed(
+                        id: _dayCoaching.id,
+                        realStartTime: _realStartDay == null
+                            ? _dayCoaching.realStartTime
+                            : _realStartDay,
+                        realEndTime: _realEndDate == null
+                            ? _dayCoaching.realEndTime
+                            : _realEndDate,
+                        description: _descriptionController.text,
+                        evaluate: _evaluateController.text,
+                        feedback: _feedbackController.text),
+                  );
+                },
+                child: new Text(
+                  "Cập nhật",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

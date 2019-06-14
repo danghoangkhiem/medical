@@ -27,3 +27,5 @@ class Failure extends DayScheduleState {
 }
 
 class ReachMax extends DayScheduleState {}
+
+class NoRecordsFound extends DayScheduleState {}

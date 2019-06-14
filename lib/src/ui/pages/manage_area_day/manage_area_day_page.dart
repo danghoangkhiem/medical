@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:medical/src/blocs/manage_area/manage_area_event.dart';
 import 'package:medical/src/blocs/manage_area/manage_area_bloc.dart';
 import 'package:medical/src/blocs/manage_area/manage_area_state.dart';
@@ -116,7 +115,7 @@ class ManageAreaDayState extends State<ManageAreaDay> {
                   bloc: _blocManageArea,
                   builder: (context, state) {
                     if (state is ManageAreaLoading && !state.isLoadMore) {
-                      return LoadingIndicator();
+                      return LoadingIndicator(opacity: 0,);
                     }
                     return ListView.builder(
                       controller: _scrollController,

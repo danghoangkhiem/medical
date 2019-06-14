@@ -27,3 +27,5 @@ class Failure extends DayCoachingState {
 }
 
 class ReachMax extends DayCoachingState {}
+
+class NoRecordsFound extends DayCoachingState {}

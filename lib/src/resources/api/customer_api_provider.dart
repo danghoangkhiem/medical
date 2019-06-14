@@ -13,21 +13,15 @@ class CustomerApiProvider extends ApiProvider {
       @required String type,
       @required String status}) async {
     Map<String, dynamic> _queryParameters = {
-      /*'timeIn': timeIn,*/
+      'timeIn': timeIn,
       'offset': offset,
       'limit': limit,
       'type': type,
       'status': status,
     };
-    print(timeIn);
-    print(offset);
-    print(limit);
-    print(type);
-    print(status);
     Response _resp =
         await httpClient.get('/consumers', queryParameters: _queryParameters);
     if (_resp.statusCode == 200) {
-      print(_resp.data['data']);
       return CustomerManagerListModel.fromJson(_resp.data['data']);
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));

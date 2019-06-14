@@ -1,4 +1,4 @@
-import 'package:medical/src/models/report_kpi_day_model.dart';
+import 'package:medical/src/models/report_kpi_date_model.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,37 +11,31 @@ class ReportKpiDayInitial extends ReportKpiDayState {
   String toString() => 'ReportKpiDayInitial';
 }
 
-class ReportKpiDayLoading extends ReportKpiDayState {
-
-  final bool isLoadMore;
-
-  ReportKpiDayLoading({this.isLoadMore = false});
-
+class ReportKpiDateLoading extends ReportKpiDayState {
   @override
   String toString() => 'ReportKpiDayLoading';
 }
 
-class ReportKpiDayLoaded extends ReportKpiDayState {
-  final bool isLoadMore;
-  final ReportKpiDayModel reportKpiDayModel;
-  final int countKpi;
-  //ReportKpiDayLoaded({@required this.reportKpiDayModel, @required this.countKpi}) : super([reportKpiDayModel, countKpi]);
+class ReportKpiDateLoaded extends ReportKpiDayState {
 
-  ReportKpiDayLoaded({@required this.reportKpiDayModel,this.isLoadMore = false, @required this.countKpi}) : super([reportKpiDayModel, isLoadMore, countKpi]);
+  final ReportKpiDateModel reportKpiDateModel;
+  final int countKpi;
+
+  ReportKpiDateLoaded({@required this.reportKpiDateModel, @required this.countKpi}) : super([reportKpiDateModel, countKpi]);
 
   @override
-  String toString() => 'ReportKpiDayLoaded';
+  String toString() => 'ReportKpiDateLoaded';
 }
 
-class ReachMax extends ReportKpiDayState {}
+class ReportKpiEmpty extends ReportKpiDayState {}
 
-class ReportKpiDayFailure extends ReportKpiDayState {
+class ReportKpiDateFailure extends ReportKpiDayState {
   final String error;
 
-  ReportKpiDayFailure({@required this.error}) : super([error]);
+  ReportKpiDateFailure({@required this.error}) : super([error]);
 
   @override
-  String toString() => 'ReportKpiDayFailure { error: $error }';
+  String toString() => 'ReportKpiDateFailure { error: $error }';
 }
 
 
