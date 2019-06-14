@@ -7,12 +7,13 @@ import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_state.dart';
 import 'package:medical/src/blocs/report_kpi_month/report_kpi_month_bloc.dart';
 import 'package:medical/src/blocs/report_kpi_month/report_kpi_month_event.dart';
 import 'package:medical/src/blocs/report_kpi_month/report_kpi_month_state.dart';
-import 'package:medical/src/models/report_kpi_day_model.dart';
+import 'package:medical/src/models/report_kpi_date_model.dart';
 import 'package:medical/src/models/report_kpi_month_model.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medical/src/resources/report_kpi_month_repository.dart';
 import 'package:medical/src/ui/pages/report_kpi/kpi_date_detail.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
@@ -30,44 +31,8 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
 
   bool existDate = true;
 
-  final ScrollController _scrollController = ScrollController();
-
-  final ScrollController _scrollControllerMonth = ScrollController();
-
-  bool _isLoadingMonth = false;
-  bool _isLoading = false;
-
-  ReportKpiDayModel listReportKpiDay;
-  ReportKpiMonthModel listReportKpiMonth;
-
   int _count = 0;
   int _countMonth = 0;
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      throttle(10, () {
-        if (_isLoading != true) {
-          _isLoading = true;
-          print("Load more");
-          _blocReportKpiDay.dispatch(GetReportKpiDayMore());
-        }
-      });
-    }
-  }
-
-  void _scrollListenerMonth() {
-    if (_scrollControllerMonth.position.pixels ==
-        _scrollControllerMonth.position.maxScrollExtent) {
-      throttle(10, () {
-        if (_isLoadingMonth != true) {
-          _isLoadingMonth = true;
-          print("Load more month");
-          _blocReportKpiMonth.dispatch(GetReportKpiMonthMore());
-        }
-      });
-    }
-  }
 
   DateTime startDate;
   DateTime endDate;
@@ -76,10 +41,10 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
   int offsetKpi = 0;
   int offsetKpiMonth = 0;
 
-  ReportKpiDayBloc _blocReportKpiDay;
+  ReportKpiDateBloc _blocReportKpiDay;
   ReportKpiMonthBloc _blocReportKpiMonth;
 
-  ReportKpiDayRepository _reportKpiDayRepository = ReportKpiDayRepository();
+  ReportKpiDateRepository _reportKpiDayRepository = ReportKpiDateRepository();
 
   ReportKpiMonthRepository _reportKpiMonthRepository =
       ReportKpiMonthRepository();
@@ -94,14 +59,11 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
     startDate = endDate = DateTime.parse(DateFormat('yyyy-MM-dd').format(_now));
 
     selectedDate = initialDate;
-    listReportKpiMonth = ReportKpiMonthModel.fromJson([]);
-    listReportKpiDay = ReportKpiDayModel.fromJson([]);
+
     _blocReportKpiDay =
-        ReportKpiDayBloc(reportKpiDayRepository: _reportKpiDayRepository);
+        ReportKpiDateBloc(reportKpiDateRepository: _reportKpiDayRepository);
     _blocReportKpiMonth =
         ReportKpiMonthBloc(reportKpiMonthRepository: _reportKpiMonthRepository);
-    _scrollController.addListener(_scrollListener);
-    _scrollControllerMonth.addListener(_scrollListenerMonth);
   }
 
   @override
@@ -125,8 +87,9 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
             new Container(
               child: new Column(
                 children: <Widget>[
-                  new Expanded(
-                    flex: 4,
+                  new Container(
+                    margin: EdgeInsets.only(top: 10),
+                    height: 180,
                     child: new Form(
                         key: _formKey,
                         child: new ListView(
@@ -265,8 +228,7 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                                                 GetReportKpiDay(
                                                     starDay: startDate,
                                                     endDay: endDate,
-                                                    offset: offsetKpi,
-                                                    limit: 10));
+                                                    ));
                                           } else {
                                             print("Chua du dieu kien tim");
                                           }
@@ -285,394 +247,197 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
                         )),
                   ),
                   new Expanded(
-                      flex: 7,
                       child: new Container(
-                        child: new Column(
-                          children: <Widget>[
-                            new Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 15),
-                              height: 50,
-                              color: Colors.grey[200],
-                              child: Table(
-                                columnWidths: {
-                                  0: FractionColumnWidth(0.4),
-                                  1: FractionColumnWidth(0.4)
-                                },
-                                children: [
-                                  TableRow(children: [
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        new Text(
-                                          "Ngày",
-                                          style: new TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          "Lượt viếng thăm",
-                                          style: new TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        new Text(
-                                          "",
-                                          style: new TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ]),
-                                ],
-                              ),
-                            ),
-                            new Expanded(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 20),
-                                child: SingleChildScrollView(
-                                  controller: _scrollController,
-                                  child: BlocListener(
-                                    bloc: _blocReportKpiDay,
-                                    listener: (BuildContext context,
-                                        ReportKpiDayState state) {
-                                      if (state is ReachMax) {
-                                        Scaffold.of(context)
-                                            .removeCurrentSnackBar();
-                                        Scaffold.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text('Got all the data!'),
-                                        ));
-                                        _scrollController
-                                            .removeListener(_scrollListener);
-                                      }
-                                      if (state is ReportKpiDayFailure) {
-                                        Scaffold.of(context)
-                                            .removeCurrentSnackBar();
-                                        Scaffold.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text(state.error),
-                                          backgroundColor: Colors.redAccent,
-                                        ));
-                                      }
-                                      if (state is ReportKpiDayLoaded) {
-                                        setState(() {
-                                          _count = state.countKpi;
-                                        });
-                                        if (state.isLoadMore) {
-                                          listReportKpiDay.listKpiDayItem
-                                              .addAll(state.reportKpiDayModel
-                                                  .listKpiDayItem);
-                                          _isLoading = false;
-                                        } else {
-                                          listReportKpiDay.listKpiDayItem =
-                                              state.reportKpiDayModel
-                                                  .listKpiDayItem;
-                                        }
-                                      }
-                                    },
-                                    child: BlocBuilder(
-                                        bloc: _blocReportKpiDay,
-                                        builder: (BuildContext context, state) {
-                                          if (state is ReportKpiDayLoading &&
-                                              !state.isLoadMore) {
-                                            return WillPopScope(
-                                              onWillPop: () async {
-                                                return true;
-                                              },
-                                              child: Container(
-                                                padding:
-                                                    EdgeInsets.only(top: 30),
-                                                color: Colors.transparent,
-                                                child: new Center(
-                                                  child:
-                                                      new CircularProgressIndicator(),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                          return Stack(
-                                            children: <Widget>[
-                                              Table(
-                                                columnWidths: {
-                                                  0: FractionColumnWidth(0.4),
-                                                  1: FractionColumnWidth(0.4)
-                                                },
-                                                children: listReportKpiDay
-                                                    .listKpiDayItem
-                                                    .map((item) {
-                                                  return TableRow(children: [
-                                                    new Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 10),
-                                                          child: new Text(
-                                                            DateFormat(
-                                                                    'dd-MM-yyyy')
-                                                                .format(
-                                                                    item.date),
-                                                            style:
-                                                                new TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    new Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: <Widget>[
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 10),
-                                                          child: new Text(
-                                                            item.countVisit
-                                                                .toString(),
-                                                            style:
-                                                                new TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    new Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: <Widget>[
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 10),
-                                                          child: new InkWell(
-                                                            onTap: () {
-                                                              Navigator.of(context).push(
-                                                                  MaterialPageRoute(
-                                                                      builder: (BuildContext
-                                                                              context) =>
-                                                                          KpiDateDetail(
-                                                                            byDate:
-                                                                                item.date,
-                                                                          )));
-                                                            },
-                                                            child: new Text(
-                                                              "chi tiết",
-                                                              style: new TextStyle(
-                                                                  fontSize: 16,
-                                                                  color: Colors
-                                                                      .blueAccent),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ]);
-                                                }).toList(),
-                                              ),
-                                              _isLoading
-                                                  ? Positioned(
-                                                      bottom: 0,
-                                                      left: 0,
-                                                      child: Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                bottom: 10),
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: new Row(
-                                                          children: <Widget>[
-                                                            Spacer(),
-                                                            CircularProgressIndicator(),
-                                                            Spacer(),
-                                                          ],
-                                                        ),
-                                                      ))
-                                                  : Container()
-                                            ],
-                                          );
-                                        }),
-                                  ),
+                    child: new Column(
+                      children: <Widget>[
+                        new Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          height: 50,
+                          color: Colors.grey[200],
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Container(
+                                child: new Text(
+                                  "Ngày",
+                                  style: new TextStyle(fontSize: 16),
                                 ),
                               ),
-                            )
-                          ],
+                              new Container(
+                                child: new Text(
+                                  "Lượt viếng thăm",
+                                  style: new TextStyle(fontSize: 16),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      )),
-                  new Expanded(
-                      flex: 1,
-                      child: new Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        color: Colors.grey[200],
-                        child: BlocBuilder(
-                            bloc: _blocReportKpiDay,
-                            builder: (BuildContext context, state) {
-                              if (state is ReportKpiDayFailure) {
-                                return new Text("Dữ liệu không hoạt động");
-                              }
-                              return Table(
-                                columnWidths: {0: FractionColumnWidth(0.5)},
-                                children: [
-                                  TableRow(children: [
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        new Text(
-                                          "Tổng",
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
+                        new Expanded(
+                          child: Container(
+                            child: BlocListener(
+                              bloc: _blocReportKpiDay,
+                              listener: (BuildContext context, state) {
+                                if (state is ReportKpiEmpty) {
+                                  Scaffold.of(context).removeCurrentSnackBar();
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    duration: Duration(milliseconds: 1500),
+                                    content: Text('Không có dữ liệu'),
+                                  ));
+                                }
+                              },
+                              child: BlocBuilder(
+                                  bloc: _blocReportKpiDay,
+                                  builder: (BuildContext context, state) {
+                                    if (state is ReportKpiDateLoading) {
+                                      return LoadingIndicator(
+                                        opacity: 0,
+                                      );
+                                    }
+                                    if (state is ReportKpiDateLoaded) {
+                                      return ListView.builder(
+                                          itemCount: state.reportKpiDateModel
+                                              .listKpiDateItem.length,
+                                          itemBuilder:
+                                              (BuildContext context, index) {
+                                            return buildContainer(state
+                                                .reportKpiDateModel
+                                                .listKpiDateItem[index]);
+                                          });
+                                    }
+                                    if (state is ReportKpiDateFailure) {
+                                      return Container(
+                                        child: new Center(
+                                          child: Text(state.error),
                                         ),
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Padding(
-                                          padding: EdgeInsets.only(left: 15),
-                                          child: new Text(
-                                            _count.toString(),
-                                            style: new TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          "",
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          "",
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ]),
-                                ],
-                              );
-                            }),
-                      ))
+                                      );
+                                    }
+                                    return Container();
+                                  }),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
+                  new Container(
+                    height: 40,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    color: Colors.grey[200],
+                    child: BlocBuilder(
+                        bloc: _blocReportKpiDay,
+                        builder: (BuildContext context, state) {
+                          if (state is ReportKpiDateLoaded) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                new Container(
+                                  child: new Text(
+                                    "Tổng",
+                                    style: new TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                new Container(
+                                  child: new Text(
+                                    state.countKpi.toString(),
+                                    style: new TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                )
+                              ],
+                            );
+                          }
+                          return Container();
+                        }),
+                  )
                 ],
               ),
             ),
             new Container(
               child: new Column(
                 children: <Widget>[
-                  new Expanded(
-                      flex: 4,
-                      child: new Column(
-                        children: <Widget>[
-                          new Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Colors.blueAccent,
-                                  style: BorderStyle.solid,
-                                  width: 1),
-                              color: Colors.white,
-                            ),
-                            width: double.infinity,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 20),
-                            child: new FlatButton(
-                                onPressed: () {
-                                  showMonthPicker(
-                                          context: context,
-                                          initialDate:
-                                              selectedDate ?? initialDate)
-                                      .then((date) => setState(() {
-                                            selectedDate = date;
-                                            print(selectedDate);
-                                            if (selectedDate.year.toInt() > 0) {
-                                              existDate = true;
-                                            } else {
-                                              existDate = false;
-                                            }
-                                          }));
-                                },
-                                child: existDate
-                                    ? new Text(
-                                        "${selectedDate?.month}/${selectedDate?.year}",
-                                        style: new TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                            color: Colors.blueAccent),
-                                      )
-                                    : new Text(
-                                        "Chọn tháng",
-                                        style: new TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                            color: Colors.blueAccent),
-                                      )),
+                  new Container(
+                    height: 140,
+                    child: new Column(
+                      children: <Widget>[
+                        new Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.blueAccent,
+                                style: BorderStyle.solid,
+                                width: 1),
+                            color: Colors.white,
                           ),
-                          new Container(
-                            margin: EdgeInsets.symmetric(horizontal: 20),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.blueAccent,
-                            ),
-                            height: 42,
-                            child: FlatButton(
-                                onPressed: () {
-                                  if (selectedDate != null) {
-                                    print("Du dieu kien tim kiem");
-                                    print(selectedDate);
-                                    _blocReportKpiMonth.dispatch(
-                                        GetReportKpiMonth(
-                                            starMonth: selectedDate,
-                                            offset: offsetKpiMonth,
-                                            limit: 10));
-                                  } else {
-                                    print("Ko ok cho lam");
-                                  }
-                                },
-                                child: new Text(
-                                  "Tìm",
-                                  style: new TextStyle(
-                                      fontSize: 18, color: Colors.white),
-                                )),
-                          )
-                        ],
-                      )),
+                          width: double.infinity,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 20),
+                          child: new FlatButton(
+                              onPressed: () {
+                                showMonthPicker(
+                                        context: context,
+                                        initialDate:
+                                            selectedDate ?? initialDate)
+                                    .then((date) => setState(() {
+                                          selectedDate = date;
+                                          print(selectedDate);
+                                          if (selectedDate.year.toInt() > 0) {
+                                            existDate = true;
+                                          } else {
+                                            existDate = false;
+                                          }
+                                        }));
+                              },
+                              child: existDate
+                                  ? new Text(
+                                      "${selectedDate?.month}/${selectedDate?.year}",
+                                      style: new TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.blueAccent),
+                                    )
+                                  : new Text(
+                                      "Chọn tháng",
+                                      style: new TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.blueAccent),
+                                    )),
+                        ),
+                        new Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.blueAccent,
+                          ),
+                          height: 42,
+                          child: FlatButton(
+                              onPressed: () {
+                                if (selectedDate != null) {
+                                  print("Du dieu kien tim kiem");
+                                  print(selectedDate);
+                                  _blocReportKpiMonth
+                                      .dispatch(GetReportKpiMonth(
+                                    startMonth: selectedDate,
+                                  ));
+                                } else {
+                                  print("Ko ok cho lam");
+                                }
+                              },
+                              child: new Text(
+                                "Tìm",
+                                style: new TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                              )),
+                        )
+                      ],
+                    ),
+                  ),
                   new Expanded(
                       flex: 10,
                       child: new Container(
@@ -726,268 +491,214 @@ class _ReportKpiPageState extends State<ReportKpiPage> {
 //reach data
                             new Expanded(
                                 child: Container(
+                                  width: double.infinity,
                               color: Colors.white,
-                              child: SingleChildScrollView(
-                                controller: _scrollControllerMonth,
-                                child: BlocListener(
+                              child: BlocListener(
                                   bloc: _blocReportKpiMonth,
-                                  listener: (BuildContext context,
-                                      ReportKpiMonthState state) {
-                                    if (state is ReachMaxx) {
-                                      Scaffold.of(context)
-                                          .removeCurrentSnackBar();
-                                      Scaffold.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text('Got all the data!'),
+                                  listener: (BuildContext context, state){
+                                    if(state is ReportKpiMonthEmpty){
+                                      Scaffold.of(context).removeCurrentSnackBar();
+                                      Scaffold.of(context).showSnackBar(SnackBar(
+                                        duration: Duration(milliseconds: 1500),
+                                        content: Text('Không có dữ liệu'),
                                       ));
-                                      _scrollControllerMonth
-                                          .removeListener(_scrollListenerMonth);
-                                    }
-                                    if (state is ReportKpiMonthFailure) {
-                                      Scaffold.of(context)
-                                          .removeCurrentSnackBar();
-                                      Scaffold.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(state.error),
-                                        backgroundColor: Colors.redAccent,
-                                      ));
-                                    }
-                                    if (state is ReportKpiMonthLoaded) {
-                                      setState(() {
-                                        _countMonth = state.countKpi;
-                                      });
-                                      if (state.isLoadMore) {
-                                        listReportKpiMonth.listKpiMonthItem
-                                            .addAll(state.reportKpiMonthModel
-                                                .listKpiMonthItem);
-                                        _isLoadingMonth = false;
-                                      } else {
-                                        listReportKpiMonth.listKpiMonthItem =
-                                            state.reportKpiMonthModel
-                                                .listKpiMonthItem;
-                                      }
                                     }
                                   },
-                                  child: BlocBuilder(
-                                      bloc: _blocReportKpiMonth,
-                                      builder: (BuildContext context,
-                                          ReportKpiMonthState state) {
-                                        if (state is ReportKpiMonthLoading &&
-                                            !state.isLoadMore) {
-                                          return WillPopScope(
-                                            onWillPop: () async {
-                                              return true;
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.only(top: 30),
-                                              color: Colors.transparent,
-                                              child: new Center(
-                                                child:
-                                                    new CircularProgressIndicator(),
-                                              ),
-                                            ),
-                                          );
-                                        }
-
-                                        return Stack(
-                                          children: <Widget>[
-                                            new Container(
-                                              color: Colors.white,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 20),
-                                              child: SingleChildScrollView(
-                                                child: Table(
-                                                  columnWidths: {
-                                                    0: FractionColumnWidth(0.6),
-                                                  },
-                                                  children: listReportKpiMonth
-                                                      .listKpiMonthItem
-                                                      .map((item) {
-                                                    return TableRow(children: [
-                                                      SingleChildScrollView(
-                                                        scrollDirection:
-                                                            Axis.horizontal,
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: <Widget>[
-                                                            Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      vertical:
-                                                                          10),
-                                                              child: new Text(
-                                                                item.name,
-                                                                style:
-                                                                    new TextStyle(
-                                                                        fontSize:
-                                                                            16),
-                                                              ),
-                                                            ),
-                                                          ],
+                                child: BlocBuilder(
+                                    bloc: _blocReportKpiMonth,
+                                    builder: (BuildContext context,
+                                        ReportKpiMonthState state) {
+                                      if (state is ReportKpiMonthLoading) {
+                                        return LoadingIndicator(
+                                          opacity: 0,
+                                        );
+                                      }
+                                      if (state is ReportKpiMonthLoaded) {
+                                        return new Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: SingleChildScrollView(
+                                            child: Table(
+                                              columnWidths: {
+                                                0: FractionColumnWidth(0.6),
+                                              },
+                                              children: state.reportKpiMonthModel
+                                                  .listKpiMonthItem
+                                                  .map((item) {
+                                                return TableRow(children: [
+                                                  SingleChildScrollView(
+                                                    scrollDirection:
+                                                    Axis.horizontal,
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                              vertical: 10),
+                                                          child: new Text(
+                                                            item.name,
+                                                            style: new TextStyle(
+                                                                fontSize: 16),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  new Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 10),
+                                                        child: new Text(
+                                                          item.type,
+                                                          style: new TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
-                                                      new Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: <Widget>[
-                                                          Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    vertical:
-                                                                        10),
-                                                            child: new Text(
-                                                              item.type,
-                                                              style:
-                                                                  new TextStyle(
-                                                                      fontSize:
-                                                                          16),
-                                                            ),
+                                                    ],
+                                                  ),
+                                                  new Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 10),
+                                                        child: new InkWell(
+                                                          onTap: () {},
+                                                          child: new Text(
+                                                            item.count.toString(),
+                                                            style: new TextStyle(
+                                                                fontSize: 16),
                                                           ),
-                                                        ],
+                                                        ),
                                                       ),
-                                                      new Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: <Widget>[
-                                                          Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    vertical:
-                                                                        10),
-                                                            child: new InkWell(
-                                                              onTap: () {},
-                                                              child: new Text(
-                                                                item.count
-                                                                    .toString(),
-                                                                style:
-                                                                    new TextStyle(
-                                                                        fontSize:
-                                                                            16),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ]);
-                                                  }).toList(),
-                                                ),
-                                              ),
+                                                    ],
+                                                  ),
+                                                ]);
+                                              }).toList(),
                                             ),
-                                            _isLoadingMonth
-                                                ? Positioned(
-                                                    bottom: 0,
-                                                    left: 0,
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 10),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: new Row(
-                                                        children: <Widget>[
-                                                          Spacer(),
-                                                          CircularProgressIndicator(),
-                                                          Spacer(),
-                                                        ],
-                                                      ),
-                                                    ))
-                                                : Container()
-                                          ],
+                                          ),
                                         );
-                                      }),
-                                ),
+                                      }
+                                      return Container();
+                                    }),
                               ),
                             ))
                           ],
                         ),
                       )),
-                  new Expanded(
-                      flex: 1,
-                      child: new Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        alignment: Alignment.centerRight,
-                        width: double.infinity,
-                        color: Colors.grey[300],
-                        child: BlocBuilder(
-                            bloc: _blocReportKpiMonth,
-                            builder: (BuildContext context, state) {
-                              return Table(
-                                columnWidths: {
-                                  0: FractionColumnWidth(0.4),
-                                  1: FractionColumnWidth(0.6)
-                                },
-                                children: [
-                                  TableRow(children: [
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        new Text(
-                                          "Tổng",
+                  new Container(
+                    height: 40,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    alignment: Alignment.centerRight,
+                    width: double.infinity,
+                    color: Colors.grey[200],
+                    child: BlocBuilder(
+                        bloc: _blocReportKpiMonth,
+                        builder: (BuildContext context, state) {
+                          if(state is ReportKpiMonthLoaded){
+                            return Table(
+                              columnWidths: {
+                                0: FractionColumnWidth(0.4),
+                                1: FractionColumnWidth(0.6)
+                              },
+                              children: [
+                                TableRow(children: [
+                                  new Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      new Text(
+                                        "Tổng",
+                                        style: new TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  new Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      new Padding(
+                                        padding: EdgeInsets.only(left: 15),
+                                        child: new Text(
+                                          state.countKpi.toString(),
                                           style: new TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
                                         ),
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        new Padding(
-                                          padding: EdgeInsets.only(left: 15),
-                                          child: new Text(
-                                            _countMonth.toString(),
-                                            style: new TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          "",
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    new Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Text(
-                                          "",
-                                          style: new TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ]),
-                                ],
-                              );
-                            }),
-                      ))
+                                      )
+                                    ],
+                                  ),
+                                  new Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      new Text(
+                                        "",
+                                        style: new TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  new Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      new Text(
+                                        "",
+                                        style: new TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                              ],
+                            );
+                          }
+                          return Container();
+                        }),
+                  )
                 ],
               ),
             ),
           ]),
         ));
+  }
+
+  Widget buildContainer(ReportKpiDateItemModel item) {
+    return new Container(
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+                  color: Colors.grey[200],
+                  width: 1,
+                  style: BorderStyle.solid))),
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      height: 50,
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Container(
+            child: new Text(
+              DateFormat('dd-MM-yyyy').format(item.date),
+              style: new TextStyle(fontSize: 16),
+            ),
+          ),
+          new Container(
+            child: new Text(
+              item.countVisit.toString(),
+              style: new TextStyle(fontSize: 16),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

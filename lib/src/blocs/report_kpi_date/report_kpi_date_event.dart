@@ -8,15 +8,13 @@ abstract class ReportKpiDayEvent extends Equatable {
 class GetReportKpiDay extends ReportKpiDayEvent {
   final DateTime starDay;
   final DateTime endDay;
-  final int offset;
-  final int limit;
+
 
   GetReportKpiDay({
     @required this.starDay,
     @required this.endDay,
-    @required this.offset,
-    this.limit = 10,
-  }) : super([starDay, endDay, offset, limit]);
+
+  }) : super([starDay, endDay]);
 
   @override
   String toString() {

@@ -10,9 +10,6 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
 
   final ReportKpiMonthRepository _reportKpiMonthRepository;
 
-  DateTime _currentStartMonth;
-  int _currentOffset;
-  int _currentLimit;
   int count;
 
   ReportKpiMonthBloc({
@@ -28,43 +25,33 @@ class ReportKpiMonthBloc extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> 
 
       yield ReportKpiMonthLoading();
       try {
-        if(event.starMonth == null){
+        if(event.startMonth == null){
           throw 'Phải chọn thời gian';
         }
         else{
           ReportKpiMonthModel listKpiMonth = await _reportKpiMonthRepository.getReportKpiMonth(
-              startMonth: _currentStartMonth = event.starMonth,
-              offset: _currentOffset = event.offset,
-              limit:  _currentLimit = event.limit
+              startMonth: event.startMonth,
           );
 
+          if(listKpiMonth.listKpiMonthItem.length > 0){
+            print("co du lieu");
+            count = 26;
+            yield ReportKpiMonthLoaded(reportKpiMonthModel: listKpiMonth, countKpi: count);
+          }
+          else{
+
+            yield ReportKpiMonthEmpty();
+          }
+
           //viet ham lấy tổng lượt viếng thăm
-          count = 26;
-          yield ReportKpiMonthLoaded(reportKpiMonthModel: listKpiMonth, countKpi: count);
+
         }
 
       } catch (error) {
         yield ReportKpiMonthFailure(error: error.toString());
       }
     }
-    if(event is GetReportKpiMonthMore){
-      yield ReportKpiMonthLoading(isLoadMore: true);
-      try {
-        ReportKpiMonthModel listKpiMonth = await _reportKpiMonthRepository.getReportKpiMonth(
-            startMonth: _currentStartMonth,
-            offset: _currentOffset = _currentOffset + _currentLimit,
-            limit:  _currentLimit
-        );
-        if (listKpiMonth.listKpiMonthItem.length == 0) {
-          yield ReachMaxx();
-        } else {
-          yield ReportKpiMonthLoaded(reportKpiMonthModel: listKpiMonth, isLoadMore: true, countKpi: count);
-        }
-      } catch (error) {
-        yield ReportKpiMonthFailure(error: error.toString());
-      }
 
-    }
   }
 
 }

@@ -138,6 +138,8 @@ class ManageAreaState extends State<ManageArea> {
                                         style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
                                         keyboardType: TextInputType.multiline,
                                         decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.grey[200],
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Colors.grey[400],
@@ -172,6 +174,8 @@ class ManageAreaState extends State<ManageArea> {
                                         style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
                                         keyboardType: TextInputType.multiline,
                                         decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.grey[200],
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Colors.grey[400],
@@ -211,6 +215,7 @@ class ManageAreaState extends State<ManageArea> {
                                                     alignment: Alignment.center,
                                                     height: double.infinity,
                                                     decoration: BoxDecoration(
+                                                        color: Colors.grey[200],
                                                         border: Border.all(
                                                             color: Colors.grey[400],
                                                             width: 1,
@@ -227,6 +232,7 @@ class ManageAreaState extends State<ManageArea> {
                                                     alignment: Alignment.center,
                                                     height: double.infinity,
                                                     decoration: BoxDecoration(
+                                                        color: Colors.grey[200],
                                                         border: Border.all(
                                                             color: Colors.grey[400],
                                                             width: 1,
@@ -336,6 +342,8 @@ class ManageAreaState extends State<ManageArea> {
                                         style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
                                         keyboardType: TextInputType.multiline,
                                         decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.grey[200],
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Colors.grey[400],
@@ -433,7 +441,7 @@ class ManageAreaState extends State<ManageArea> {
                                         },
                                         controller: _targetController,
 
-                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                                        style: new TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
                                         keyboardType: TextInputType.multiline,
                                         decoration: InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -473,7 +481,7 @@ class ManageAreaState extends State<ManageArea> {
                                           return null;
                                         },
                                         controller: _resultController,
-                                        style: new TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                                        style: new TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
                                         maxLines: 4,
                                         keyboardType: TextInputType.multiline,
                                         decoration: InputDecoration(

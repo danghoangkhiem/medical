@@ -1,24 +1,20 @@
 import 'package:bloc/bloc.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_event.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_state.dart';
-import 'package:medical/src/models/report_kpi_day_model.dart';
+import 'package:medical/src/models/report_kpi_date_model.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 
 import 'package:meta/meta.dart';
 
-class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
+class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
 
-  final ReportKpiDayRepository _reportKpiDayRepository;
+  final ReportKpiDateRepository _reportKpiDateRepository;
 
-  DateTime _currentStartDate;
-  DateTime _currentEndDate;
-  int _currentOffset;
-  int _currentLimit;
-  int count;
+  int count = 0;
 
-  ReportKpiDayBloc({
-    @required reportKpiDayRepository,
-  }) : _reportKpiDayRepository = reportKpiDayRepository;
+  ReportKpiDateBloc({
+    @required reportKpiDateRepository,
+  }) : _reportKpiDateRepository = reportKpiDateRepository;
 
   @override
   ReportKpiDayState get initialState => ReportKpiDayInitial();
@@ -27,47 +23,36 @@ class ReportKpiDayBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
   Stream<ReportKpiDayState> mapEventToState(ReportKpiDayEvent event) async* {
     if (event is GetReportKpiDay) {
 
-      yield ReportKpiDayLoading();
+      yield ReportKpiDateLoading();
       try {
         if(event.starDay ==null || event.endDay ==null){
           throw 'Phải chọn thời gian';
         }
         else{
-          ReportKpiDayModel listKpiDay = await _reportKpiDayRepository.getReportKpiDay(
-              startDate: _currentStartDate = event.starDay,
-              endDate: _currentEndDate = event.endDay,
-              offset: _currentOffset = event.offset,
-              limit:  _currentLimit = event.limit
+          ReportKpiDateModel listKpiDate = await _reportKpiDateRepository.getReportKpiDay(
+              startDate:  event.starDay,
+              endDate:  event.endDay,
           );
 
-          //viet ham lấy tổng lượt viếng thăm
-          count = 26;
-          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, countKpi: count);
+          if(listKpiDate.listKpiDateItem.length > 0){
+
+            listKpiDate.listKpiDateItem.forEach((item){
+              count += item.countVisit;
+            });
+
+            yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDate, countKpi: count);
+          }
+          else{
+
+            yield ReportKpiEmpty();
+          }
         }
 
       } catch (error) {
-        yield ReportKpiDayFailure(error: error.toString());
+        yield ReportKpiDateFailure(error: error.toString());
       }
     }
-    if(event is GetReportKpiDayMore){
-      yield ReportKpiDayLoading(isLoadMore: true);
-      try {
-        final listKpiDay = await _reportKpiDayRepository.getReportKpiDay(
-            startDate: _currentStartDate,
-            endDate: _currentEndDate,
-            offset: _currentOffset = _currentOffset + _currentLimit,
-            limit:  _currentLimit
-        );
-        if (listKpiDay.listKpiDayItem.length == 0) {
-          yield ReachMax();
-        } else {
-          yield ReportKpiDayLoaded(reportKpiDayModel: listKpiDay, isLoadMore: true, countKpi: count);
-        }
-      } catch (error) {
-        yield ReportKpiDayFailure(error: error.toString());
-      }
 
-    }
   }
 
 }
