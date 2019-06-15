@@ -32,10 +32,7 @@ class CheckInApiProvider extends ApiProvider {
         return false;
       }
     }
-    else{
-      return false;
-    }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
   Future<CheckIOModel> checkIO() async {
@@ -43,7 +40,7 @@ class CheckInApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return CheckIOModel.fromJson(_resp.data);
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
   Future<bool> addCheckOut({@required CheckOutModel checkOut}) async {
@@ -62,9 +59,9 @@ class CheckInApiProvider extends ApiProvider {
       } catch (_) {
         return false;
       }
-    }else{
+    }/*else{
       return false;
-    }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    }*/
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 }

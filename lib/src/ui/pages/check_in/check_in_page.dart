@@ -10,6 +10,7 @@ import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 //bloc
 import 'package:medical/src/blocs/check_in/check_in.dart';
+import 'package:medical/src/blocs/authentication/authentication.dart';
 
 //model
 import 'package:medical/src/models/attendance_model.dart';
@@ -175,6 +176,13 @@ class _CheckInPage extends State<CheckInPage> {
         builder: (BuildContext context, CheckInState state) {
           if (state is CheckIOLoading) {
             return LoadingIndicator();
+          }
+          if (state is CheckIOFailure || state is CheckInFailure || state is CheckOutFailure) {
+            WidgetsBinding.instance.addPostFrameCallback((_){
+              AuthenticationBloc auth = BlocProvider.of<AuthenticationBloc>(context);
+              auth.dispatch(AuthenticationEvent.loggedOut());
+            });
+            return notificationError();
           }
           if (state is CheckIOLoaded && state.isCheckIn == false) {
             return checkIn(state.locationList);
@@ -657,6 +665,21 @@ class _CheckInPage extends State<CheckInPage> {
         ],
       ),
     );
+  }
+
+  Widget notificationError() {
+    return Container(
+        child: AlertDialog(
+          title: Text("Thông báo"),
+          content: Text("Có lỗi xảy ra, vui lòng đăng nhập lại!"),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("OK"))
+          ],
+        ));
   }
 
   Widget checkInNotificationError() {
