@@ -52,6 +52,7 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
       yield CheckOutLoading();
       try {
         bool checkIOModel = await _checkInRepository.addCheckOut(event.newCheckOutModel);
+        await _checkInRepository.addCheckOut(event.newCheckOutModel);
         await _userRepository.setAttendanceLastTimeLocally(
             await _userRepository.getAttendanceLastTime());
         if (checkIOModel == false) {
