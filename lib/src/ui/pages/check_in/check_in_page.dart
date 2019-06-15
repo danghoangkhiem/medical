@@ -95,10 +95,8 @@ class _CheckInPage extends State<CheckInPage> {
     LocationData current;
     try {
       current = await location.getLocation();
-      /*currentLocation["latitude"] = current.latitude;
-      currentLocation["longitude"] = current.latitude;*/
-      currentLocation["latitude"] = null;
-      currentLocation["longitude"] = null;
+      currentLocation["latitude"] = current.latitude;
+      currentLocation["longitude"] = current.latitude;
     } catch (e) {
       currentLocation["latitude"] = null;
       currentLocation["longitude"] = null;
