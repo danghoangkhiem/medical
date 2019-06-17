@@ -25,9 +25,12 @@ class InventoriesApiProvider extends ApiProvider {
         queryParameters: _queryParameters);
 
     if (_resp.statusCode == 200) {
+      print("thong thongthong");
+      print(_resp.data);
       return InventoriesModel.fromJson(_resp.data);
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    print("loi roi");
+    return Future.error(ApiResponseError.fromJson(_resp.data['errorInfo']));
 
   }
 

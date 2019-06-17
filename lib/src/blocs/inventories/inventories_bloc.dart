@@ -30,6 +30,9 @@ class InventoriesBloc extends Bloc<InventoriesEvent, InventoriesState> {
         int sumExport = 0;
         int sumStock = 0;
 
+        print("okokoko");
+        print(inventories);
+
         if (inventories.listInventories.length == 0) {
           yield InventoriesEmpty();
         } else {
@@ -48,6 +51,7 @@ class InventoriesBloc extends Bloc<InventoriesEvent, InventoriesState> {
               inventoriesModel: inventories, listSum: listSum);
         }
       } catch (error) {
+        print("loi thay ba");
         yield InventoriesFailure(error: error.toString());
       }
     }

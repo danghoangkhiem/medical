@@ -40,14 +40,15 @@ class _LoginPageState extends State<LoginPage> {
                 child: Container(
                   alignment: Alignment.bottomCenter,
                   width: double.infinity,
-                  child: Column(
-                    children: <Widget>[
-                      Spacer(),
-                      Image.asset('assets/images/logo.png', width: 200),
-                      SizedBox(
-                        height: 20,
-                      )
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Image.asset('assets/images/logo.png', width: 200),
+                        SizedBox(
+                          height: 20,
+                        )
+                      ],
+                    ),
                   ),
                 )),
             Expanded(

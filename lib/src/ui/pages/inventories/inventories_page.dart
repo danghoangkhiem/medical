@@ -355,6 +355,14 @@ class InventoriesState extends State<Inventories> {
                                     backgroundColor: Colors.redAccent,
                                   ));
                                 }
+                                if(state is InventoriesFailure){
+                                  Scaffold.of(context).removeCurrentSnackBar();
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    duration: Duration(milliseconds: 1500),
+                                    content: Text('Lỗi khi tải dữ liệu'),
+                                    backgroundColor: Colors.redAccent,
+                                  ));
+                                }
                               },
                             child: BlocBuilder(
                                 bloc: _blocInventories,
@@ -447,11 +455,11 @@ class InventoriesState extends State<Inventories> {
                                       }).toList(),
                                     );
                                   }
-                                  if (state is InventoriesFailure) {
-                                    return Center(
-                                      child: new Text(state.error),
-                                    );
-                                  }
+//                                  if (state is InventoriesFailure) {
+//                                    return Center(
+//                                      child: new Text("Có lỗi " + state.error),
+//                                    );
+//                                  }
                                   return Container();
                                 }),
                           ),
@@ -527,11 +535,11 @@ class InventoriesState extends State<Inventories> {
                           );
                         }
 
-                        if (state is InventoriesFailure) {
-                          return Center(
-                            child: new Text(state.error),
-                          );
-                        }
+//                        if (state is InventoriesFailure) {
+//                          return Center(
+//                            child: new Text(state.error),
+//                          );
+//                        }
                         return Container();
                       }),
                 ))
