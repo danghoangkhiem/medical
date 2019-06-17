@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import 'package:medical/src/models/attendance_model.dart';
+import 'package:medical/src/models/location_list_model.dart';
 
 abstract class CheckInState extends Equatable {
   CheckInState([List props = const []]) : super(props);
@@ -53,7 +54,8 @@ class CheckIOLoading extends CheckInState {
 class CheckIOLoaded extends CheckInState {
   final bool isCheckIn;
   final AttendanceModel attendanceModel;
-  CheckIOLoaded({this.isCheckIn,this.attendanceModel}) : super([isCheckIn,attendanceModel]);
+  final LocationListModel locationList;
+  CheckIOLoaded({this.isCheckIn,this.attendanceModel,this.locationList}) : super([isCheckIn,attendanceModel,locationList]);
 
   @override
   String toString() => 'CheckIOLoaded';
@@ -125,3 +127,5 @@ class CheckInLocationFailure extends CheckInState {
 }
 
 class CheckInError extends CheckInState {}
+
+class CheckOutError extends CheckInState {}
