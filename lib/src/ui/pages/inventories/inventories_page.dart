@@ -344,104 +344,117 @@ class InventoriesState extends State<Inventories> {
                           child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: SingleChildScrollView(
-                          child: BlocBuilder(
+                          child: BlocListener(
                               bloc: _blocInventories,
-                              builder: (BuildContext context, state) {
-                                if (state is InventoriesLoading) {
-                                  return WillPopScope(
-                                    onWillPop: () async {
-                                      return true;
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(top: 30),
-                                      color: Colors.transparent,
-                                      child: new Center(
-                                        child: new CircularProgressIndicator(),
-                                      ),
-                                    ),
-                                  );
+                              listener: (BuildContext context, state){
+                                if(state is InventoriesEmpty){
+                                  Scaffold.of(context).removeCurrentSnackBar();
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    duration: Duration(milliseconds: 1500),
+                                    content: Text('Không có dữ liệu'),
+                                    backgroundColor: Colors.redAccent,
+                                  ));
                                 }
-                                if (state is InventoriesLoaded) {
-                                  return Table(
-                                    columnWidths: {0: FractionColumnWidth(0.6)},
-                                    children: state
-                                        .inventoriesModel.listInventories
-                                        .map((item) {
-                                      return TableRow(children: [
-                                        SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: new Row(
+                              },
+                            child: BlocBuilder(
+                                bloc: _blocInventories,
+                                builder: (BuildContext context, state) {
+                                  if (state is InventoriesLoading) {
+                                    return WillPopScope(
+                                      onWillPop: () async {
+                                        return true;
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.only(top: 30),
+                                        color: Colors.transparent,
+                                        child: new Center(
+                                          child: new CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  if (state is InventoriesLoaded) {
+                                    return Table(
+                                      columnWidths: {0: FractionColumnWidth(0.6)},
+                                      children: state
+                                          .inventoriesModel.listInventories
+                                          .map((item) {
+                                        return TableRow(children: [
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: new Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                                  child: new Text(
+                                                    item.label,
+                                                    style:
+                                                    new TextStyle(fontSize: 14),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          new Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                            MainAxisAlignment.center,
                                             children: <Widget>[
                                               Padding(
                                                 padding: EdgeInsets.symmetric(
                                                     vertical: 10),
                                                 child: new Text(
-                                                  item.label,
+                                                  item.import.toString(),
                                                   style:
                                                   new TextStyle(fontSize: 14),
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                        new Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10),
-                                              child: new Text(
-                                                item.import.toString(),
-                                                style:
-                                                    new TextStyle(fontSize: 14),
+                                          new Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 10),
+                                                child: new Text(
+                                                  item.export.toString(),
+                                                  style:
+                                                  new TextStyle(fontSize: 14),
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        new Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10),
-                                              child: new Text(
-                                                item.export.toString(),
-                                                style:
-                                                    new TextStyle(fontSize: 14),
+                                            ],
+                                          ),
+                                          new Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 10),
+                                                child: new Text(
+                                                  item.stock.toString(),
+                                                  style:
+                                                  new TextStyle(fontSize: 14),
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        new Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10),
-                                              child: new Text(
-                                                item.stock.toString(),
-                                                style:
-                                                    new TextStyle(fontSize: 14),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ]);
-                                    }).toList(),
-                                  );
-                                }
-                                if (state is InventoriesFailure) {
-                                  return Center(
-                                    child: new Text(state.error),
-                                  );
-                                }
-                                return Container();
-                              }),
+                                            ],
+                                          ),
+                                        ]);
+                                      }).toList(),
+                                    );
+                                  }
+                                  if (state is InventoriesFailure) {
+                                    return Center(
+                                      child: new Text(state.error),
+                                    );
+                                  }
+                                  return Container();
+                                }),
+                          ),
                         ),
                       ))
                     ],

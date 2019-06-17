@@ -27,6 +27,10 @@ class InventoriesLoaded extends InventoriesState {
   String toString() => 'InventoriesLoaded';
 }
 
+class InventoriesEmpty extends InventoriesState{
+
+}
+
 class InventoriesFailure extends InventoriesState {
   final String error;
 
