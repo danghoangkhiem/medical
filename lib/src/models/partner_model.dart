@@ -17,9 +17,9 @@ class PartnerModel extends Equatable {
   factory PartnerModel.fromJson(Map<String, dynamic> json) {
     return PartnerModel(
       id: json['id'] as int,
-      name: json['name'] as String,
-      role: json['role'] as String,
-      level: json['level'] as String,
+      name: json['name']?.toString(),
+      role: json['role']?.toString(),
+      level: json['level']?.toString(),
       location: json['location'] == null
           ? null
           : LocationModel.fromJson(json['location']),

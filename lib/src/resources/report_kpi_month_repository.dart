@@ -5,8 +5,8 @@ class ReportKpiMonthRepository {
 
   final ReportKpiMonthApiProvider _reportKpiMonthApiProvider = ReportKpiMonthApiProvider();
 
-  Future<ReportKpiMonthModel> getReportKpiMonth({DateTime startMonth, int offset, int limit}) async {
-    return await _reportKpiMonthApiProvider.getReportKpiMonth();
+  Future<ReportKpiMonthModel> getReportKpiMonth({DateTime startMonth}) async {
+    return await _reportKpiMonthApiProvider.getReportKpiMonth(startMonth: startMonth);
   }
 
 }

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_event.dart';
 import 'package:medical/src/blocs/report_kpi_date/report_kpi_date_state.dart';
-import 'package:medical/src/models/report_kpi_day_model.dart';
+import 'package:medical/src/models/report_kpi_date_model.dart';
 import 'package:medical/src/resources/report_kpi_date_repository.dart';
 
 import 'package:meta/meta.dart';
@@ -10,7 +10,7 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
 
   final ReportKpiDateRepository _reportKpiDateRepository;
 
-  int count;
+  int count = 0;
 
   ReportKpiDateBloc({
     @required reportKpiDateRepository,
@@ -29,16 +29,23 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
           throw 'Phải chọn thời gian';
         }
         else{
-          ReportKpiDateModel listKpiDay = await _reportKpiDateRepository.getReportKpiDay(
+          ReportKpiDateModel listKpiDate = await _reportKpiDateRepository.getReportKpiDay(
               startDate:  event.starDay,
               endDate:  event.endDay,
-              offset:  event.offset,
-              limit:   event.limit
           );
 
-          //viet ham lấy tổng lượt viếng thăm
-          count = 26;
-          yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDay, countKpi: count);
+          if(listKpiDate.listKpiDateItem.length > 0){
+
+            listKpiDate.listKpiDateItem.forEach((item){
+              count += item.countVisit;
+            });
+
+            yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDate, countKpi: count);
+          }
+          else{
+
+            yield ReportKpiEmpty();
+          }
         }
 
       } catch (error) {

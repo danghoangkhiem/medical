@@ -21,8 +21,8 @@ class HoursModel extends Equatable {
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'from': from,
-      'to': to,
+      'from': from == null ? null : from.millisecondsSinceEpoch ~/ 1000,
+      'to': to == null ? null : to.millisecondsSinceEpoch ~/ 1000,
     };
   }
 

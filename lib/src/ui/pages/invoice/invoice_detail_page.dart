@@ -110,39 +110,38 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
                 ),
               ),
             ),
-            Expanded(
-                flex: 1,
-                child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: BlocBuilder(
-                    bloc: _invoiceDetailBloc,
-                    builder: (BuildContext context, InvoiceDetailState state) {
-                      if (state is Loading) {
-                        return LoadingIndicator(opacity: 0);
-                      }
-                      if (state is Loaded) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('Đã cập nhật thành công'),
-                            backgroundColor: Colors.green,
-                            duration: Duration(seconds: 1),
-                          ));
-                        });
-                        return _buildControlPanel(state.invoiceStatus);
-                      }
-                      if (state is Failure) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text(state.errorMessage.toString()),
-                            backgroundColor: Colors.redAccent,
-                          ));
-                        });
-                      }
-                      return _buildControlPanel(_invoice.status);
-                    },
-                  ),
-                )),
+            Container(
+              height: 50,
+              margin:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: BlocBuilder(
+                bloc: _invoiceDetailBloc,
+                builder: (BuildContext context, InvoiceDetailState state) {
+                  if (state is Loading) {
+                    return LoadingIndicator(opacity: 0);
+                  }
+                  if (state is Loaded) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('Đã cập nhật thành công'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 1),
+                      ));
+                    });
+                    return _buildControlPanel(state.invoiceStatus);
+                  }
+                  if (state is Failure) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text(state.errorMessage.toString()),
+                        backgroundColor: Colors.redAccent,
+                      ));
+                    });
+                  }
+                  return _buildControlPanel(_invoice.status);
+                },
+              ),
+            ),
           ],
         ),
       ),

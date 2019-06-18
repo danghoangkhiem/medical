@@ -13,7 +13,7 @@ class CustomerApiProvider extends ApiProvider {
       @required String type,
       @required String status}) async {
     Map<String, dynamic> _queryParameters = {
-      /*'timeIn': timeIn,*/
+      'timeIn': timeIn,
       'offset': offset,
       'limit': limit,
       'type': type,

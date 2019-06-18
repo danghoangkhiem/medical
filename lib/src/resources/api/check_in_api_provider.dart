@@ -12,6 +12,9 @@ import 'package:medical/src/models/check_out_model.dart';
 
 class CheckInApiProvider extends ApiProvider {
   Future<bool> addCheckIn({@required CheckInModel checkIn}) async {
+    print("api");
+    print(checkIn.lat);
+    print(checkIn.lon);
     FormData formData = new FormData.from({
       "longitude": checkIn.lat,
       "latitude": checkIn.lon,
@@ -25,12 +28,11 @@ class CheckInApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       try {
         return CheckIOModel.fromJson(_resp.data) == null ? false : true;
-      }
-      catch(_){
+      } catch (_) {
         return false;
       }
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
   Future<CheckIOModel> checkIO() async {
@@ -38,10 +40,13 @@ class CheckInApiProvider extends ApiProvider {
     if (_resp.statusCode == 200) {
       return CheckIOModel.fromJson(_resp.data);
     }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
-  Future<CheckIOModel> addCheckOut({@required CheckOutModel checkOut}) async {
+  Future<bool> addCheckOut({@required CheckOutModel checkOut}) async {
+    print("api");
+    print(checkOut.latitude);
+    print(checkOut.longitude);
     Map<String, dynamic> _queryParameters = {
       'latitude': checkOut.latitude,
       'longitude': checkOut.longitude,
@@ -49,8 +54,14 @@ class CheckInApiProvider extends ApiProvider {
     Response _resp =
         await httpClient.post('/attendances/check-out', data: _queryParameters);
     if (_resp.statusCode == 200) {
-      return CheckIOModel.fromJson(_resp.data);
-    }
-    return Future.error(ApiResponseError.fromJson(_resp.data['error']));
+      try {
+        return CheckIOModel.fromJson(_resp.data) == null ? false : true;
+      } catch (_) {
+        return false;
+      }
+    }/*else{
+      return false;
+    }*/
+    return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 }

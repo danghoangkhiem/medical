@@ -12,11 +12,6 @@ class ReportKpiMonthInitial extends ReportKpiMonthState {
 }
 
 class ReportKpiMonthLoading extends ReportKpiMonthState {
-
-  final bool isLoadMore;
-
-  ReportKpiMonthLoading({this.isLoadMore = false});
-
   @override
   String toString() => 'ReportKpiMonthLoading';
 }
@@ -32,7 +27,7 @@ class ReportKpiMonthLoaded extends ReportKpiMonthState {
   String toString() => 'ReportKpiMonthLoaded';
 }
 
-class ReachMaxx extends ReportKpiMonthState {}
+class ReportKpiMonthEmpty extends ReportKpiMonthState {}
 
 class ReportKpiMonthFailure extends ReportKpiMonthState {
   final String error;

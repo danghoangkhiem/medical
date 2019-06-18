@@ -16,7 +16,6 @@ class Loading extends CustomerManageState {
 class Loaded extends CustomerManageState {
   final bool isLoadMore;
   final CustomerManagerListModel customerManagerList;
-
   Loaded({this.isLoadMore = false, @required this.customerManagerList});
 }
 

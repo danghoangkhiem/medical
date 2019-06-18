@@ -9,8 +9,6 @@ import 'consumer_step_3_form.dart';
 import 'consumer_step_4_form.dart';
 import 'consumer_step_5_form.dart';
 
-import 'package:medical/src/ui/widgets/loading_indicator.dart';
-
 class ConsumerForm extends StatefulWidget {
   final ConsumerBloc consumerBloc;
   final GlobalKey<FormState> formKey;
@@ -30,6 +28,7 @@ class _ConsumerFormState extends State<ConsumerForm> {
   Widget build(BuildContext context) {
     return Form(
         key: _formKey,
+        autovalidate: false,
         child: Container(
           child: ListView(
             shrinkWrap: true,
