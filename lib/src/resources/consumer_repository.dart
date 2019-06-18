@@ -43,6 +43,7 @@ class ConsumerRepository {
   Future<void> setAdditionalFieldsLocally(
       AdditionalDataModel additionalFields) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await _setAdditionalFieldsModifiedLastTime(DateTime.now());
     return await prefs.setString(
         'additionalFields', additionalFields.toString());
   }
@@ -50,10 +51,30 @@ class ConsumerRepository {
   Future<bool> hasAdditionalFieldsLocally() async {
     final AdditionalDataModel additionalFields =
         await getAdditionalFieldsLocally();
-    if (additionalFields != null) {
+    DateTime modifiedLastTime = await _additionalFieldsModifiedLastTime();
+    DateTime now = DateTime.now();
+    if (modifiedLastTime == null) {
+      return false;
+    }
+    if (additionalFields != null &&
+        modifiedLastTime.isAfter(now.subtract(Duration(minutes: 5)))) {
       return true;
     }
     return false;
+  }
+
+  Future<DateTime> _additionalFieldsModifiedLastTime() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int _timestamp = prefs.getInt('additionalFieldsModifiedLastTime');
+    return _timestamp == null
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(_timestamp);
+  }
+
+  Future<void> _setAdditionalFieldsModifiedLastTime(DateTime date) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(
+        'additionalFieldsModifiedLastTime', date.millisecondsSinceEpoch);
   }
 
   Future<int> insertConsumerLocally(ConsumerModel consumer) async {
