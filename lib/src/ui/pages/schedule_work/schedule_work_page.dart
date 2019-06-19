@@ -118,6 +118,12 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
             Navigator.of(context).pop();
           }
           if (state.hasFailed) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text(state.errorMessage.toString()),
+              backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 2),
+            ));
+            /*
             Navigator.of(context).pop();
             showDialog(
               context: context,
@@ -139,6 +145,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
                 );
               },
             );
+            */
           }
         },
         child: BlocBuilder(
