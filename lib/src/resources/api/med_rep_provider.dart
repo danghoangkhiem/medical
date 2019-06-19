@@ -9,19 +9,30 @@ class MedRepApiProvider extends ApiProvider {
 
   Future<MedRepModel> getMedRep({int offset = 0, int limit = 10, @required int id}) async {
 
-    Map<String, dynamic> _queryParameters = {
-      'offset': offset,
-      'limit': limit,
-      'code': id
-    };
 
-    Response _resp = await httpClient.get('/attendances/attendances',
-        queryParameters: _queryParameters);
+    return MedRepModel.fromJson([
+      {
+        "name": "BS. Trần Văn Lượng",
+        "hospital": "Bv. Bình Thạnh"
+      }
+    ]);
 
-    if (_resp.statusCode == 200) {
-      return MedRepModel.fromJson(_resp.data["data"]);
-    }
-    return Future.error(ApiResponseError.fromJson(_resp.data));
+
+
+
+//    Map<String, dynamic> _queryParameters = {
+//      'offset': offset,
+//      'limit': limit,
+//      'code': id
+//    };
+//
+//    Response _resp = await httpClient.get('/attendances/attendances',
+//        queryParameters: _queryParameters);
+//
+//    if (_resp.statusCode == 200) {
+//      return MedRepModel.fromJson(_resp.data["data"]);
+//    }
+//    return Future.error(ApiResponseError.fromJson(_resp.data));
 
   }
 
