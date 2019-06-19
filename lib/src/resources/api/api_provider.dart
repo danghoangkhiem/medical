@@ -19,6 +19,10 @@ abstract class ApiProvider {
     _dio.options.headers.addAll({'Authorization': ' Bearer $token'});
   }
 
+  static void setValidateStatus(ValidateStatus validateStatus) {
+    _dio.options.validateStatus = validateStatus;
+  }
+
   final Dio httpClient;
 
   ApiProvider() : httpClient = _dio {

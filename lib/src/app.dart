@@ -48,8 +48,11 @@ class AppState extends State<App> {
           builder: (BuildContext context, ApplicationState state) {
             if (state.isInitialized) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushReplacementNamed('/authentication');
+                /*
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (BuildContext context) => AuthenticationPage()));
+                    */
               });
             }
             return SplashPage();
@@ -66,6 +69,9 @@ class AppState extends State<App> {
         BlocProvider<SynchronizationBloc>(bloc: _synchronizationBloc),
       ],
       child: MaterialApp(
+        routes: {
+          '/authentication': (BuildContext context) => AuthenticationPage(),
+        },
         debugShowCheckedModeBanner: false,
         home: _buildInitializationPage(),
       ),

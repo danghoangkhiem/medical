@@ -35,6 +35,12 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             if (state.hasFailed) {
               return AuthenticationFailurePage(errorMessage: state.error);
             }
+            if (!state.isAuthenticated && !state.isAuthenticating) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName('/authentication'));
+              });
+            }
             return state.isAuthenticated ? HomePage() : LoginPage();
           },
         ),
