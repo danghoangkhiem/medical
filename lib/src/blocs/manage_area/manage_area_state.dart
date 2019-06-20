@@ -1,4 +1,4 @@
-import 'package:medical/src/models/manage_area_model.dart';
+import 'package:medical/src/models/day_schedule_med_rep_model.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -24,7 +24,7 @@ class ManageAreaEmpty extends ManageAreaState {
 }
 
 class ManageAreaLoaded extends ManageAreaState {
-  final ManageAreaModel manageArea;
+  final DayScheduleMedRepModel manageArea;
 
   final bool isLoadMore;
 

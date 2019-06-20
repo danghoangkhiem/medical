@@ -9,14 +9,14 @@ import 'package:medical/src/ui/pages/manage_area/manage_area_page.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
 
-class ManageAreaDay extends StatefulWidget {
+class DayScheduleMedRep extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new ManageAreaDayState();
+    return new DayScheduleMedRepState();
   }
 }
 
-class ManageAreaDayState extends State<ManageAreaDay> {
+class DayScheduleMedRepState extends State<DayScheduleMedRep> {
 
   ScrollController _scrollController = new ScrollController();
   ManageAreaBloc _blocManageArea;
@@ -70,47 +70,47 @@ class ManageAreaDayState extends State<ManageAreaDay> {
     return new Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text("Quản lý địa bàn trong ngày"),
+        title: Text("Lịch làm việc trong ngày"),
       ),
       body: SafeArea(
           child: new Container(
             child: BlocListener(
-                bloc: _blocManageArea,
-                listener: (BuildContext context, state){
-                  if (state is ReachMax) {
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      duration: Duration(milliseconds: 1500),
-                      content: Text('Đã hiển thị tất cả dữ liệu'),
-                    ));
+              bloc: _blocManageArea,
+              listener: (BuildContext context, state){
+                if (state is ReachMax) {
+                  Scaffold.of(context).removeCurrentSnackBar();
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    duration: Duration(milliseconds: 1500),
+                    content: Text('Đã hiển thị tất cả dữ liệu'),
+                  ));
+                  _isLoading = false;
+                  _isReachMax = true;
+                }
+                if(state is ManageAreaEmpty){
+                  Scaffold.of(context).removeCurrentSnackBar();
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    duration: Duration(milliseconds: 1500),
+                    content: Text('Không có dữ liệu'),
+                  ));
+                }
+                if (state is ManageAreaFailure) {
+                  Scaffold.of(context).removeCurrentSnackBar();
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text(state.error),
+                    backgroundColor: Colors.redAccent,
+                  ));
+                }
+                if (state is ManageAreaLoaded) {
+                  if (state.isLoadMore) {
+                    manageAreaModel.listDayScheduleMedRep
+                        .addAll(state.manageArea.listDayScheduleMedRep);
                     _isLoading = false;
-                    _isReachMax = true;
+                  } else {
+                    manageAreaModel.listDayScheduleMedRep =
+                        state.manageArea.listDayScheduleMedRep;
                   }
-                  if(state is ManageAreaEmpty){
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      duration: Duration(milliseconds: 1500),
-                      content: Text('Không có dữ liệu'),
-                    ));
-                  }
-                  if (state is ManageAreaFailure) {
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(state.error),
-                      backgroundColor: Colors.redAccent,
-                    ));
-                  }
-                  if (state is ManageAreaLoaded) {
-                    if (state.isLoadMore) {
-                      manageAreaModel.listDayScheduleMedRep
-                          .addAll(state.manageArea.listDayScheduleMedRep);
-                      _isLoading = false;
-                    } else {
-                      manageAreaModel.listDayScheduleMedRep =
-                          state.manageArea.listDayScheduleMedRep;
-                    }
-                  }
-                },
+                }
+              },
               child: BlocBuilder(
                   bloc: _blocManageArea,
                   builder: (context, state) {

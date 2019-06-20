@@ -35,7 +35,7 @@ class ManageAreaBloc extends Bloc<ManageAreaEvent, ManageAreaState> {
 
         );
 
-        if(manageArea.listManageArea.length == 0){
+        if(manageArea.listDayScheduleMedRep.length == 0){
           print("ko co du lieu");
           yield ManageAreaEmpty();
         }
@@ -56,7 +56,7 @@ class ManageAreaBloc extends Bloc<ManageAreaEvent, ManageAreaState> {
             date: _date
         );
 
-        if (manageArea.listManageArea.length == 0) {
+        if (manageArea.listDayScheduleMedRep.length == 0) {
           yield ReachMax();
         } else {
           yield ManageAreaLoaded(manageArea: manageArea, isLoadMore: true);

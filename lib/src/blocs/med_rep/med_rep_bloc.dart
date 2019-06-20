@@ -5,7 +5,6 @@ import 'package:medical/src/resources/med_rep_repository.dart';
 import 'package:meta/meta.dart';
 
 class MedRepBloc extends Bloc<MedRepEvent, MedRepState> {
-  int _currentId;
   int _currentOffset;
   int _currentLimit;
 
@@ -21,18 +20,18 @@ class MedRepBloc extends Bloc<MedRepEvent, MedRepState> {
   @override
   Stream<MedRepState> mapEventToState(MedRepEvent event) async* {
     if (event is GetMedRep) {
+      print("okoko");
 
       yield MedRepLoading();//khi goi ham nay thi isLoading = false;
       try {
-        if (event.idMedSup == null) {
-          throw 'Phải truyền vài id của med sup';
-        }
-
         final medRep = await _medRepRepository.getMedRep(
             offset: _currentOffset = event.offset,
-            limit: _currentLimit = event.limit,
-            id: _currentId = event.idMedSup
+            limit: _currentLimit = event.limit
         );
+
+
+        print(medRep);
+
         if(medRep.listMedRep.length == 0){
           print("ko co du lieu");
           yield MedRepEmpty();
@@ -50,8 +49,7 @@ class MedRepBloc extends Bloc<MedRepEvent, MedRepState> {
       try {
         final medRep = await _medRepRepository.getMedRep(
             offset: _currentOffset  = _currentOffset + _currentLimit,
-            limit: _currentLimit,
-            id: _currentId
+            limit: _currentLimit
         );
 
         if (medRep.listMedRep.length == 0) {
@@ -63,7 +61,5 @@ class MedRepBloc extends Bloc<MedRepEvent, MedRepState> {
         yield MedRepFailure(error: error.toString());
       }
     }
-
   }
-
 }

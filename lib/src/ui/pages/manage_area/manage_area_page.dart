@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:medical/src/models/manage_area_model.dart';
+import 'package:medical/src/models/day_schedule_med_rep_model.dart';
 
 // ignore: must_be_immutable
 class ManageArea extends StatefulWidget {
-  ManageAreaItem item;
+  DayScheduleMedRepItem item;
 
 
   ManageArea(this.item);
@@ -22,7 +22,7 @@ class ManageAreaState extends State<ManageArea> {
   final _resultController = TextEditingController();
   int _status;  //vd Đã gặp, chưa gặp...
 
-  ManageAreaItem item;
+  DayScheduleMedRepItem item;
 
 
   ManageAreaState(this.item);
@@ -526,18 +526,18 @@ class ManageAreaState extends State<ManageArea> {
 
                                   if(_status != null){
 
-                                    ManageAreaItem manageAreaItem = new ManageAreaItem(
+                                    DayScheduleMedRepItem manageAreaItem = new DayScheduleMedRepItem(
                                       id: item.id,
                                       addressType: item.addressType,
                                       addressName: item.addressName,
                                       doctorName: item.doctorName,
                                       startTime: item.startTime,
                                       endTime: item.startTime,
-                                      realStartTime: _timeStartTarget,
-                                      realEndTime: _timeEndTarget,
-                                      status: _status,
-                                      targetBefore: _targetController.text,
-                                      targetAfter: _resultController.text
+                                      //realStartTime: _timeStartTarget,
+                                      //realEndTime: _timeEndTarget,
+                                      //status: _status,
+                                      //targetBefore: _targetController.text,
+                                      //targetAfter: _resultController.text
                                     );
 
                                   }

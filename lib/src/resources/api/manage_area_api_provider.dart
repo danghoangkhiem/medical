@@ -1,12 +1,12 @@
-import 'package:medical/src/models/manage_area_model.dart';
+import 'package:medical/src/models/day_schedule_med_rep_model.dart';
 import 'package:meta/meta.dart';
 import 'api_provider.dart';
 
 class ManageAreaApiProvider extends ApiProvider {
 
-  Future<ManageAreaModel> getManageArea({int offset = 0, int limit = 10, @required DateTime date}) async {
+  Future<DayScheduleMedRepModel> getManageArea({int offset = 0, int limit = 10, @required DateTime date}) async {
     await Future.delayed(Duration(seconds: 1));
-    return ManageAreaModel.fromJson([
+    return DayScheduleMedRepModel.fromJson([
       {
         "id": 2,
         "startTime": 1559927049446,
