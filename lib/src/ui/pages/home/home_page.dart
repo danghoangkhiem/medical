@@ -7,6 +7,7 @@ import 'package:medical/src/blocs/home/home.dart';
 
 import 'package:medical/src/models/user_model.dart';
 import 'package:medical/src/ui/pages/manage_area_day/manage_area_day_page.dart';
+import 'package:medical/src/ui/pages/med_rep/med_rep_page.dart';
 
 import 'package:medical/src/utils.dart';
 
@@ -267,6 +268,17 @@ class _HomePageState extends State<HomePage> {
               },
               required: [
                 UserRoleType.MedicalRepresentative,
+                UserRoleType.MedicalSupervisor,
+              ],
+            ),
+            _buildSelectionItem(
+              icon: Icons.access_alarm,
+              label: 'Danh sách Med Rep của Med Sup',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => MedRepPage()));
+              },
+              required: [
                 UserRoleType.MedicalSupervisor,
               ],
             ),

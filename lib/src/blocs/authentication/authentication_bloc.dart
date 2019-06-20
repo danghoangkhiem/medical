@@ -10,6 +10,15 @@ class AuthenticationBloc
   final AuthenticationRepository _authenticationRepository =
       AuthenticationRepository();
 
+  AuthenticationBloc() {
+    ApiProvider.setValidateStatus((status) {
+      if (status == 401) {
+        dispatch(AuthenticationEvent.loggedOut());
+      }
+      return true;
+    });
+  }
+
   @override
   AuthenticationState get initialState => AuthenticationState.unauthenticated();
 

@@ -117,36 +117,40 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
           if (_isOverlapping && !state.isLoading) {
             Navigator.of(context).pop();
           }
+          if (state.hasFailed) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text(state.errorMessage.toString()),
+              backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 2),
+            ));
+            /*
+            Navigator.of(context).pop();
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Có lỗi xảy ra!'),
+                  content: Container(
+                    child: Text(state.errorMessage.toString()),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK!'),
+                    )
+                  ],
+                );
+              },
+            );
+            */
+          }
         },
         child: BlocBuilder(
           bloc: _scheduleWorkBloc,
           builder: (BuildContext context, ScheduleWorkState state) {
-            if (state.errorMessage != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pop();
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Có lỗi xảy ra!'),
-                      content: Container(
-                        child: Text(state.errorMessage.toString()),
-                      ),
-                      actions: <Widget>[
-                        FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('OK!'),
-                        )
-                      ],
-                    );
-                  },
-                );
-              });
-              return Container();
-            }
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -162,7 +166,8 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => ScheduleWorkCreatePage()));
+              builder: (BuildContext context) =>
+                  ScheduleWorkCreatePage(day: _selectedDay)));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
@@ -180,8 +185,6 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
       availableGestures: AvailableGestures.all,
       availableCalendarFormats: const {
         CalendarFormat.month: 'Month',
-        //CalendarFormat.twoWeeks: '2 Weeks',
-        //CalendarFormat.week: 'Week',
       },
       calendarStyle: CalendarStyle(
         outsideDaysVisible: true,
@@ -288,7 +291,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(event.partner?.location?.name),
+                        Text(event.partner?.place?.name ?? ''),
                       ],
                     ),
                     onTap: () => print('$event tapped!'),

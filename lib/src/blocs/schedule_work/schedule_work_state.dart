@@ -7,6 +7,7 @@ class ScheduleWorkState extends Equatable {
   final bool isInitialized;
   final bool isInitializing;
   final bool isLoading;
+  final bool hasFailed;
   final DateTime daySelected;
   final String errorMessage;
   final ScheduleWorkListModel schedules;
@@ -15,6 +16,7 @@ class ScheduleWorkState extends Equatable {
     @required this.isInitialized,
     this.isInitializing = false,
     this.isLoading = false,
+    this.hasFailed = false,
     this.daySelected,
     this.errorMessage,
     this.schedules,
@@ -22,6 +24,7 @@ class ScheduleWorkState extends Equatable {
           isInitialized,
           isInitializing,
           isLoading,
+          hasFailed,
           daySelected,
           errorMessage,
           schedules,
@@ -65,6 +68,7 @@ class ScheduleWorkState extends Equatable {
   }) =>
       ScheduleWorkState(
         isInitialized: isInitialized,
+        hasFailed: true,
         errorMessage: errorMessage?.toString(),
       );
 }

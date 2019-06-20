@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ScheduleWorkCreatePage extends StatefulWidget {
+  final DateTime day;
+
+  ScheduleWorkCreatePage({Key key, @required this.day}) : super(key: key);
+
   @override
   _ScheduleWorkCreatePageState createState() => _ScheduleWorkCreatePageState();
 }
