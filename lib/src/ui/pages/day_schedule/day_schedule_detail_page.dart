@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:medical/src/models/day_schedule_model.dart';
 import 'package:medical/src/blocs/day_schedule_detail/day_schedule_detail.dart';
 
