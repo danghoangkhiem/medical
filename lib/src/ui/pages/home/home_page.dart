@@ -20,6 +20,7 @@ import 'package:medical/src/ui/pages/customer/customer_manager_page.dart';
 import 'package:medical/src/ui/pages/inventories/inventories_page.dart';
 import 'package:medical/src/ui/pages/report_kpi/report_kpi_page.dart';
 import 'package:medical/src/ui/pages/schedule_work/schedule_work_page.dart';
+import 'package:medical/src/ui/pages/schedule_coaching/schedule_coaching_page.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
@@ -323,7 +324,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     settings: RouteSettings(name: '/schedule_coaching_page'),
-                    builder: (BuildContext context) => ScheduleWorkPage()));
+                    builder: (BuildContext context) => ScheduleCoachingPage()));
               },
               required: [
                 UserRoleType.MedicalSupervisor,
