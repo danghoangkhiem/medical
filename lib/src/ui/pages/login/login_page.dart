@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medical/src/blocs/authentication/authentication.dart';
-import 'package:medical/src/blocs/login/login.dart';
 import 'package:flutter/services.dart';
 import 'package:get_version/get_version.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:medical/src/blocs/authentication/authentication.dart';
+import 'package:medical/src/blocs/login/login.dart';
 
 import 'login_form.dart';
 
@@ -13,7 +14,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   String _projectVersion = '';
   String _projectCode = '';
 
@@ -26,12 +26,12 @@ class _LoginPageState extends State<LoginPage> {
     _loginBloc = LoginBloc(authenticationBloc: _authenticationBloc);
 
     //version app
-    initVersionState();
+    _initVersionState();
 
     super.initState();
   }
 
-  initVersionState() async{
+  void _initVersionState() async {
     String projectVersion;
     String projectCode;
 
@@ -55,13 +55,7 @@ class _LoginPageState extends State<LoginPage> {
 
       print(_projectVersion);
       print(_projectCode);
-
     });
-
-
-
-
-
   }
 
   @override
@@ -97,16 +91,16 @@ class _LoginPageState extends State<LoginPage> {
                 flex: 7,
                 child: LoginForm(
                     loginBloc: _loginBloc,
-                    authenticationBloc: _authenticationBloc
-                )
-            ),
+                    authenticationBloc: _authenticationBloc)),
             Expanded(
                 flex: 1,
                 child: Container(
                   alignment: Alignment.center,
                   width: double.infinity,
                   child: Text(
-                    _projectVersion != null ? 'Version: $_projectVersion' : 'Version: 1.0.0',
+                    _projectVersion != null
+                        ? 'Version: $_projectVersion'
+                        : 'Version: 1.0.0',
                     style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ))

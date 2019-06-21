@@ -306,30 +306,24 @@ class _HomePageState extends State<HomePage> {
             ),
             _buildSelectionItem(
               icon: Icons.schedule,
-              label: 'Lên kế hoạch làm việc',
+              label: 'Lập kế hoạch làm việc',
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
+                    settings: RouteSettings(name: '/schedule_work_page'),
                     builder: (BuildContext context) => ScheduleWorkPage()));
               },
               required: [
                 UserRoleType.MedicalRepresentative,
+                UserRoleType.MedicalSupervisor,
               ],
             ),
             _buildSelectionItem(
               icon: Icons.alarm,
               label: 'Lập kế hoạch coaching',
               onPressed: () {
-                return;
-              },
-              required: [
-                UserRoleType.MedicalSupervisor,
-              ],
-            ),
-            _buildSelectionItem(
-              icon: Icons.landscape,
-              label: 'Lập kế hoạch địa bàn',
-              onPressed: () {
-                return;
+                Navigator.of(context).push(MaterialPageRoute(
+                    settings: RouteSettings(name: '/schedule_coaching_page'),
+                    builder: (BuildContext context) => ScheduleWorkPage()));
               },
               required: [
                 UserRoleType.MedicalSupervisor,

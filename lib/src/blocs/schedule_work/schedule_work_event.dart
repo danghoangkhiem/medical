@@ -15,3 +15,5 @@ class DaySelected extends ScheduleWorkEvent {
 
   DaySelected({@required this.day});
 }
+
+class RefreshEventList extends ScheduleWorkEvent {}

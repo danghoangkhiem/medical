@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -7,7 +8,7 @@ import 'package:medical/src/blocs/schedule_work/schedule_work.dart';
 
 import 'package:medical/src/models/schedule_work_model.dart';
 
-import 'schedule_work_create_page.dart';
+import 'select_place_page.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
@@ -123,29 +124,6 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
               backgroundColor: Colors.redAccent,
               duration: Duration(seconds: 2),
             ));
-            /*
-            Navigator.of(context).pop();
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Có lỗi xảy ra!'),
-                  content: Container(
-                    child: Text(state.errorMessage.toString()),
-                  ),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('OK!'),
-                    )
-                  ],
-                );
-              },
-            );
-            */
           }
         },
         child: BlocBuilder(
@@ -166,8 +144,9 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  ScheduleWorkCreatePage(day: _selectedDay)));
+              builder: (BuildContext context) => SelectPlacePage(
+                  selectedDate: _selectedDay,
+                  scheduleWorkBloc: _scheduleWorkBloc)));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
@@ -177,7 +156,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
 
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
-      locale: 'en_US',
+      locale: 'vi_VN',
       events: _visibleEvents,
       initialCalendarFormat: CalendarFormat.month,
       formatAnimation: FormatAnimation.slide,
@@ -197,6 +176,9 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
       headerStyle: HeaderStyle(
         centerHeaderTitle: true,
         formatButtonVisible: false,
+        titleTextBuilder: (DateTime date, dynamic locale) {
+          return DateFormat('yMMMM', locale).format(date).toUpperCase();
+        },
       ),
       builders: CalendarBuilders(
         selectedDayBuilder: (context, date, _) {
