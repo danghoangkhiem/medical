@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:medical/src/blocs/invoice_detail/invoice_detail.dart';
-import 'package:medical/src/blocs/invoice/invoice.dart' as invoiceBloc;
+import 'package:medical/src/blocs/invoice/invoice.dart' as InvoiceBloc;
 
 import 'package:medical/src/models/event_type.dart';
 import 'package:medical/src/models/invoice_item_model.dart';
@@ -13,7 +13,7 @@ import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class InvoiceDetailPage extends StatefulWidget {
   final InvoiceModel invoice;
-  final invoiceBloc.InvoiceBloc invoiceBloc;
+  final InvoiceBloc.InvoiceBloc invoiceBloc;
 
   InvoiceDetailPage({
     Key key,
@@ -29,7 +29,7 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
   InvoiceDetailBloc _invoiceDetailBloc;
 
   InvoiceModel get _invoice => widget.invoice;
-  invoiceBloc.InvoiceBloc get _invoiceBloc => widget.invoiceBloc;
+  InvoiceBloc.InvoiceBloc get _invoiceBloc => widget.invoiceBloc;
 
   @override
   void initState() {
@@ -135,7 +135,7 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
                         duration: Duration(seconds: 1),
                       ));
                     });
-                    _invoiceBloc.dispatch(invoiceBloc.RefreshFilterResult());
+                    _invoiceBloc.dispatch(InvoiceBloc.RefreshFilterResult());
                     return _buildControlPanel(state.invoiceStatus);
                   }
                   if (state is Failure) {
