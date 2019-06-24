@@ -6,7 +6,7 @@ import 'api_provider.dart';
 class DayScheduleMedRepProvider extends ApiProvider {
   Future<DayScheduleMedRepModel> getDayScheduleMedRep(
       {int offset = 0,
-      int limit = 10,
+      int limit = 20,
       @required DateTime date,
       @required int userId}) async {
     await Future.delayed(Duration(milliseconds: 200));
@@ -26,7 +26,7 @@ class DayScheduleMedRepProvider extends ApiProvider {
     };
 
     //truyền tham số mặc định
-    Response _resp = await httpClient.get('/users/2/schedules',
+    Response _resp = await httpClient.get('/users/$userId/schedules',
         queryParameters: _queryParameters);
 
     if (_resp.statusCode == 200) {

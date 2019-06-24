@@ -23,7 +23,7 @@ class ReportKpiDayApiProvider extends ApiProvider {
 
     if (_resp.statusCode == 200) {
 
-      return ReportKpiDateModel.fromJson(_resp.data["date"]);
+      return ReportKpiDateModel.fromJson(_resp.data["data"]);
 
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));

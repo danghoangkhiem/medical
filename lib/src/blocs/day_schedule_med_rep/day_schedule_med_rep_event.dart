@@ -13,7 +13,7 @@ class GetDayScheduleMedRep extends DayScheduleMedRepEvent {
 
   GetDayScheduleMedRep({
     this.offset = 0,
-    this.limit = 10,
+    this.limit = 20,
     @required this.date,
     @required this.userId
   }) : super([offset, limit, date, userId]);
