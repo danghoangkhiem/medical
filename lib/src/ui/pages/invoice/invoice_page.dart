@@ -149,7 +149,9 @@ class _InvoicePageState extends State<InvoicePage> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => InvoiceDetailPage(
-                      invoice: invoice)));
+                      invoice: invoice,
+                      invoiceBloc: _invoiceBloc,
+                    )));
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -159,9 +161,9 @@ class _InvoicePageState extends State<InvoicePage> {
                 Text(
                   DateFormat('dd-MM-yyyy hh:mm:ss').format(invoice.date),
                   style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
-                      ),
+                    fontSize: 18,
+                    color: Colors.grey,
+                  ),
                 ),
                 Text(
                   _mapInvoiceStatusToName(invoice.status),

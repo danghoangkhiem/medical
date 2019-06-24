@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_version/get_version.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/authentication/authentication.dart';
@@ -12,6 +14,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String _projectVersion = '';
+  String _projectCode = '';
+
   LoginBloc _loginBloc;
   AuthenticationBloc _authenticationBloc;
 
@@ -19,7 +24,38 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginBloc = LoginBloc(authenticationBloc: _authenticationBloc);
+
+    //version app
+    _initVersionState();
+
     super.initState();
+  }
+
+  void _initVersionState() async {
+    String projectVersion;
+    String projectCode;
+
+    try {
+      projectVersion = await GetVersion.projectVersion;
+    } on PlatformException {
+      projectVersion = 'Failed to get project version.';
+    }
+
+    try {
+      projectCode = await GetVersion.projectCode;
+    } on PlatformException {
+      projectCode = 'Failed to get build number.';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _projectVersion = projectVersion;
+      _projectCode = projectCode;
+
+      print(_projectVersion);
+      print(_projectCode);
+    });
   }
 
   @override
@@ -55,16 +91,16 @@ class _LoginPageState extends State<LoginPage> {
                 flex: 7,
                 child: LoginForm(
                     loginBloc: _loginBloc,
-                    authenticationBloc: _authenticationBloc
-                )
-            ),
+                    authenticationBloc: _authenticationBloc)),
             Expanded(
                 flex: 1,
                 child: Container(
                   alignment: Alignment.center,
                   width: double.infinity,
                   child: Text(
-                    'Version: 1.1',
+                    _projectVersion != null
+                        ? 'Version: $_projectVersion'
+                        : 'Version: 1.0.0',
                     style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ))

@@ -4,33 +4,31 @@ import 'package:date_utils/date_utils.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:medical/src/blocs/schedule_work/schedule_work.dart';
+import 'package:medical/src/blocs/schedule_coaching/schedule_coaching.dart';
 
-import 'package:medical/src/models/schedule_work_model.dart';
-
-import 'select_place_page.dart';
+import 'package:medical/src/models/schedule_coaching_model.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
-class ScheduleWorkPage extends StatefulWidget {
+class ScheduleCoachingPage extends StatefulWidget {
   @override
-  _ScheduleWorkPageState createState() => _ScheduleWorkPageState();
+  _ScheduleCoachingPageState createState() => _ScheduleCoachingPageState();
 }
 
-class _ScheduleWorkPageState extends State<ScheduleWorkPage>
+class _ScheduleCoachingPageState extends State<ScheduleCoachingPage>
     with TickerProviderStateMixin {
   DateTime _selectedDay;
-  Map<DateTime, List<ScheduleWorkModel>> _visibleEvents;
-  List<ScheduleWorkModel> _selectedEvents;
+  Map<DateTime, List<ScheduleCoachingModel>> _visibleEvents;
+  List<ScheduleCoachingModel> _selectedEvents;
   AnimationController _controller;
   bool _isOverlapping;
 
-  ScheduleWorkBloc _scheduleWorkBloc;
+  ScheduleCoachingBloc _scheduleCoachingBloc;
 
   @override
   void initState() {
     super.initState();
-    _scheduleWorkBloc = ScheduleWorkBloc();
+    _scheduleCoachingBloc = ScheduleCoachingBloc();
     _selectedDay = DateTime.now();
     _selectedEvents = [];
     _visibleEvents = {};
@@ -39,7 +37,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
         Utils.firstDayOfWeek(Utils.firstDayOfMonth(_selectedDay));
     DateTime _endDate = Utils.lastDayOfWeek(Utils.lastDayOfMonth(_selectedDay));
 
-    _scheduleWorkBloc.dispatch(EventList(
+    _scheduleCoachingBloc.dispatch(EventList(
       startDate: _startDate,
       endDate: _endDate,
     ));
@@ -54,7 +52,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
 
   @override
   void dispose() {
-    _scheduleWorkBloc?.dispose();
+    _scheduleCoachingBloc?.dispose();
     _controller?.dispose();
     super.dispose();
   }
@@ -63,12 +61,12 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
     _controller.forward(from: 0.0);
     _selectedEvents =
         _visibleEvents.containsKey(day) ? _visibleEvents[day] : [];
-    _scheduleWorkBloc.dispatch(DaySelected(day: day));
+    _scheduleCoachingBloc.dispatch(DaySelected(day: day));
   }
 
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
-    _scheduleWorkBloc.dispatch(EventList(startDate: first, endDate: last));
+    _scheduleCoachingBloc.dispatch(EventList(startDate: first, endDate: last));
   }
 
   @override
@@ -76,11 +74,11 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text("Lên kế hoạch làm việc"),
+        title: Text("Lập kế hoạch coaching"),
       ),
       body: BlocListener(
-        bloc: _scheduleWorkBloc,
-        listener: (BuildContext context, ScheduleWorkState state) {
+        bloc: _scheduleCoachingBloc,
+        listener: (BuildContext context, ScheduleCoachingState state) {
           if (state.daySelected != null) {
             _selectedDay = state.daySelected;
           }
@@ -96,8 +94,8 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
                 state.schedules[i].date.day,
               );
               if (!_visibleEvents.containsKey(dateKey)) {
-                _visibleEvents
-                    .addAll(<DateTime, List<ScheduleWorkModel>>{dateKey: []});
+                _visibleEvents.addAll(
+                    <DateTime, List<ScheduleCoachingModel>>{dateKey: []});
               }
               _visibleEvents[dateKey].add(state.schedules[i]);
             }
@@ -127,8 +125,8 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
           }
         },
         child: BlocBuilder(
-          bloc: _scheduleWorkBloc,
-          builder: (BuildContext context, ScheduleWorkState state) {
+          bloc: _scheduleCoachingBloc,
+          builder: (BuildContext context, ScheduleCoachingState state) {
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -142,12 +140,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => SelectPlacePage(
-                  selectedDate: _selectedDay,
-                  scheduleWorkBloc: _scheduleWorkBloc)));
-        },
+        onPressed: () {},
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),
@@ -262,7 +255,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
       color: Colors.grey[200],
       child: ListView(
         children: _selectedEvents
-            .map((ScheduleWorkModel event) => Container(
+            .map((ScheduleCoachingModel event) => Container(
                   decoration: BoxDecoration(
                     border: Border.all(width: 0.8),
                     borderRadius: BorderRadius.circular(12.0),
@@ -273,7 +266,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(event.partner?.place?.name ?? ''),
+                        Text(''),
                       ],
                     ),
                     onTap: () => print('$event tapped!'),

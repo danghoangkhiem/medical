@@ -3,15 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:medical/src/blocs/invoice_detail/invoice_detail.dart';
+import 'package:medical/src/blocs/invoice/invoice.dart' as InvoiceBloc;
+
 import 'package:medical/src/models/event_type.dart';
 import 'package:medical/src/models/invoice_item_model.dart';
 import 'package:medical/src/models/invoice_model.dart';
+
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
 class InvoiceDetailPage extends StatefulWidget {
   final InvoiceModel invoice;
+  final InvoiceBloc.InvoiceBloc invoiceBloc;
 
-  InvoiceDetailPage({Key key, @required this.invoice}) : super(key: key);
+  InvoiceDetailPage({
+    Key key,
+    @required this.invoice,
+    @required this.invoiceBloc,
+  }) : super(key: key);
 
   @override
   _InvoiceDetailPageState createState() => _InvoiceDetailPageState();
@@ -21,6 +29,7 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
   InvoiceDetailBloc _invoiceDetailBloc;
 
   InvoiceModel get _invoice => widget.invoice;
+  InvoiceBloc.InvoiceBloc get _invoiceBloc => widget.invoiceBloc;
 
   @override
   void initState() {
@@ -71,10 +80,9 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
                 child: ListView(
                   children: <Widget>[
                     _buildRow(
-                        title: _mapEventTypeToName(
-                            EventType.pointOfSaleMaterials),
-                        items: _invoice
-                            .items[EventType.pointOfSaleMaterials]),
+                        title:
+                            _mapEventTypeToName(EventType.pointOfSaleMaterials),
+                        items: _invoice.items[EventType.pointOfSaleMaterials]),
                     _buildRow(
                         title: _mapEventTypeToName(EventType.gifts),
                         items: _invoice.items[EventType.gifts]),
@@ -112,8 +120,7 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
             ),
             Container(
               height: 50,
-              margin:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: BlocBuilder(
                 bloc: _invoiceDetailBloc,
                 builder: (BuildContext context, InvoiceDetailState state) {
@@ -128,6 +135,7 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
                         duration: Duration(seconds: 1),
                       ));
                     });
+                    _invoiceBloc.dispatch(InvoiceBloc.RefreshFilterResult());
                     return _buildControlPanel(state.invoiceStatus);
                   }
                   if (state is Failure) {
@@ -212,7 +220,10 @@ class _InvoiceDetailPageState extends State<InvoiceDetailPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.check, color: Colors.green,),
+            Icon(
+              Icons.check,
+              color: Colors.green,
+            ),
             Text(' Đã nhận')
           ],
         ),

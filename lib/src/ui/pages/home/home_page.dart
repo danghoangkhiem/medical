@@ -20,6 +20,7 @@ import 'package:medical/src/ui/pages/customer/customer_manager_page.dart';
 import 'package:medical/src/ui/pages/inventories/inventories_page.dart';
 import 'package:medical/src/ui/pages/report_kpi/report_kpi_page.dart';
 import 'package:medical/src/ui/pages/schedule_work/schedule_work_page.dart';
+import 'package:medical/src/ui/pages/schedule_coaching/schedule_coaching_page.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
@@ -296,30 +297,24 @@ class _HomePageState extends State<HomePage> {
             ),
             _buildSelectionItem(
               icon: Icons.schedule,
-              label: 'Lên kế hoạch làm việc',
+              label: 'Lập kế hoạch làm việc',
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
+                    settings: RouteSettings(name: '/schedule_work_page'),
                     builder: (BuildContext context) => ScheduleWorkPage()));
               },
               required: [
                 UserRoleType.MedicalRepresentative,
+                UserRoleType.MedicalSupervisor,
               ],
             ),
             _buildSelectionItem(
               icon: Icons.alarm,
               label: 'Lập kế hoạch coaching',
               onPressed: () {
-                return;
-              },
-              required: [
-                UserRoleType.MedicalSupervisor,
-              ],
-            ),
-            _buildSelectionItem(
-              icon: Icons.landscape,
-              label: 'Lập kế hoạch địa bàn',
-              onPressed: () {
-                return;
+                Navigator.of(context).push(MaterialPageRoute(
+                    settings: RouteSettings(name: '/schedule_coaching_page'),
+                    builder: (BuildContext context) => ScheduleCoachingPage()));
               },
               required: [
                 UserRoleType.MedicalSupervisor,
