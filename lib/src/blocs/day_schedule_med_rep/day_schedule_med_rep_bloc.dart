@@ -14,8 +14,8 @@ class DayScheduleMedRepBloc
   final DayScheduleMedRepRepository _dayScheduleMedRepRepository;
 
   DayScheduleMedRepBloc({
-    @required manageAreaRepository,
-  }) : _dayScheduleMedRepRepository = manageAreaRepository;
+    @required dayScheduleMedRepRepository,
+  }) : _dayScheduleMedRepRepository = dayScheduleMedRepRepository;
 
   @override
   DayScheduleMedRepState get initialState => DayScheduleMedRepInitial();

@@ -67,7 +67,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
 
     dayScheduleMedRepModel = DayScheduleMedRepModel.fromJson([]);
     _blocDayScheduleMedRep =
-        DayScheduleMedRepBloc(manageAreaRepository: _dayScheduleMedRepRepository);
+        DayScheduleMedRepBloc(dayScheduleMedRepRepository: _dayScheduleMedRepRepository);
     _blocDayScheduleMedRep.dispatch(GetDayScheduleMedRep(
       date: DateTime.now(),
       userId: userId
@@ -81,6 +81,26 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
     _blocDayScheduleMedRep?.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+
+  Widget inputDate(DateTime startTime, DateTime endTime) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: new Text(
+        convertTime(startTime) + ' đến ' + convertTime(endTime),
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.blueAccent),
+      ),
+    );
+  }
+
+  String convertTime(DateTime time) {
+    return time.hour > 12
+        ? "${time.hour - 12}:${time.minute}PM"
+        : "${time.hour}:${time.minute.toString()}AM";
   }
 
 
@@ -187,17 +207,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    new Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: new Text(
-                        "thời gian",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
-                    ),
-       // Từ ${item.startTime.hour}:${item.startTime.minute} đến ${item.endTime.hour}:${item.endTime.minute}
+                    inputDate(item.startTime, item.endTime),
                     new SizedBox(
                       height: 7,
                     ),
@@ -205,7 +215,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                       padding: EdgeInsets.only(left: 20),
                       margin: EdgeInsets.only(left: 20),
                       child: new Text(
-                        item.doctorName != null ? item.doctorName : 'N/A',
+                        item.partnerModel.name != null ? item.partnerModel.name : 'N/A',
                         style: new TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
@@ -218,7 +228,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                       padding: EdgeInsets.only(left: 20),
                       margin: EdgeInsets.only(left: 20),
                       child: new Text(
-                        "${item.addressType}: ${item.addressName}",
+                        "${item.partnerModel.place.name}",
                         style: new TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
