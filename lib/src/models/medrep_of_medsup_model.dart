@@ -17,13 +17,15 @@ class MedRepModel{
 class MedRepItem{
   final String name;
   final String code;
+  final int userId;
 
-  MedRepItem({this.name, this.code});
+  MedRepItem({this.name, this.code, this.userId});
 
   factory MedRepItem.fromJson(Map<String, dynamic> json){
     return MedRepItem(
       name: json["name"],
-      code: json["code"]
+      code: json["code"],
+      userId: json['id']
     );
   }
 }

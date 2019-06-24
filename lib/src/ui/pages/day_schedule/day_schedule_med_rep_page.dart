@@ -1,28 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medical/src/blocs/manage_area/manage_area_event.dart';
-import 'package:medical/src/blocs/manage_area/manage_area_bloc.dart';
-import 'package:medical/src/blocs/manage_area/manage_area_state.dart';
+import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_bloc.dart';
+import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_event.dart';
+import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_state.dart';
+
+
 import 'package:medical/src/models/day_schedule_med_rep_model.dart';
-import 'package:medical/src/resources/manage_area_repository.dart';
-import 'package:medical/src/ui/pages/manage_area/manage_area_page.dart';
+import 'package:medical/src/resources/day_schedule_med_rep_repository.dart';
+
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
 
+// ignore: must_be_immutable
 class DayScheduleMedRep extends StatefulWidget {
+
+  final DateTime date;
+  final int userId;
+
+  DayScheduleMedRep({this.date, this.userId});
+
   @override
   State<StatefulWidget> createState() {
-    return new DayScheduleMedRepState();
+    return new DayScheduleMedRepState(userId: userId, date: date);
   }
 }
 
 class DayScheduleMedRepState extends State<DayScheduleMedRep> {
 
-  ScrollController _scrollController = new ScrollController();
-  ManageAreaBloc _blocManageArea;
-  ManageAreaRepository _manageAreaRepository = ManageAreaRepository();
+  final DateTime date;
+  final int userId;
 
-  DayScheduleMedRepModel manageAreaModel;
+
+  DayScheduleMedRepState({this.date, this.userId});
+
+  ScrollController _scrollController = new ScrollController();
+  DayScheduleMedRepBloc _blocDayScheduleMedRep;
+  DayScheduleMedRepRepository _dayScheduleMedRepRepository = DayScheduleMedRepRepository();
+
+  DayScheduleMedRepModel dayScheduleMedRepModel;
 
   bool _isLoading = false;
   bool _isReachMax = false;
@@ -36,7 +51,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
       throttle(10, () {
         if (_isLoading != true) {
           _isLoading = true;
-          _blocManageArea.dispatch(LoadMore());
+          _blocDayScheduleMedRep.dispatch(LoadMore());
         }
       });
     }
@@ -46,11 +61,16 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
   void initState() {
     super.initState();
 
-    manageAreaModel = DayScheduleMedRepModel.fromJson([]);
-    _blocManageArea =
-        ManageAreaBloc(manageAreaRepository: _manageAreaRepository);
-    _blocManageArea.dispatch(GetManageArea(
+    print("thongthong");
+    print(userId);
+    print(date);
+
+    dayScheduleMedRepModel = DayScheduleMedRepModel.fromJson([]);
+    _blocDayScheduleMedRep =
+        DayScheduleMedRepBloc(manageAreaRepository: _dayScheduleMedRepRepository);
+    _blocDayScheduleMedRep.dispatch(GetDayScheduleMedRep(
       date: DateTime.now(),
+      userId: userId
     ));
 
     _scrollController.addListener(_scrollListener);
@@ -58,7 +78,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
 
   @override
   void dispose() {
-    _blocManageArea?.dispose();
+    _blocDayScheduleMedRep?.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -75,7 +95,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
       body: SafeArea(
           child: new Container(
             child: BlocListener(
-              bloc: _blocManageArea,
+              bloc: _blocDayScheduleMedRep,
               listener: (BuildContext context, state){
                 if (state is ReachMax) {
                   Scaffold.of(context).removeCurrentSnackBar();
@@ -86,44 +106,44 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                   _isLoading = false;
                   _isReachMax = true;
                 }
-                if(state is ManageAreaEmpty){
+                if(state is DayScheduleMedRepEmpty){
                   Scaffold.of(context).removeCurrentSnackBar();
                   Scaffold.of(context).showSnackBar(SnackBar(
                     duration: Duration(milliseconds: 1500),
                     content: Text('Không có dữ liệu'),
                   ));
                 }
-                if (state is ManageAreaFailure) {
+                if (state is DayScheduleMedRepFailure) {
                   Scaffold.of(context).removeCurrentSnackBar();
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text(state.error),
                     backgroundColor: Colors.redAccent,
                   ));
                 }
-                if (state is ManageAreaLoaded) {
+                if (state is DayScheduleMedRepLoaded) {
                   if (state.isLoadMore) {
-                    manageAreaModel.listDayScheduleMedRep
-                        .addAll(state.manageArea.listDayScheduleMedRep);
+                    dayScheduleMedRepModel.listDayScheduleMedRep
+                        .addAll(state.dayScheduleMedRep.listDayScheduleMedRep);
                     _isLoading = false;
                   } else {
-                    manageAreaModel.listDayScheduleMedRep =
-                        state.manageArea.listDayScheduleMedRep;
+                    dayScheduleMedRepModel.listDayScheduleMedRep =
+                        state.dayScheduleMedRep.listDayScheduleMedRep;
                   }
                 }
               },
               child: BlocBuilder(
-                  bloc: _blocManageArea,
+                  bloc: _blocDayScheduleMedRep,
                   builder: (context, state) {
-                    if (state is ManageAreaLoading && !state.isLoadMore) {
+                    if (state is DayScheduleMedRepLoading && !state.isLoadMore) {
                       return LoadingIndicator(opacity: 0,);
                     }
                     return ListView.builder(
                       controller: _scrollController,
                       itemCount: _isLoading
-                          ? manageAreaModel.listDayScheduleMedRep.length + 1
-                          : manageAreaModel.listDayScheduleMedRep.length,
+                          ? dayScheduleMedRepModel.listDayScheduleMedRep.length + 1
+                          : dayScheduleMedRepModel.listDayScheduleMedRep.length,
                       itemBuilder: (BuildContext context, int index) {
-                        if (_isLoading && index == manageAreaModel.listDayScheduleMedRep.length) {
+                        if (_isLoading && index == dayScheduleMedRepModel.listDayScheduleMedRep.length) {
                           return SizedBox(
                             height: 50,
                             child: Align(
@@ -131,7 +151,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                                 child: CircularProgressIndicator()),
                           );
                         }
-                        return _buildRow(manageAreaModel.listDayScheduleMedRep[index]);
+                        return _buildRow(dayScheduleMedRepModel.listDayScheduleMedRep[index]);
                       },
                     );
 
@@ -158,8 +178,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
         color: Colors.transparent,
         child: InkWell(
           onTap: (){
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => ManageArea(item)));
+
           },
           child: new Row(
             children: <Widget>[
@@ -171,13 +190,14 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                     new Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: new Text(
-                        "Từ ${item.startTime.hour}:${item.startTime.minute} đến ${item.endTime.hour}:${item.endTime.minute}",
+                        "thời gian",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
                     ),
+       // Từ ${item.startTime.hour}:${item.startTime.minute} đến ${item.endTime.hour}:${item.endTime.minute}
                     new SizedBox(
                       height: 7,
                     ),
@@ -185,7 +205,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                       padding: EdgeInsets.only(left: 20),
                       margin: EdgeInsets.only(left: 20),
                       child: new Text(
-                        item.doctorName,
+                        item.doctorName != null ? item.doctorName : 'N/A',
                         style: new TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
@@ -215,6 +235,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                     child: new IconButton(
                         icon: Icon(Icons.add_circle, color: Colors.blueAccent,),
                         onPressed: (){
+
                         }
                     ),
                   )
