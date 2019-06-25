@@ -30,13 +30,21 @@ class DayCoachingRepository {
     }).toList());
   }
 
-  Future<DayCoachingListModel> getDayCoaching(int offset, int limit,int userId) async {
+  Future<DayCoachingListModel> getDayCoaching(int offset, int limit,int userId, int startDate, int endDate) async {
     await Future.delayed(Duration(seconds: 1));
-    return await _dayCoachingApiProvider.getDayCoaching(offset: offset, limit: limit, userId: userId);
+    return await _dayCoachingApiProvider.getDayCoaching(offset: offset, limit: limit, userId: userId,startDate: startDate, endDate: endDate);
   }
 
-  Future<bool> updateDayCoachingDetail(int id,{DateTime realStartTime, DateTime realEndTime, String description, String evaluate, String feedback}) async {
+  Future<bool> updateDayCoachingDetail({int userId = 2, int coachingId, DateTime realStartTime, DateTime realEndTime, String description,String evaluation, String feedback}) async {
     await Future.delayed(Duration(seconds: 1));
-    return true;
+    return await _dayCoachingApiProvider.updateCoaching(
+        userId: userId,
+        coachingId: coachingId,
+        startTime: realStartTime,
+        endTime: realEndTime,
+        description: description,
+        evaluation: evaluation,
+        feedback: feedback
+    );
   }
 }

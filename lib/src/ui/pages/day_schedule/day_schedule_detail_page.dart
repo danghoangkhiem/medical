@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:medical/src/models/day_schedule_model.dart';
 import 'package:medical/src/blocs/day_schedule_detail/day_schedule_detail.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
+
+import 'package:medical/src/ui/pages/day_schedule/day_schedule_page.dart';
 
 class DayScheduleDetailPage extends StatefulWidget {
   final DayScheduleModel daySchedule;
@@ -18,7 +23,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _purposeController = TextEditingController();
 
-  String status;
+  DayScheduleStatus status;
   DateTime _realStartDay;
   DateTime _realEndDate;
   bool isStartDate = false;
@@ -69,6 +74,8 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
   @override
   void initState() {
     _dayScheduleDetailBloc = DayScheduleDetailBloc();
+    _purposeController.text = widget.daySchedule.purpose;
+    _descriptionController.text = widget.daySchedule.description;
     super.initState();
   }
 
@@ -86,9 +93,50 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
         title: new Text("Nhập kết quả cuộc hẹn"),
       ),
       body: new Container(
-        child: new Column(
+        child: BlocListener(
+            bloc: _dayScheduleDetailBloc,
+            listener: (BuildContext context, DayScheduleDetailState state) {
+              Scaffold.of(context).removeCurrentSnackBar();
+              if (state is Failure) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: Colors.redAccent,
+                ));
+              }
+              if (state is Loaded) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Thông báo"),
+                      content: Text("Đã cập nhật thành công!"),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("OK"),
+                        )
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            child: BlocBuilder(
+              bloc: _dayScheduleDetailBloc,
+              builder: (BuildContext context, DayScheduleDetailState state) {
+                if (state is Loading) {
+                  return LoadingIndicator();
+                }
+                return Column(
+                  children: <Widget>[updateForm(), updateButton()],
+                );
+              },
+            )),
+        /*child: new Column(
           children: <Widget>[updateForm(), updateButton()],
-        ),
+        ),*/
       ),
     );
   }
@@ -223,7 +271,8 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                             width: 1,
                             style: BorderStyle.solid),
                         borderRadius: BorderRadius.circular(4)),
-                    child: new Text(convertTime(startDay),
+                    child: new Text(
+                      convertTime(startDay),
                       style: new TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -241,7 +290,8 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                             width: 1,
                             style: BorderStyle.solid),
                         borderRadius: BorderRadius.circular(4)),
-                    child: new Text(convertTime(endDate),
+                    child: new Text(
+                      convertTime(endDate),
                       style: new TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -373,9 +423,11 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
             height: 5,
           ),
           new TextFormField(
-            controller: _descriptionController..text = _daySchedule.description,
+            controller: _descriptionController,
             style: new TextStyle(
-                fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
+                fontSize: 16,
+                color: Colors.blueAccent,
+                fontWeight: FontWeight.bold),
             maxLines: 4,
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
@@ -418,7 +470,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
             child: DropdownButtonHideUnderline(
               child: new DropdownButton(
                 isExpanded: true,
-                value: _daySchedule.status,
+                value: status == null ? _daySchedule.status : status,
                 items: [
                   DropdownMenuItem(
                     child: new Text("Đã gặp"),
@@ -466,9 +518,12 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
             height: 5,
           ),
           new TextFormField(
-            controller: _purposeController..text = _daySchedule.purpose,
+            //initialValue: _daySchedule.purpose,
+            controller: _purposeController,
             style: new TextStyle(
-                fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold),
+                fontSize: 16,
+                color: Colors.blueAccent,
+                fontWeight: FontWeight.bold),
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -477,6 +532,9 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
               contentPadding:
                   EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             ),
+            onSaved: (value) {
+              _purposeController.text = value;
+            },
           )
         ],
       ),
@@ -506,9 +564,9 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                         realEndTime: _realEndDate == null
                             ? _daySchedule.endTime
                             : _realEndDate,
-                        purpose: _purposeController.toString(),
+                        purpose: _purposeController.text,
                         dayScheduleStatus:
-                        status == null ? _daySchedule.status : status,
+                            status == null ? _daySchedule.status : status,
                         description: _descriptionController.text));
                   },
                   child: new Text(

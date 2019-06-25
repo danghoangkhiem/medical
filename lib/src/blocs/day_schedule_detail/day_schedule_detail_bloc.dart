@@ -21,7 +21,7 @@ class DayScheduleDetailBloc
       yield Loading();
       try {
         await _dayScheduleRepository.updateDayScheduleDetail(
-          userId: 5,
+          userId: 2,
           scheduleId: event.scheduleId,
           realStartTime: event.realStartTime,
           realEndTime: event.realEndTime,
@@ -29,7 +29,7 @@ class DayScheduleDetailBloc
           status: event.dayScheduleStatus,
           description: event.description
         );
-        yield Loaded(dayScheduleStatus: event.dayScheduleStatus);
+        yield Loaded();
       } catch (error) {
         yield Failure(errorMessage: error.toString());
       }

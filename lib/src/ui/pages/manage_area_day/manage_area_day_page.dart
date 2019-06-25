@@ -9,6 +9,11 @@ import 'package:medical/src/ui/pages/manage_area/manage_area_page.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
 
+
+//test
+import 'package:medical/src/ui/pages/day_schedule/day_schedule_page.dart';
+import 'package:medical/src/ui/pages/day_coaching/day_coaching_page.dart';
+
 class ManageAreaDay extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -158,8 +163,12 @@ class ManageAreaDayState extends State<ManageAreaDay> {
         color: Colors.transparent,
         child: InkWell(
           onTap: (){
+            /*Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => ManageArea(item)));*/
+            /*Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => DateSchedulePage(date: DateTime.now(),)));*/
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => ManageArea(item)));
+                builder: (BuildContext context) => DateCoachingPage(date: DateTime.now(),)));
           },
           child: new Row(
             children: <Widget>[
