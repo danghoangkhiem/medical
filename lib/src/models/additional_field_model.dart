@@ -8,22 +8,28 @@ class AdditionalFieldModel extends Equatable {
   int key;
   Object value;
   String label;
+  String image;
 
   AdditionalFieldModel(
-      {@required this.key, @required this.value, @required this.label})
-      : super([key, value, label]);
+      {@required this.key,
+      @required this.value,
+      @required this.label,
+      this.image})
+      : super([key, value, label, image]);
 
   AdditionalFieldModel.fromJson(Map<String, dynamic> json)
       : assert(json != null),
         key = json['key'] as int,
         value = json['value'] as Object,
-        label = json['label'] as String;
+        label = json['label'] as String,
+        image = json['image'] as String;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'key': key,
       'value': value,
       'label': label,
+      'image': image,
     };
   }
 
