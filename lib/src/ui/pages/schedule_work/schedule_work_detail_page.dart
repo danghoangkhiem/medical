@@ -591,12 +591,8 @@ class _ScheduleWorkDetailPageState extends State<ScheduleWorkDetailPage> {
                     }
                     _scheduleWorkDetailBloc.dispatch(ButtonPressed(
                         scheduleId: _scheduleWork.id,
-                        realStartTime: _realStartDay == null
-                            ? _scheduleWork.hours.from
-                            : _realStartDay,
-                        realEndTime: _realEndDate == null
-                            ? _scheduleWork.hours.to
-                            : _realEndDate,
+                        realStartTime: _realStartDay,
+                        realEndTime: _realEndDate,
                         purpose: _purposeController.text,
                         status: status == null ? _scheduleWork.status : status,
                         description: _descriptionController.text));
