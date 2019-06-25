@@ -30,6 +30,17 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
     _fields.append(_cachedFields);
   }
 
+  Future<void> _resetValueFields() async {
+    int index = 0;
+    await Future.forEach(_fields.toList(), (AdditionalFieldModel field) {
+      _fields[index] = field..value = null;
+      index++;
+    });
+  }
+
+  int get _selectedValue =>
+      _fields.firstWhere((item) => item.value != null, orElse: () => null)?.key;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,44 +62,18 @@ class _ConsumerStepFourFormState extends State<ConsumerStepFourForm> {
               shrinkWrap: true,
               itemCount: _fields.length,
               itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      _fields[index].label,
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.number,
-                      onSaved: (String value) {
-                        _fields[index].value = int.tryParse(value);
-                        _consumerBloc.currentState.consumer.additionalData
-                            .gifts = _fields;
-                      },
-                      initialValue: _fields[index]?.value?.toString(),
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey[350], width: 1)),
-                        border: OutlineInputBorder(),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      ),
-                    ),
-                  ],
+                return RadioListTile<int>(
+                  title: Text(_fields[index].label),
+                  value: _fields[index].key,
+                  groupValue: _selectedValue,
+                  onChanged: (Object value) async {
+                    await _resetValueFields();
+                    setState(() {
+                      _fields[index].value = 1;
+                      _consumerBloc.currentState.consumer.additionalData.gifts =
+                          _fields;
+                    });
+                  },
                 );
               }),
         ],

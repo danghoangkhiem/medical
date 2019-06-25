@@ -31,13 +31,10 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
   }
 
   bool _boolean(dynamic source) {
-    if (source == null) {
-      return false;
-    }
     if (source is int) {
       return int.tryParse(source.toString()) == 1;
     }
-    return !!source;
+    return source == null ? false : !!source;
   }
 
   @override
@@ -62,8 +59,7 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               itemCount: _fields.length,
               itemBuilder: (BuildContext context, int index) {
                 return CheckboxListTile(
-                  value: _fields[index].value != null &&
-                      _boolean(_fields[index].value),
+                  value: _boolean(_fields[index].value),
                   onChanged: (bool value) {
                     setState(() {
                       _fields[index].value = value ? 1 : 0;
