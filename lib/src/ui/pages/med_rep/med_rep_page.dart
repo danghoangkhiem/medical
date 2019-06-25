@@ -70,6 +70,7 @@ class MedRepPageState extends State<MedRepPage>{
 
     return new Scaffold(
       appBar: new AppBar(
+        backgroundColor: Colors.blueAccent,
         title: new Text("Quản lý địa bàn trong ngày"),
       ),
       body: new Container(
@@ -145,10 +146,10 @@ class MedRepPageState extends State<MedRepPage>{
     return InkWell(
       onTap: (){
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => DayScheduleMedRep()));
+            builder: (BuildContext context) => DayScheduleMedRep(date: DateTime.now(),userId: item.userId,)));
       },
       child: ListTile(
-        title: new Text("Trịnh Quốc Thông"),
+        title: new Text(item.name != null ? item.name : 'N/A'),
         subtitle: new Text("Mã số nhân viên"),
         trailing: new Icon(Icons.assignment_ind, color: Colors.blueAccent,),
       ),
