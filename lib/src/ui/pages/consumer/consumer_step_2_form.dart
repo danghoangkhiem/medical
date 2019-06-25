@@ -43,7 +43,7 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -62,6 +62,7 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               itemCount: _fields.length,
               itemBuilder: (BuildContext context, int index) {
                 return CheckboxListTile(
+                  secondary: Image.network("https://upload.wikimedia.org/wikipedia/commons/a/ab/Android_O_Preview_Logo.png", width: 80, height: 80,),
                   value: _fields[index].value != null &&
                       _boolean(_fields[index].value),
                   onChanged: (bool value) {
