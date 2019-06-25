@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:intl/intl.dart';
-
 import 'package:medical/src/models/schedule_coaching_model.dart';
 import 'package:medical/src/blocs/schedule_coaching_detail/schedule_coaching_detail.dart';
+import 'package:medical/src/blocs/schedule_coaching/schedule_coaching.dart';
 
 class ScheduleCoachingDetailPage extends StatefulWidget {
   final ScheduleCoachingModel scheduleCoaching;
+  final ScheduleCoachingBloc scheduleCoachingBloc;
 
-  ScheduleCoachingDetailPage({Key key, @required this.scheduleCoaching})
+  ScheduleCoachingDetailPage({Key key, @required this.scheduleCoaching, @required this.scheduleCoachingBloc})
       : super(key: key);
 
   @override
@@ -58,10 +61,6 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
           }
         });
       }
-
-      //print(DateFormat("yyyy-MM-dd hh:mm:ss a").format(time));
-      //print("${_time.hour}:${_time.minute}");
-      //print(_time);
     }
   }
 
@@ -70,6 +69,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
   ScheduleCoachingDetailBloc _scheduleCoachingDetailBloc;
 
   ScheduleCoachingModel get _scheduleCoaching => widget.scheduleCoaching;
+  ScheduleCoachingBloc get _scheduleCoachingBloc => widget.scheduleCoachingBloc;
 
   @override
   void initState() {
@@ -96,9 +96,56 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
         title: new Text("Nhập kết quả Coaching"),
       ),
       body: new Container(
-        child: new Column(
+        child: BlocListener(
+            bloc: _scheduleCoachingDetailBloc,
+            listener: (BuildContext context, ScheduleCoachingDetailState state) {
+              Scaffold.of(context).removeCurrentSnackBar();
+              if (state is Failure) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: Colors.redAccent,
+                ));
+              }
+              if (state is Loaded) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Thành công'),
+                      content: Container(
+                        child: Text('Cập nhật thành công'),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
+                ).then((_) {
+                  _scheduleCoachingBloc.dispatch(RefreshEventList());
+                  Navigator.of(context)
+                      .popUntil(ModalRoute.withName('/schedule_work_page'));
+                });
+              }
+            },
+            child: BlocBuilder(
+              bloc: _scheduleCoachingDetailBloc,
+              builder: (BuildContext context, ScheduleCoachingDetailState state) {
+                if (state is Loading) {
+                  return LoadingIndicator();
+                }
+                return Column(
+                  children: <Widget>[updateForm(), updateButton()],
+                );
+              },
+            )),
+        /*child: new Column(
           children: <Widget>[updateForm(), updateButton()],
-        ),
+        ),*/
       ),
     );
   }
