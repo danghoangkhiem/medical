@@ -199,6 +199,43 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
     );
   }
 
+  void _showDialog(DateTime date, int id, int userId, DateTime from, DateTime to) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text("Copy lịch làm việc này ?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Bỏ qua"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Đồng ý"),
+              onPressed: () {
+                print("đồng ý copy lịch");
+                Navigator.of(context).pop();
+
+                _blocDayScheduleMedRep.dispatch(AddSchedule(
+                    date: date,
+                    scheduleId: id,
+                    userId: userId,
+                    from: from,
+                    to: to));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   Widget _buildRow(DayScheduleMedRepItem item) {
     return Container(
       decoration: BoxDecoration(
@@ -260,13 +297,14 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                           color: Colors.blueAccent,
                         ),
                         onPressed: () {
-                          _blocDayScheduleMedRep.dispatch(AddSchedule(
-                              date: date,
-                              scheduleId: item.id,
-                              userId: userId,
-                              from: item.startTime,
-                              to: item.endTime));
+                          _showDialog(date, item.id, userId, item.startTime, item.endTime);
 
+//                          _blocDayScheduleMedRep.dispatch(AddSchedule(
+//                              date: date,
+//                              scheduleId: item.id,
+//                              userId: userId,
+//                              from: item.startTime,
+//                              to: item.endTime));
                           print(item.startTime);
                           print(item.endTime);
                           print(date);
