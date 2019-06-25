@@ -27,3 +27,5 @@ class ButtonPressed extends InvoiceEvent {
 
   ButtonPressed({@required this.invoiceId, @required this.invoiceStatus});
 }
+
+class RefreshFilterResult extends InvoiceEvent {}

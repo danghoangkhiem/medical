@@ -21,6 +21,13 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
   Stream<InvoiceState> mapEventToState(
     InvoiceEvent event,
   ) async* {
+    if (event is RefreshFilterResult) {
+      dispatch(InvoiceFilter(
+          startDate: _currentStartDate,
+          endDate: _currentEndDate,
+          offset: 0,
+          limit: _currentLimit));
+    }
     if (event is InvoiceFilter) {
       yield Loading();
       try {

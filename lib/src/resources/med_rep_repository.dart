@@ -5,8 +5,8 @@ class MedRepRepository {
 
   final MedRepApiProvider _medRepApiProvider = MedRepApiProvider();
 
-  Future<MedRepModel> getMedRep({int id,int offset, int limit}) async {
-    return await _medRepApiProvider.getMedRep(offset: offset, limit: limit, id: id);
+  Future<MedRepModel> getMedRep({int offset, int limit}) async {
+    return await _medRepApiProvider.getMedRep(offset: offset, limit: limit);
   }
 
 }

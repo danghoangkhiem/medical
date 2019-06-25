@@ -5,63 +5,77 @@ import 'package:equatable/equatable.dart';
 
 import 'hours_model.dart';
 import 'user_model.dart';
+import 'partner_model.dart';
 
 class ScheduleCoachingModel extends Equatable {
   int id;
   DateTime date;
+  int scheduleId;
   UserModel user;
+  PartnerModel partner;
   HoursModel hours;
   HoursModel realHours;
-  ScheduleCoachingType status;
-  String purpose;
   String description;
+  String evaluation;
+  String feedback;
 
   ScheduleCoachingModel({
     this.id,
     this.date,
+    this.scheduleId,
     this.user,
+    this.partner,
     this.hours,
     this.realHours,
-    this.status,
-    this.purpose,
     this.description,
+    this.evaluation,
+    this.feedback,
   }) : super([
           id,
           date,
+          scheduleId,
           user,
+          partner,
           hours,
           realHours,
-          status,
-          purpose,
           description,
+          evaluation,
+          feedback,
         ]);
 
   factory ScheduleCoachingModel.fromJson(Map<String, dynamic> json) =>
       ScheduleCoachingModel(
         id: json['id'] as int,
-        date: json['data'] == null
+        date: json['date'] == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(json['date'] * 1000),
-        user: UserModel.fromJson(json['user']),
-        hours: HoursModel.fromJson(json['hours']),
-        realHours: HoursModel.fromJson(json['realHours']),
-        status: json['status'] == null
+        scheduleId: json['scheduleId'] as int,
+        user: json['user'] == null ? null : UserModel.fromJson(json['user']),
+        partner: json['partner'] == null
             ? null
-            : ScheduleCoachingType.from(json['status']),
-        purpose: json['purpose'] as String,
-        description: json['description'] as String,
+            : PartnerModel.fromJson(json['partner']),
+        hours:
+            json['hours'] == null ? null : HoursModel.fromJson(json['hours']),
+        realHours: json['realHours'] == null
+            ? null
+            : HoursModel.fromJson(json['realHours']),
+        description: json['description']?.toString(),
+        evaluation: json['evaluation']?.toString(),
+        feedback: json['feedback']?.toString(),
       );
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
       'date': date,
+      'scheduleId': scheduleId,
       'user': user?.toJson(),
+      'partner': partner?.toJson(),
       'hours': hours?.toJson(),
       'realHours': realHours?.toJson(),
-      'status': status?.value,
-      'purpose': purpose,
       'description': description,
+      'evaluation': evaluation,
+      'feedback': feedback,
     };
   }
 
@@ -108,33 +122,4 @@ class ScheduleCoachingListModel extends ListMixin<ScheduleCoachingModel> {
   String toString() {
     return json.encode(toJson());
   }
-}
-
-class ScheduleCoachingType {
-  static const ScheduleCoachingType later = ScheduleCoachingType._('later');
-  static const ScheduleCoachingType meet = ScheduleCoachingType._('meet');
-  static const ScheduleCoachingType notMeet = ScheduleCoachingType._('not_meet');
-
-  final String value;
-
-  const ScheduleCoachingType._(this.value);
-
-  factory ScheduleCoachingType.from(String type) {
-    if (type == ScheduleCoachingType.later.value) {
-      return ScheduleCoachingType.later;
-    }
-    if (type == ScheduleCoachingType.meet.value) {
-      return ScheduleCoachingType.meet;
-    }
-    if (type == ScheduleCoachingType.notMeet.value) {
-      return ScheduleCoachingType.notMeet;
-    }
-    throw Exception('ScheduleCoachingType not found. Expected: '
-        '${ScheduleCoachingType.later}, '
-        '${ScheduleCoachingType.meet}, '
-        '${ScheduleCoachingType.notMeet}');
-  }
-
-  @override
-  String toString() => value;
 }

@@ -43,7 +43,6 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
             yield ReportKpiDateLoaded(reportKpiDateModel: listKpiDate, countKpi: count);
           }
           else{
-
             yield ReportKpiEmpty();
           }
         }

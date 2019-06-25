@@ -23,7 +23,7 @@ class PartnerModel extends Equatable {
       level: json['level']?.toString(),
       place: json['place'] == null
           ? null
-          : PlaceModel.fromJson(json['location']),
+          : PlaceModel.fromJson(json['place']),
     );
   }
 

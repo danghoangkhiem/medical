@@ -8,15 +8,11 @@ abstract class MedRepEvent extends Equatable {
 class GetMedRep extends MedRepEvent {
   final int offset;
   final int limit;
-  final int idMedSup;
-
 
   GetMedRep({
     this.offset = 0,
     this.limit = 10,
-    @required this.idMedSup,
-
-  }) : super([offset, limit, idMedSup]);
+  }) : super([offset, limit]);
 
 }
 

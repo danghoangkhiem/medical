@@ -14,6 +14,9 @@ class ScheduleWorkBloc extends Bloc<ScheduleWorkEvent, ScheduleWorkState> {
       ScheduleWorkRepository();
   final UserRepository _userRepository = UserRepository();
 
+  DateTime _lastStartDate;
+  DateTime _lastEndDate;
+
   @override
   ScheduleWorkState get initialState => ScheduleWorkState.uninitialized();
 
@@ -21,6 +24,9 @@ class ScheduleWorkBloc extends Bloc<ScheduleWorkEvent, ScheduleWorkState> {
   Stream<ScheduleWorkState> mapEventToState(
     ScheduleWorkEvent event,
   ) async* {
+    if (event is RefreshEventList) {
+      dispatch(EventList(startDate: _lastStartDate, endDate: _lastEndDate));
+    }
     if (event is EventList) {
       yield ScheduleWorkState.loading();
       try {
@@ -32,8 +38,9 @@ class ScheduleWorkBloc extends Bloc<ScheduleWorkEvent, ScheduleWorkState> {
           _result =
               await _scheduleWorkRepository.scheduleWorkAccordingToDateTime(
             userId: _userInfo.id,
-            startDate: event.startDate,
-            endDate: event.endDate,
+            startDate: _lastStartDate = event.startDate,
+            endDate: _lastEndDate = event.endDate,
+            offset: _schedules.length,
             limit: _limit,
           );
           _schedules.addAll(_result);
