@@ -4,7 +4,6 @@ import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_bloc
 import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_event.dart';
 import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_state.dart';
 
-
 import 'package:medical/src/models/day_schedule_med_rep_model.dart';
 import 'package:medical/src/resources/day_schedule_med_rep_repository.dart';
 
@@ -13,7 +12,6 @@ import 'package:medical/src/utils.dart';
 
 // ignore: must_be_immutable
 class DayScheduleMedRep extends StatefulWidget {
-
   final DateTime date;
   final int userId;
 
@@ -26,16 +24,15 @@ class DayScheduleMedRep extends StatefulWidget {
 }
 
 class DayScheduleMedRepState extends State<DayScheduleMedRep> {
-
   final DateTime date;
   final int userId;
-
 
   DayScheduleMedRepState({this.date, this.userId});
 
   ScrollController _scrollController = new ScrollController();
   DayScheduleMedRepBloc _blocDayScheduleMedRep;
-  DayScheduleMedRepRepository _dayScheduleMedRepRepository = DayScheduleMedRepRepository();
+  DayScheduleMedRepRepository _dayScheduleMedRepRepository =
+      DayScheduleMedRepRepository();
 
   DayScheduleMedRepModel dayScheduleMedRepModel;
 
@@ -43,7 +40,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
   bool _isReachMax = false;
 
   void _scrollListener() {
-    if(_isReachMax){
+    if (_isReachMax) {
       return;
     }
     if (_scrollController.position.pixels ==
@@ -66,12 +63,10 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
     print(date);
 
     dayScheduleMedRepModel = DayScheduleMedRepModel.fromJson([]);
-    _blocDayScheduleMedRep =
-        DayScheduleMedRepBloc(dayScheduleMedRepRepository: _dayScheduleMedRepRepository);
-    _blocDayScheduleMedRep.dispatch(GetDayScheduleMedRep(
-      date: DateTime.now(),
-      userId: userId
-    ));
+    _blocDayScheduleMedRep = DayScheduleMedRepBloc(
+        dayScheduleMedRepRepository: _dayScheduleMedRepRepository);
+    _blocDayScheduleMedRep
+        .dispatch(GetDayScheduleMedRep(date: DateTime.now(), userId: userId));
 
     _scrollController.addListener(_scrollListener);
   }
@@ -82,7 +77,6 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
     _scrollController.dispose();
     super.dispose();
   }
-
 
   Widget inputDate(DateTime startTime, DateTime endTime) {
     return Container(
@@ -103,8 +97,6 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
         : "${time.hour}:${time.minute.toString()}AM";
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -114,92 +106,149 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
       ),
       body: SafeArea(
           child: new Container(
-            child: BlocListener(
+        child: BlocListener(
+          bloc: _blocDayScheduleMedRep,
+          listener: (BuildContext context, state) {
+            if (state is ReachMax) {
+              Scaffold.of(context).removeCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                duration: Duration(milliseconds: 1500),
+                content: Text('Đã hiển thị tất cả dữ liệu'),
+              ));
+              _isLoading = false;
+              _isReachMax = true;
+            }
+            if (state is DayScheduleMedRepEmpty) {
+              Scaffold.of(context).removeCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                duration: Duration(milliseconds: 1500),
+                content: Text('Không có dữ liệu'),
+              ));
+            }
+            if (state is DayScheduleMedRepFailure) {
+              Scaffold.of(context).removeCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(state.error),
+                backgroundColor: Colors.redAccent,
+              ));
+            }
+
+            if(state is AddScheduleLoading){
+              return LoadingIndicator(opacity: 0.3, progressIndicatorColor: Colors.white.withOpacity(0.3),);
+            }
+
+            if(state is AddScheduleSuccess){
+              Scaffold.of(context).removeCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Copy thành công."),
+                backgroundColor: Colors.green,
+              ));
+            }
+
+            if(state is AddScheduleFailure){
+              Scaffold.of(context).removeCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Copy thất bại"),
+                backgroundColor: Colors.redAccent,
+              ));
+            }
+
+            if (state is DayScheduleMedRepLoaded) {
+              if (state.isLoadMore) {
+                dayScheduleMedRepModel.listDayScheduleMedRep
+                    .addAll(state.dayScheduleMedRep.listDayScheduleMedRep);
+                _isLoading = false;
+              } else {
+                dayScheduleMedRepModel.listDayScheduleMedRep =
+                    state.dayScheduleMedRep.listDayScheduleMedRep;
+              }
+            }
+          },
+          child: BlocBuilder(
               bloc: _blocDayScheduleMedRep,
-              listener: (BuildContext context, state){
-                if (state is ReachMax) {
-                  Scaffold.of(context).removeCurrentSnackBar();
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    duration: Duration(milliseconds: 1500),
-                    content: Text('Đã hiển thị tất cả dữ liệu'),
-                  ));
-                  _isLoading = false;
-                  _isReachMax = true;
+              builder: (context, state) {
+                if (state is DayScheduleMedRepLoading && !state.isLoadMore) {
+                  return LoadingIndicator(
+                    opacity: 0,
+                  );
                 }
-                if(state is DayScheduleMedRepEmpty){
-                  Scaffold.of(context).removeCurrentSnackBar();
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    duration: Duration(milliseconds: 1500),
-                    content: Text('Không có dữ liệu'),
-                  ));
-                }
-                if (state is DayScheduleMedRepFailure) {
-                  Scaffold.of(context).removeCurrentSnackBar();
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text(state.error),
-                    backgroundColor: Colors.redAccent,
-                  ));
-                }
-                if (state is DayScheduleMedRepLoaded) {
-                  if (state.isLoadMore) {
-                    dayScheduleMedRepModel.listDayScheduleMedRep
-                        .addAll(state.dayScheduleMedRep.listDayScheduleMedRep);
-                    _isLoading = false;
-                  } else {
-                    dayScheduleMedRepModel.listDayScheduleMedRep =
-                        state.dayScheduleMedRep.listDayScheduleMedRep;
-                  }
-                }
-              },
-              child: BlocBuilder(
-                  bloc: _blocDayScheduleMedRep,
-                  builder: (context, state) {
-                    if (state is DayScheduleMedRepLoading && !state.isLoadMore) {
-                      return LoadingIndicator(opacity: 0,);
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _isLoading
+                      ? dayScheduleMedRepModel.listDayScheduleMedRep.length + 1
+                      : dayScheduleMedRepModel.listDayScheduleMedRep.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (_isLoading &&
+                        index ==
+                            dayScheduleMedRepModel
+                                .listDayScheduleMedRep.length) {
+                      return SizedBox(
+                        height: 50,
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator()),
+                      );
                     }
-                    return ListView.builder(
-                      controller: _scrollController,
-                      itemCount: _isLoading
-                          ? dayScheduleMedRepModel.listDayScheduleMedRep.length + 1
-                          : dayScheduleMedRepModel.listDayScheduleMedRep.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (_isLoading && index == dayScheduleMedRepModel.listDayScheduleMedRep.length) {
-                          return SizedBox(
-                            height: 50,
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: CircularProgressIndicator()),
-                          );
-                        }
-                        return _buildRow(dayScheduleMedRepModel.listDayScheduleMedRep[index]);
-                      },
-                    );
-
-                  }),
-
-            ),
-          )
-      ),
+                    return _buildRow(
+                        dayScheduleMedRepModel.listDayScheduleMedRep[index]);
+                  },
+                );
+              }),
+        ),
+      )),
     );
   }
+
+  void _showDialog(DateTime date, int id, int userId, DateTime from, DateTime to) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text("Copy lịch làm việc này ?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Bỏ qua"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Đồng ý"),
+              onPressed: () {
+                print("đồng ý copy lịch");
+                Navigator.of(context).pop();
+
+                _blocDayScheduleMedRep.dispatch(AddSchedule(
+                    date: date,
+                    scheduleId: id,
+                    userId: userId,
+                    from: from,
+                    to: to));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Widget _buildRow(DayScheduleMedRepItem item) {
     return Container(
       decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
-                width: 1,
-                style: BorderStyle.solid,
-                color: Colors.grey[300])),
+                width: 1, style: BorderStyle.solid, color: Colors.grey[300])),
         color: Colors.white,
       ),
       height: 100,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: (){
-
-          },
+          onTap: () {},
           child: new Row(
             children: <Widget>[
               new Expanded(
@@ -215,10 +264,11 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                       padding: EdgeInsets.only(left: 20),
                       margin: EdgeInsets.only(left: 20),
                       child: new Text(
-                        item.partnerModel.name != null ? item.partnerModel.name : 'N/A',
+                        item.partnerModel.name != null
+                            ? "BS. " + item.partnerModel.name
+                            : 'N/A',
                         style: new TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                     new SizedBox(
@@ -230,8 +280,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                       child: new Text(
                         "${item.partnerModel.place.name}",
                         style: new TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     )
                   ],
@@ -243,11 +292,25 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                   new Padding(
                     padding: EdgeInsets.only(right: 20),
                     child: new IconButton(
-                        icon: Icon(Icons.add_circle, color: Colors.blueAccent,),
-                        onPressed: (){
+                        icon: Icon(
+                          Icons.add_circle,
+                          color: Colors.blueAccent,
+                        ),
+                        onPressed: () {
+                          _showDialog(date, item.id, userId, item.startTime, item.endTime);
 
-                        }
-                    ),
+//                          _blocDayScheduleMedRep.dispatch(AddSchedule(
+//                              date: date,
+//                              scheduleId: item.id,
+//                              userId: userId,
+//                              from: item.startTime,
+//                              to: item.endTime));
+                          print(item.startTime);
+                          print(item.endTime);
+                          print(date);
+                          print(userId);
+                          print(item.id);
+                        }),
                   )
                 ],
               )

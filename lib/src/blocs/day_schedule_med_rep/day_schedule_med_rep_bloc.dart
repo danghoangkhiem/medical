@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_event.dart';
 import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_state.dart';
+import 'package:medical/src/models/schedule_coaching_model.dart';
 import 'package:medical/src/resources/day_schedule_med_rep_repository.dart';
 import 'package:meta/meta.dart';
 
@@ -72,5 +73,35 @@ class DayScheduleMedRepBloc
         yield DayScheduleMedRepFailure(error: error.toString());
       }
     }
+
+    if(event is AddSchedule){
+      yield AddScheduleLoading();
+      try{
+        final addScheduleReturn = await _dayScheduleMedRepRepository.createScheduleCoaching(
+            userId: event.userId,
+            date: event.date,
+            scheduleId: event.scheduleId,
+            from: event.from,
+            to: event.to
+        );
+
+        if(addScheduleReturn is ScheduleCoachingModel){
+          print("thêm thành công");
+          yield AddScheduleSuccess();
+        }
+        else{
+          print("Thêm thất bại");
+          yield AddScheduleFailure();
+        }
+
+      }catch (error){
+        yield DayScheduleMedRepFailure(error: error.toString());
+      }
+
+
+
+
+    }
+
   }
 }

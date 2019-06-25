@@ -31,6 +31,7 @@ class SynchronizationBloc
       }
     }
     if (event.type == SynchronizationEventType.sync) {
+      //TODO: Sửa lại
       yield SynchronizationState.synchronizing(
           currentState.process, currentState.total);
       Map<String, dynamic> _consumerRawData =

@@ -31,19 +31,16 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
   }
 
   bool _boolean(dynamic source) {
-    if (source == null) {
-      return false;
-    }
     if (source is int) {
       return int.tryParse(source.toString()) == 1;
     }
-    return !!source;
+    return source == null ? false : !!source;
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -62,8 +59,8 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               itemCount: _fields.length,
               itemBuilder: (BuildContext context, int index) {
                 return CheckboxListTile(
-                  value: _fields[index].value != null &&
-                      _boolean(_fields[index].value),
+                  value: _boolean(_fields[index].value),
+                  secondary: Image.network("https://upload.wikimedia.org/wikipedia/commons/a/ab/Android_O_Preview_Logo.png", width: 80, height: 80,),
                   onChanged: (bool value) {
                     setState(() {
                       _fields[index].value = value ? 1 : 0;

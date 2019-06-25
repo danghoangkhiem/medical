@@ -60,11 +60,6 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                 height: 5,
               ),
               TextFormField(
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'Họ và tên không được bỏ trống';
-                  }
-                },
                 onSaved: (String value) {
                   _consumerBloc.currentState.consumer.name = value;
                 },
@@ -163,7 +158,7 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                   String pattern =
                       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
                   RegExp regex = RegExp(pattern);
-                  if (regex.hasMatch(value) != true) {
+                  if (value.isNotEmpty && regex.hasMatch(value) != true) {
                     return 'Địa chỉ email nhập vào không hợp lệ';
                   }
                 },

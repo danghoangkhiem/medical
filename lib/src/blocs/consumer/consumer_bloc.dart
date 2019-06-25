@@ -27,6 +27,8 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
 
   AdditionalDataModel get additionalFields => _additionalFields;
 
+  bool _hadFound = false;
+
   @override
   ConsumerState get initialState => Initial();
 
@@ -54,6 +56,7 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
     }
     if (event is SearchPhoneNumber) {
       yield Searching();
+      _hadFound = false;
       try {
         ConsumerModel _consumer =
             await _consumerRepository.findPhoneNumber(event.phoneNumber);
@@ -62,6 +65,11 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
               phoneNumber: event.phoneNumber,
               additionalData: AdditionalDataModel.fromJson(
                   defaultConsumerInformation().additionalData.toJson()));
+        } else {
+          // set default additional data
+          _consumer.additionalData = AdditionalDataModel.fromJson(
+              defaultConsumerInformation().additionalData.toJson());
+          _hadFound = true;
         }
         AttendanceModel _attendanceLastTime =
             await _userRepository.getAttendanceLastTimeLocally();
@@ -80,6 +88,25 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
       }
     }
     if (event is NextStep) {
+      if (currentState.currentStep < 3 && _hadFound) {
+        yield Stepped(3, consumer: event.consumer);
+        return;
+      }
+      if (currentState.currentStep == 3) {
+        bool hasSampled = currentState.consumer.additionalData.samples
+            .any((item) => item.value != null && int.tryParse(item.value) > 0);
+        bool hasPurchased = currentState.consumer.additionalData.purchases
+            .any((item) => item.value != null && int.tryParse(item.value) > 0);
+        if (!hasSampled && !hasPurchased) {
+          yield Stepped(
+            3,
+            consumer: event.consumer,
+            error:
+                'Không tin khách hàng không hợp lệ. Khách hàng cần phải mua hàng khi không nhận samping và ngược lại',
+          );
+          return;
+        }
+      }
       if (currentState.currentStep == 5) {
         yield Loading();
         await Future.delayed(Duration(milliseconds: 200));
@@ -97,6 +124,10 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
       }
     }
     if (event is PrevStep) {
+      if (currentState.currentStep <= 3 && _hadFound) {
+        yield Stepped(1, consumer: currentState.consumer);
+        return;
+      }
       yield Stepped(currentState.currentStep - 1,
           consumer: currentState.consumer);
     }

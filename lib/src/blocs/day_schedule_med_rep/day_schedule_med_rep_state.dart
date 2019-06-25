@@ -44,3 +44,8 @@ class DayScheduleMedRepFailure extends DayScheduleMedRepState {
 }
 
 class ReachMax extends DayScheduleMedRepState {}
+
+class AddScheduleLoading extends DayScheduleMedRepState{}
+
+class AddScheduleSuccess extends DayScheduleMedRepState{}
+class AddScheduleFailure extends DayScheduleMedRepState{}

@@ -44,7 +44,7 @@ factory DayScheduleMedRepItem.fromJson(Map<String, dynamic> json){
     return DayScheduleMedRepItem(
         id: json["id"],
         startTime: json["hours"]["from"] !=null  ? DateTime.fromMillisecondsSinceEpoch(json["hours"]["from"] * 1000) : null ,
-        endTime: json["hours"]["end"] !=null  ? DateTime.fromMillisecondsSinceEpoch(json["hours"]["end"] * 1000) : null ,
+        endTime: json["hours"]["to"] !=null  ? DateTime.fromMillisecondsSinceEpoch(json["hours"]["to"] * 1000) : null ,
         partnerModel: PartnerModel.fromJson(json["partner"])
       //realStartTime: json["realStartTime"] !=null  ? DateTime.fromMillisecondsSinceEpoch(json["realStartTime"] * 1000) : null ,
       //realEndTime: json["realEndTime"] !=null  ? DateTime.fromMillisecondsSinceEpoch(json["realEndTime"] * 1000) : null ,

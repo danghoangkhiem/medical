@@ -22,3 +22,14 @@ class GetDayScheduleMedRep extends DayScheduleMedRepEvent {
 
 class LoadMore extends DayScheduleMedRepEvent {}
 
+class AddSchedule extends DayScheduleMedRepEvent{
+  final int userId;
+  final DateTime date;
+  final int scheduleId;
+  final DateTime from;
+  final DateTime to;
+
+  AddSchedule({this.userId,this.date, this.scheduleId, this.from, this.to}) :super ([userId,date, scheduleId, from, to]);
+
+
+}
