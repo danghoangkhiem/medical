@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:medical/src/models/schedule_coaching_model.dart';
-import 'package:medical/src/blocs/day_coaching_detail/day_coaching_detail.dart';
+import 'package:medical/src/blocs/schedule_coaching_detail/schedule_coaching_detail.dart';
 
 class ScheduleCoachingDetailPage extends StatefulWidget {
   final ScheduleCoachingModel scheduleCoaching;
@@ -67,13 +67,13 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  DayCoachingDetailBloc _dayCoachingDetailBloc;
+  ScheduleCoachingDetailBloc _scheduleCoachingDetailBloc;
 
   ScheduleCoachingModel get _scheduleCoaching => widget.scheduleCoaching;
 
   @override
   void initState() {
-    _dayCoachingDetailBloc = DayCoachingDetailBloc();
+    _scheduleCoachingDetailBloc = ScheduleCoachingDetailBloc();
     _descriptionController.text = _scheduleCoaching.description;
     _evaluateController.text = _scheduleCoaching.evaluation;
     _feedbackController.text =_scheduleCoaching.feedback;
@@ -84,7 +84,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
 
   @override
   void dispose() {
-    _dayCoachingDetailBloc?.dispose();
+    _scheduleCoachingDetailBloc?.dispose();
     super.dispose();
   }
 
@@ -504,7 +504,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
                     );
                     return;
                   }
-                  _dayCoachingDetailBloc.dispatch(
+                  _scheduleCoachingDetailBloc.dispatch(
                     ButtonPressed(
                         id: _scheduleCoaching.id,
                         realStartTime: _realStartDay,
