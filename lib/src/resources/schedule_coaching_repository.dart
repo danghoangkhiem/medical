@@ -7,7 +7,7 @@ import 'package:medical/src/models/schedule_coaching_model.dart';
 
 class ScheduleCoachingRepository {
   final ScheduleCoachingApiProvider _scheduleCoachingApiProvider =
-      ScheduleCoachingApiProvider();
+  ScheduleCoachingApiProvider();
 
   Future<ScheduleCoachingListModel> scheduleCoachingAccordingToDateTime({
     @required int userId,
@@ -41,13 +41,13 @@ class ScheduleCoachingRepository {
   }
 
   Future<ScheduleCoachingModel> updateScheduleCoaching(
-    int scheduleCoachingId, {
-    @required int userId,
-    @required HoursModel realHours,
-    @required String description,
-    @required String evaluation,
-    @required String feedback,
-  }) async {
+      int scheduleCoachingId, {
+        @required int userId,
+        @required HoursModel realHours,
+        @required String description,
+        @required String evaluation,
+        @required String feedback,
+      }) async {
     return await _scheduleCoachingApiProvider.updateScheduleCoaching(
       scheduleCoachingId,
       userId: userId,

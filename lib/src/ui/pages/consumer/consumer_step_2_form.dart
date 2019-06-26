@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:medical/src/blocs/consumer/consumer.dart';
 
@@ -31,13 +32,10 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
   }
 
   bool _boolean(dynamic source) {
-    if (source == null) {
-      return false;
-    }
     if (source is int) {
       return int.tryParse(source.toString()) == 1;
     }
-    return !!source;
+    return source == null ? false : !!source;
   }
 
   @override
@@ -62,9 +60,12 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               itemCount: _fields.length,
               itemBuilder: (BuildContext context, int index) {
                 return CheckboxListTile(
-                  secondary: Image.network("https://upload.wikimedia.org/wikipedia/commons/a/ab/Android_O_Preview_Logo.png", width: 80, height: 80,),
-                  value: _fields[index].value != null &&
-                      _boolean(_fields[index].value),
+                  value: _boolean(_fields[index].value),
+                  secondary: CachedNetworkImage(
+                    imageUrl: _fields[index]?.image ?? '',
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                   onChanged: (bool value) {
                     setState(() {
                       _fields[index].value = value ? 1 : 0;

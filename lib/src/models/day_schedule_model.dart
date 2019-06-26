@@ -41,13 +41,13 @@ class DayScheduleModel {
         description = json['description'] as String;*/
 
         id = json['id'],
-        startTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['from']),
-        endTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['end']),
+        startTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['from']*1000),
+        endTime = DateTime.fromMillisecondsSinceEpoch(json['hours']['end']*1000),
         role = json['partner'] == null ? "" : json['partner']['role'] as String,
         doctorName = json['partner'] == null ? "" : json['partner']['name'] as String,
         location = json['partner'] == null ? "" : json['partner']['location']['name'] as String,
-        realStartTime = json['realHours']['from'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['from']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['from']),
-        realEndTime = json['realHours']['end'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['end']) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['end']),
+        realStartTime = json['realHours']['from'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['from']*1000) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['from']*1000),
+        realEndTime = json['realHours']['end'] == null ? DateTime.fromMillisecondsSinceEpoch(json['hours']['end']*1000) : DateTime.fromMillisecondsSinceEpoch(json['realHours']['end']*1000),
         status = DayScheduleStatus.from(json['status']),
         purpose =  json['purpose'] as String,
         description = json['description'] as String;

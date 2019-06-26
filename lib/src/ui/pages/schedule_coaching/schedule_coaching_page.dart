@@ -10,6 +10,9 @@ import 'package:medical/src/models/schedule_coaching_model.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
+//page schedule detail
+import 'package:medical/src/ui/pages/schedule_coaching/schedule_coaching_detail_page.dart';
+
 class ScheduleCoachingPage extends StatefulWidget {
   @override
   _ScheduleCoachingPageState createState() => _ScheduleCoachingPageState();
@@ -269,7 +272,7 @@ class _ScheduleCoachingPageState extends State<ScheduleCoachingPage>
                         Text(''),
                       ],
                     ),
-                    onTap: () => print('$event tapped!'),
+                    onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ScheduleCoachingDetailPage(scheduleCoaching: event, scheduleCoachingBloc: _scheduleCoachingBloc,))),
                   ),
                 ))
             .toList(),

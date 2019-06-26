@@ -21,12 +21,13 @@ class DayCoachingDetailBloc
       yield Loading();
       try {
         await _dayCoachingRepository.updateDayCoachingDetail(
-          event.id,
+          userId: 2,
+          coachingId: event.id,
           realStartTime: event.realStartTime,
           realEndTime: event.realEndTime,
           description: event.description,
-          evaluate: event.evaluate,
-          feedback: event.feedback,
+          evaluation: event.evaluate,
+          feedback: event.feedback
         );
         yield Loaded();
       } catch (error) {

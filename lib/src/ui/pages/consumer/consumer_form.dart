@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/consumer/consumer.dart';
 
+import 'consumer_page.dart';
 import 'consumer_step_1_form.dart';
 import 'consumer_step_2_form.dart';
 import 'consumer_step_3_form.dart';
@@ -36,32 +37,43 @@ class _ConsumerFormState extends State<ConsumerForm> {
               SizedBox(
                 height: 20,
               ),
-              BlocBuilder(
+              BlocListener(
+                bloc: _consumerBloc,
+                listener: (BuildContext context, ConsumerState state) {
+                  if (state is Stepped && state.error != null) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Cảnh báo!'),
+                          content: Container(
+                            child: Text(state.error.toString()),
+                          ),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (_) => ConsumerPage()));
+                              },
+                              child: Text('Thêm khách hàng'),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Đóng lại'),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+                child: BlocBuilder(
                   bloc: _consumerBloc,
                   builder: (BuildContext context, ConsumerState state) {
-                    if (state is Stepped && state.error != null) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Xảy ra lỗi'),
-                              content: Container(
-                                child: Text(state.error.toString()),
-                              ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Đóng lại'),
-                                )
-                              ],
-                            );
-                          }
-                        );
-                      });
-                    }
                     if (state.currentStep == 0 || state.currentStep == 1) {
                       return ConsumerStepOneForm(consumerBloc: _consumerBloc);
                     }
@@ -81,7 +93,9 @@ class _ConsumerFormState extends State<ConsumerForm> {
                       alignment: Alignment.center,
                       child: CircularProgressIndicator(),
                     );
-                  })
+                  },
+                ),
+              ),
             ],
           ),
         ));
