@@ -16,8 +16,8 @@ class CheckInApiProvider extends ApiProvider {
     print(checkIn.lat);
     print(checkIn.lon);
     FormData formData = new FormData.from({
-      "longitude": checkIn.lat,
-      "latitude": checkIn.lon,
+      "longitude": checkIn.lon,
+      "latitude": checkIn.lat,
       "locationId": checkIn.locationId,
       "images": checkIn.images.map((File item) {
         return UploadFileInfo(item, basename(item.path));
@@ -44,9 +44,6 @@ class CheckInApiProvider extends ApiProvider {
   }
 
   Future<bool> addCheckOut({@required CheckOutModel checkOut}) async {
-    print("api");
-    print(checkOut.latitude);
-    print(checkOut.longitude);
     Map<String, dynamic> _queryParameters = {
       'latitude': checkOut.latitude,
       'longitude': checkOut.longitude,

@@ -27,15 +27,15 @@ class DayScheduleBloc extends Bloc<DayScheduleEvent, DayScheduleState> {
     if (event is DayScheduleFilter) {
       yield Loading();
       try {
-        AttendanceModel attendanceModel =
-            await _userRepository.getAttendanceLastTimeLocally();
         UserModel userModel = await _userRepository.getInfo();
-        int userId = 5;
-        int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch ~/ 1000;
+        int userId = 2;
         _currentOffset = event.offset;
         _currentLimit = event.limit;
+        int _startDate = 1558803600;
+        int _endDate = 1562518799;
+
         final _dayScheduleList = await _dayScheduleRepository.getDaySchedule(
-            _currentOffset, _currentLimit, userId);
+            _currentOffset, _currentLimit, userId,_startDate,_endDate);
         if (_dayScheduleList.length == 0) {
           yield NoRecordsFound();
         } else {
@@ -48,15 +48,14 @@ class DayScheduleBloc extends Bloc<DayScheduleEvent, DayScheduleState> {
     if (event is LoadMore) {
       yield Loading(isLoadMore: true);
       try {
-        AttendanceModel attendanceModel =
-            await _userRepository.getAttendanceLastTimeLocally();
         UserModel userModel = await _userRepository.getInfo();
-        int userId = 5;
-        int timeIn = attendanceModel.timeIn.millisecondsSinceEpoch ~/ 1000;
+        int userId = 2;
         _currentOffset = _currentOffset + _currentLimit;
         _currentLimit = _currentLimit;
+        int _startDate = 1558803600;
+        int _endDate = 1562518799;
         final _dayScheduleList = await _dayScheduleRepository.getDaySchedule(
-            _currentOffset, _currentLimit, userId);
+            _currentOffset, _currentLimit, userId,_startDate,_endDate);
         if (_dayScheduleList == null || _dayScheduleList.length == 0) {
           yield ReachMax();
         } else {

@@ -12,6 +12,9 @@ import 'select_place_page.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
+//show chi tiet schedule
+import 'package:medical/src/ui/pages/schedule_work/schedule_work_detail_page.dart';
+
 class ScheduleWorkPage extends StatefulWidget {
   @override
   _ScheduleWorkPageState createState() => _ScheduleWorkPageState();
@@ -276,7 +279,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
                         Text(event.partner?.place?.name ?? ''),
                       ],
                     ),
-                    onTap: () => print('$event tapped!'),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ScheduleWorkDetailPage(scheduleWork: event, scheduleWorkBloc: _scheduleWorkBloc,))),
                   ),
                 ))
             .toList(),

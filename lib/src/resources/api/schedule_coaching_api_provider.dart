@@ -18,11 +18,11 @@ class ScheduleCoachingApiProvider extends ApiProvider {
       'offset': offset,
       'limit': limit,
       'startDate':
-          DateTime(startDate.year, startDate.month, startDate.day, 00, 00, 00)
-                  .millisecondsSinceEpoch ~/
-              1000,
+      DateTime(startDate.year, startDate.month, startDate.day, 00, 00, 00)
+          .millisecondsSinceEpoch ~/
+          1000,
       'endDate': DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59)
-              .millisecondsSinceEpoch ~/
+          .millisecondsSinceEpoch ~/
           1000,
     };
     Response _resp = await httpClient.get('/users/$userId/schedules-coaching',
@@ -53,13 +53,13 @@ class ScheduleCoachingApiProvider extends ApiProvider {
   }
 
   Future<ScheduleCoachingModel> updateScheduleCoaching(
-    int scheduleCoachingId, {
-    @required int userId,
-    @required HoursModel realHours,
-    @required String description,
-    @required String evaluation,
-    @required String feedback,
-  }) async {
+      int scheduleCoachingId, {
+        @required int userId,
+        @required HoursModel realHours,
+        @required String description,
+        @required String evaluation,
+        @required String feedback,
+      }) async {
     Map<String, dynamic> _requestBody = {
       'realHours': realHours.toJson(),
       'description': description,

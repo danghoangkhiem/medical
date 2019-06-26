@@ -29,14 +29,12 @@ class DayScheduleRepository {
     }).toList());
   }
 
-  Future<DayScheduleListModel> getDaySchedule(int offset, int limit,int userId) async {
+  Future<DayScheduleListModel> getDaySchedule(int offset, int limit,int userId,int startDate, int endDate) async {
     await Future.delayed(Duration(seconds: 1));
-    return await _dayScheduleApiProvider.getDaySchedule(offset: offset, limit: limit, userId: userId);
+    return await _dayScheduleApiProvider.getDaySchedule(offset: offset, limit: limit, userId: userId,startDate: startDate,endDate: endDate);
   }
 
   Future<bool> updateDayScheduleDetail({int userId = 5, int scheduleId,@required DayScheduleStatus status, DateTime realStartTime, DateTime realEndTime, String purpose, String description}) async {
-    print(status);
-    print(realEndTime.millisecondsSinceEpoch);
     await Future.delayed(Duration(seconds: 1));
     return await _dayScheduleApiProvider.updateSchedule(
       userId: userId,

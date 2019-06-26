@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:medical/src/models/day_schedule_model.dart';
-import 'package:medical/src/blocs/day_schedule_detail/day_schedule_detail.dart';
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 
-import 'package:medical/src/ui/pages/day_schedule/day_schedule_page.dart';
+//model schedule
+import 'package:medical/src/models/schedule_work_model.dart';
 
-class DayScheduleDetailPage extends StatefulWidget {
-  final DayScheduleModel daySchedule;
+//block schedule detail
+import 'package:medical/src/blocs/schedule_work_detail/schedule_work_detail.dart';
 
-  DayScheduleDetailPage({Key key, @required this.daySchedule})
+//bloc schedule
+import 'package:medical/src/blocs/schedule_work/schedule_work.dart';
+
+class ScheduleWorkDetailPage extends StatefulWidget {
+  final ScheduleWorkModel scheduleWork;
+  final ScheduleWorkBloc scheduleWorkBloc;
+
+  ScheduleWorkDetailPage(
+      {Key key, @required this.scheduleWork, @required this.scheduleWorkBloc})
       : super(key: key);
 
   @override
-  _DayScheduleDetailPageState createState() {
-    return new _DayScheduleDetailPageState();
+  _ScheduleWorkDetailPageState createState() {
+    return new _ScheduleWorkDetailPageState();
   }
 }
 
-class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
+class _ScheduleWorkDetailPageState extends State<ScheduleWorkDetailPage> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _purposeController = TextEditingController();
 
-  DayScheduleStatus status;
+  ScheduleWorkType status;
   DateTime _realStartDay;
   DateTime _realEndDate;
   bool isStartDate = false;
@@ -67,21 +73,29 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  DayScheduleDetailBloc _dayScheduleDetailBloc;
+  ScheduleWorkDetailBloc _scheduleWorkDetailBloc;
 
-  DayScheduleModel get _daySchedule => widget.daySchedule;
+  ScheduleWorkBloc get _scheduleWorkBloc => widget.scheduleWorkBloc;
+
+  ScheduleWorkModel get _scheduleWork => widget.scheduleWork;
 
   @override
   void initState() {
-    _dayScheduleDetailBloc = DayScheduleDetailBloc();
-    _purposeController.text = widget.daySchedule.purpose;
-    _descriptionController.text = widget.daySchedule.description;
+    _scheduleWorkDetailBloc = ScheduleWorkDetailBloc();
+    _purposeController.text = widget.scheduleWork.purpose;
+    _descriptionController.text = widget.scheduleWork.description;
+    _realStartDay = widget.scheduleWork.realHours.from == null
+        ? widget.scheduleWork.hours.from
+        : widget.scheduleWork.realHours.from;
+    _realEndDate = widget.scheduleWork.realHours.to == null
+        ? widget.scheduleWork.hours.to
+        : widget.scheduleWork.realHours.to;
     super.initState();
   }
 
   @override
   void dispose() {
-    _dayScheduleDetailBloc?.dispose();
+    _scheduleWorkDetailBloc?.dispose();
     super.dispose();
   }
 
@@ -94,8 +108,8 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
       ),
       body: new Container(
         child: BlocListener(
-            bloc: _dayScheduleDetailBloc,
-            listener: (BuildContext context, DayScheduleDetailState state) {
+            bloc: _scheduleWorkDetailBloc,
+            listener: (BuildContext context, ScheduleWorkDetailState state) {
               Scaffold.of(context).removeCurrentSnackBar();
               if (state is Failure) {
                 Scaffold.of(context).showSnackBar(SnackBar(
@@ -106,26 +120,32 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
               if (state is Loaded) {
                 showDialog(
                   context: context,
-                  builder: (context) {
+                  builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text("Thông báo"),
-                      content: Text("Đã cập nhật thành công!"),
+                      title: Text('Thành công'),
+                      content: Container(
+                        child: Text('Cập nhật thành công'),
+                      ),
                       actions: <Widget>[
                         FlatButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
-                        )
+                          child: Text('OK'),
+                        ),
                       ],
                     );
                   },
-                );
+                ).then((_) {
+                  _scheduleWorkBloc.dispatch(RefreshEventList());
+                  Navigator.of(context)
+                      .popUntil(ModalRoute.withName('/schedule_work_page'));
+                });
               }
             },
             child: BlocBuilder(
-              bloc: _dayScheduleDetailBloc,
-              builder: (BuildContext context, DayScheduleDetailState state) {
+              bloc: _scheduleWorkDetailBloc,
+              builder: (BuildContext context, ScheduleWorkDetailState state) {
                 if (state is Loading) {
                   return LoadingIndicator();
                 }
@@ -157,20 +177,26 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    outputInfo("Địa điểm", _daySchedule.location),
+                    outputInfo("Địa điểm", _scheduleWork.partner.place.name),
                     new SizedBox(
                       height: 16,
                     ),
-                    outputInfo("Tên khách hàng", _daySchedule.doctorName),
+                    outputInfo("Tên khách hàng", _scheduleWork.partner.name),
                     new SizedBox(
                       height: 16,
                     ),
-                    outputTime(_daySchedule.startTime, _daySchedule.endTime),
+                    outputTime(
+                        _scheduleWork.hours.from, _scheduleWork.hours.to),
                     new SizedBox(
                       height: 16,
                     ),
                     inputRealTime(
-                        _daySchedule.realStartTime, _daySchedule.realEndTime),
+                        _scheduleWork.realHours.from != null
+                            ? _scheduleWork.realHours.from
+                            : _scheduleWork.hours.from,
+                        _scheduleWork.realHours.to != null
+                            ? _scheduleWork.realHours.to
+                            : _scheduleWork.hours.to),
                     new SizedBox(
                       height: 16,
                     ),
@@ -241,6 +267,7 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
   }
 
   Widget outputTime(DateTime startDay, DateTime endDate) {
+    print(endDate);
     return Container(
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,21 +373,13 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                               width: 1,
                               style: BorderStyle.solid),
                           borderRadius: BorderRadius.circular(4)),
-                      child: _realStartDay == null
-                          ? Text(
-                              convertTime(realStartDate),
-                              style: new TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blueAccent,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          : Text(
-                              convertTime(_realStartDay),
-                              style: new TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blueAccent,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                      child: Text(
+                        convertTime(_realStartDay),
+                        style: new TextStyle(
+                            fontSize: 16,
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 )),
@@ -380,21 +399,13 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
                                 width: 1,
                                 style: BorderStyle.solid),
                             borderRadius: BorderRadius.circular(4)),
-                        child: _realEndDate == null
-                            ? new Text(
-                                convertTime(realEndDate),
-                                style: new TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : new Text(
-                                convertTime(_realEndDate),
-                                style: new TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.bold),
-                              ),
+                        child: Text(
+                          convertTime(_realEndDate),
+                          style: new TextStyle(
+                              fontSize: 16,
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
@@ -470,19 +481,19 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
             child: DropdownButtonHideUnderline(
               child: new DropdownButton(
                 isExpanded: true,
-                value: status == null ? _daySchedule.status : status,
+                value: status == null ? _scheduleWork.status : status,
                 items: [
                   DropdownMenuItem(
-                    child: new Text("Đã gặp"),
-                    value: DayScheduleStatus.met,
+                    child: new Text("Chưa gặp"),
+                    value: ScheduleWorkType.notMeet,
                   ),
                   DropdownMenuItem(
-                    child: new Text("Chưa gặp"),
-                    value: DayScheduleStatus.notMet,
+                    child: new Text("Đã gặp"),
+                    value: ScheduleWorkType.meet,
                   ),
                   DropdownMenuItem(
                     child: new Text("Hẹn gặp lần sau"),
-                    value: DayScheduleStatus.later,
+                    value: ScheduleWorkType.later,
                   )
                 ],
                 onChanged: (value) {
@@ -556,17 +567,34 @@ class _DayScheduleDetailPageState extends State<DayScheduleDetailPage> {
               child: new FlatButton(
                   padding: EdgeInsets.symmetric(vertical: 13),
                   onPressed: () {
-                    _dayScheduleDetailBloc.dispatch(ButtonPressed(
-                        scheduleId: _daySchedule.id,
-                        realStartTime: _realStartDay == null
-                            ? _daySchedule.startTime
-                            : _realStartDay,
-                        realEndTime: _realEndDate == null
-                            ? _daySchedule.endTime
-                            : _realEndDate,
+                    if (!_realEndDate.isAfter(_realStartDay)) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Thành công'),
+                            content: Container(
+                              child: Text('Thời gian bắt đầu sau thời gian kết thúc!'),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return;
+                    }
+                    _scheduleWorkDetailBloc.dispatch(ButtonPressed(
+                        scheduleId: _scheduleWork.id,
+                        realStartTime: _realStartDay,
+                        realEndTime: _realEndDate,
                         purpose: _purposeController.text,
-                        dayScheduleStatus:
-                            status == null ? _daySchedule.status : status,
+                        status: status == null ? _scheduleWork.status : status,
                         description: _descriptionController.text));
                   },
                   child: new Text(

@@ -17,6 +17,17 @@ class ConsumerContactForm extends StatefulWidget {
 }
 
 class _ConsumerContactFormState extends State<ConsumerContactForm> {
+  //thong
+
+  int _selected = 0;
+
+  _setRadio(int value) {
+    setState(() {
+      _selected = value;
+    });
+    print(_selected);
+  }
+
   ConsumerBloc get _consumerBloc => widget.consumerBloc;
 
   @override
@@ -83,7 +94,42 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
         SizedBox(
           height: 17,
         ),
-        Container(
+        new Container(
+          width: double.infinity,
+          height: 50,
+          child: Row(
+            children: <Widget>[
+              Flexible(
+                child: RadioListTile(
+                    title: Text(
+                      "Ngày sự sinh",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    value: 0,
+                    groupValue: _selected,
+                    onChanged: (int value) {
+                      _setRadio(value);
+                    }),
+              ),
+              Flexible(
+                child: RadioListTile(
+                    title: Text(
+                      "Tuần thai",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    value: 1,
+                    groupValue: _selected,
+                    onChanged: (int value) {
+                      _setRadio(value);
+                    }),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 17,
+        ),
+        _selected == 0 ? Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -121,10 +167,48 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Colors.grey[350], width: 1)),
+                      BorderSide(color: Colors.grey[350], width: 1)),
                   border: OutlineInputBorder(),
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                ),
+              )
+            ],
+          ),
+        ) : Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Text(
+                    "Tuần thai",
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              TextFormField(
+                onSaved: (String value) {
+
+                },
+                keyboardType: TextInputType.number,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.grey[350], width: 1)),
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 ),
               )
             ],
