@@ -114,4 +114,9 @@ class ConsumerDbProvider extends DbProvider {
       };
     }).toList());
   }
+
+  Future<void> truncateTable() async {
+    final db = await database();
+    await db.execute('TRUNCATE TABLE `consumers`');
+  }
 }

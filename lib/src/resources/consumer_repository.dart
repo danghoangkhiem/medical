@@ -96,4 +96,8 @@ class ConsumerRepository {
   Future<List<ConsumerModel>> getAll() async {
     return await _consumerDbProvider.getAll();
   }
+
+  Future<void> truncateTable() async {
+    await _consumerDbProvider.truncateTable();
+  }
 }

@@ -92,25 +92,25 @@ class _SynchronizationPageState extends State<SynchronizationPage> {
               )),
           Material(
             elevation: 5,
-            child: new Container(
+            child: Container(
               height: 65,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: new Row(
+              child: Row(
                 children: <Widget>[
-                  new Expanded(
+                  Expanded(
                       child: Container(
                         margin: EdgeInsets.only(left: 5),
                         decoration: BoxDecoration(
                             color: Colors.blueAccent,
                             borderRadius: BorderRadius.circular(4)),
-                        child: new FlatButton(
+                        child: FlatButton(
                             padding: EdgeInsets.symmetric(vertical: 10),
                             onPressed: () {
                               _synchronizationBloc.dispatch(
                                   SynchronizationEvent.synchronize(
                                       userId: widget.user.id));
                             },
-                            child: new Text(
+                            child: Text(
                               "Đồng bộ dữ liệu",
                               style: TextStyle(
                                   fontSize: 16, color: Colors.white),
