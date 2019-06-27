@@ -58,15 +58,15 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
   void initState() {
     super.initState();
 
-    print("thongthong");
-    print(userId);
-    print(date);
+//    print("thongthong");
+//    print(userId);
+//    print(date);
 
     dayScheduleMedRepModel = DayScheduleMedRepModel.fromJson([]);
     _blocDayScheduleMedRep = DayScheduleMedRepBloc(
         dayScheduleMedRepRepository: _dayScheduleMedRepRepository);
     _blocDayScheduleMedRep
-        .dispatch(GetDayScheduleMedRep(date: DateTime.now(), userId: userId));
+        .dispatch(GetDayScheduleMedRep(date: date, userId: userId));
 
     _scrollController.addListener(_scrollListener);
   }

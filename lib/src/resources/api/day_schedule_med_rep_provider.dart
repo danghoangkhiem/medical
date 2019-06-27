@@ -53,7 +53,7 @@ class DayScheduleMedRepProvider extends ApiProvider {
     };
 
     //truyền tham số mặc định
-    Response _resp = await httpClient.get('/users/2/schedules',
+    Response _resp = await httpClient.get('/users/$userId/schedules',
         queryParameters: _queryParameters);
 
     if (_resp.statusCode == 200) {

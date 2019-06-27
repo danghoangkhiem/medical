@@ -10,14 +10,24 @@ import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
 
 
+// ignore: must_be_immutable
 class MedRepPage extends StatefulWidget{
+
+  DateTime date;
+
+  MedRepPage(this.date);
+
   @override
   State<StatefulWidget> createState() {
 
-    return new MedRepPageState();
+    return new MedRepPageState(this.date);
   }
 }
 class MedRepPageState extends State<MedRepPage>{
+
+  DateTime date;
+
+  MedRepPageState(this.date);
 
   ScrollController _scrollController = new ScrollController();
   MedRepBloc _blocMedRep;
@@ -47,6 +57,7 @@ class MedRepPageState extends State<MedRepPage>{
   @override
   void initState() {
     super.initState();
+
 
     medRepModel = MedRepModel.fromJson([]);
 
@@ -146,7 +157,7 @@ class MedRepPageState extends State<MedRepPage>{
     return InkWell(
       onTap: (){
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => DayScheduleMedRep(date: DateTime.now(),userId: item.userId,)));
+            builder: (BuildContext context) => DayScheduleMedRep(date: date,userId: item.userId,)));
       },
       child: ListTile(
         title: new Text(item.name != null ? item.name : 'N/A'),

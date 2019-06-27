@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:date_utils/date_utils.dart';
+import 'package:medical/src/ui/pages/med_rep/med_rep_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -143,7 +144,11 @@ class _ScheduleCoachingPageState extends State<ScheduleCoachingPage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          print(_selectedDay);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => MedRepPage(_selectedDay)));
+        },
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),
