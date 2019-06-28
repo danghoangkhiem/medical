@@ -112,22 +112,5 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
         yield CheckIOFailure(error: error.toString());
       }
     }
-    if (event is AddCheckOut) {
-      yield CheckOutLoading();
-      try {
-        bool checkIOModel =
-            await _checkInRepository.addCheckOut(event.newCheckOutModel);
-        await _userRepository.setAttendanceLastTimeLocally(
-            await _userRepository.getAttendanceLastTime());
-        if (checkIOModel == false) {
-          yield CheckOutError();
-        } else {
-          yield CheckOutLoaded();
-        }
-      } catch (error) {
-        yield CheckOutFailure(error: error.toString());
-      }
-    }
-
   }
 }
