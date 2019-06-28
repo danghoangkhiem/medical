@@ -14,7 +14,7 @@ void exitApp(BuildContext context) async {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Xác nhận'),
-          content: Text('Bạn có chắc chắn muốn thoát khỏi ứng dụng?'),
+          content: Text('Bạn muốn thoát khỏi ứng dụng?'),
           actions: <Widget>[
             FlatButton(
               child: Text('Hủy'),

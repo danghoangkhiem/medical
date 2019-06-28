@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
           return AlertDialog(
             title: Text('Xác nhận'),
             content:
-                Text('Bạn có chắc chắn muốn đăng xuất khỏi tài khoản này?'),
+                Text('Bạn sẽ đăng xuất khỏi tài khoản này?'),
             actions: <Widget>[
               FlatButton(
                 child: Text('Hủy'),
@@ -262,17 +262,17 @@ class _HomePageState extends State<HomePage> {
                 UserRoleType.MedicalSupervisor,
               ],
             ),
-            _buildSelectionItem(
-              icon: Icons.access_alarm,
-              label: 'Danh sách Med Rep của Med Sup',
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => MedRepPage()));
-              },
-              required: [
-                UserRoleType.MedicalSupervisor,
-              ],
-            ),
+//            _buildSelectionItem(
+//              icon: Icons.access_alarm,
+//              label: 'Danh sách Med Rep của Med Sup',
+//              onPressed: () {
+//                Navigator.of(context).push(MaterialPageRoute(
+//                    builder: (BuildContext context) => MedRepPage()));
+//              },
+//              required: [
+//                UserRoleType.MedicalSupervisor,
+//              ],
+//            ),
             _buildSelectionItem(
               icon: Icons.shopping_cart,
               label: 'Quản lý xuất nhập tồn',

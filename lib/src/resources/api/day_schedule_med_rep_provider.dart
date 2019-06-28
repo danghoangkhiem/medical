@@ -41,8 +41,8 @@ class DayScheduleMedRepProvider extends ApiProvider {
     Map<String, dynamic> _queryParameters = {
       'offset': offset,
       'limit': limit,
-      'startDate': DateTime(date.year, date.month, 18, 00, 00, 00).millisecondsSinceEpoch ~/ 1000,
-      'endDate': DateTime(date.year, date.month, 18, 00, 00, 00).millisecondsSinceEpoch ~/ 1000
+      'startDate': DateTime(date.year, date.month, date.day, 00, 00, 00).millisecondsSinceEpoch ~/ 1000,
+      'endDate': DateTime(date.year, date.month, date.day, 00, 00, 00).millisecondsSinceEpoch ~/ 1000
 
 //      'startDate': DateTime(date.year, date.month, date.day, 00, 00, 00)
 //              .millisecondsSinceEpoch ~/
@@ -53,7 +53,7 @@ class DayScheduleMedRepProvider extends ApiProvider {
     };
 
     //truyền tham số mặc định
-    Response _resp = await httpClient.get('/users/2/schedules',
+    Response _resp = await httpClient.get('/users/$userId/schedules',
         queryParameters: _queryParameters);
 
     if (_resp.statusCode == 200) {
