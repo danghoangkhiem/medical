@@ -128,7 +128,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
                 ).then((_) {
                   _scheduleCoachingBloc.dispatch(RefreshEventList());
                   Navigator.of(context)
-                      .popUntil(ModalRoute.withName('/schedule_work_page'));
+                      .popUntil(ModalRoute.withName('/schedule_coaching_page'));
                 });
               }
             },
