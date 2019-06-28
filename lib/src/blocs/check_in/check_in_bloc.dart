@@ -19,6 +19,7 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
   final UserRepository _userRepository = UserRepository();
   final LocationRepository _locationRepository = LocationRepository();
   final SynchronizationBloc _synchronizationBloc;
+  final SyncRepository _syncRepository = SyncRepository();
 
   bool _isSynchronizing = false;
 
@@ -59,8 +60,6 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
       try {
         bool checkIOModel = await _checkInRepository.addCheckIn(event.newCheckInModel);
         await _userRepository.setAttendanceLastTimeLocally(await _userRepository.getAttendanceLastTime());
-        bool checkIOModel =
-            await _checkInRepository.addCheckIn(event.newCheckInModel);
         await _userRepository.setAttendanceLastTimeLocally(
             await _userRepository.getAttendanceLastTime());
         if (checkIOModel == false) {

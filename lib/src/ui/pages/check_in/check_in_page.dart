@@ -237,7 +237,6 @@ class _CheckInPage extends State<CheckInPage> {
               ),
             );
           }
-          if (state is CheckInError) {
           if (state is CheckInFailure) {
             setState(() {
               _isCheckInPressed = false;
