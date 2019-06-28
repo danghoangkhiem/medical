@@ -534,9 +534,9 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Thành công'),
+                          title: Text('Thông báo'),
                           content: Container(
-                            child: Text('Thời gian bắt đầu sau thời gian kết thúc!'),
+                            child: Text('Thời gian bắt đầu không được lớn hơn thời gian kết thúc!'),
                           ),
                           actions: <Widget>[
                             FlatButton(
