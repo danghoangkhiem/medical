@@ -206,6 +206,7 @@ class _CheckInPage extends State<CheckInPage> {
             return notificationError();
           }
           //end check IO
+          //start check in
           if (state is CheckInLoading) {
             return LoadingIndicator(
               opacity: 0,
@@ -254,6 +255,7 @@ class _CheckInPage extends State<CheckInPage> {
           if (state is CheckInLoaded) {
             return checkInNotification();
           }
+          //end check in
           //start check out
           //loading
           if (state is CheckOutLoading) {
@@ -704,8 +706,7 @@ class _CheckInPage extends State<CheckInPage> {
           ],
         ));
   }
-
-
+  //check out fail
   Widget notificationCheckOutFailure() {
     return Container(
         child: AlertDialog(
@@ -735,7 +736,7 @@ class _CheckInPage extends State<CheckInPage> {
           ],
         ));
   }
-
+  //error serve
   Widget notificationError() {
     return Container(
         child: AlertDialog(
@@ -765,20 +766,35 @@ class _CheckInPage extends State<CheckInPage> {
         ));
   }
 
+  //check int fail
   Widget checkInNotificationError() {
     return Container(
         child: AlertDialog(
-      title: Text("Thông báo"),
-      content: Text("Check In thất bại! Vui lòng thử lại"),
-      actions: <Widget>[
-        FlatButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => CheckInPage()));
-            },
-            child: Text("OK"))
-      ],
-    ));
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new Icon(
+                Icons.remove_circle,
+                color: Colors.redAccent,
+                size: 50,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text("Có lỗi xảy ra, vui lòng thử lại!")
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => CheckInPage()));
+                },
+                child: Text("OK"))
+          ],
+        ));
   }
 
   Widget checkInNotification() {
