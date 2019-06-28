@@ -37,9 +37,7 @@ class SynchronizationBloc
     }
     if (event.type == SynchronizationEventType.download) {
       yield* _downloading(event);
-      if (currentState.isDownloading) {
-        dispatch(SynchronizationEvent.download());
-      }
+      yield SynchronizationState.synchronized();
     }
     if (event.type == SynchronizationEventType.compact) {
       yield SynchronizationState.synchronizing();

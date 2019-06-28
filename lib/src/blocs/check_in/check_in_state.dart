@@ -129,3 +129,7 @@ class CheckInLocationFailure extends CheckInState {
 class CheckInError extends CheckInState {}
 
 class CheckOutError extends CheckInState {}
+
+class Synchronizing extends CheckInState {}
+
+class Synchronized extends CheckInState {}
