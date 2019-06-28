@@ -29,6 +29,14 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
 
   bool _hadFound = false;
 
+  ConsumerListModel _consumerHistory;
+
+  ConsumerListModel get consumerHistory => _consumerHistory;
+  //set searchPhoneHistory(ConsumerListModel value) {}
+
+  bool get hasFound => _hadFound;
+  //set hasFound(bool value) {}
+
   @override
   ConsumerState get initialState => Initial();
 
@@ -65,11 +73,16 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
               phoneNumber: event.phoneNumber,
               additionalData: AdditionalDataModel.fromJson(
                   defaultConsumerInformation().additionalData.toJson()));
+          _hadFound = false;
+          _consumerHistory = ConsumerListModel.fromJson([]);
         } else {
           // set default additional data
           _consumer.additionalData = AdditionalDataModel.fromJson(
               defaultConsumerInformation().additionalData.toJson());
           _hadFound = true;
+          _consumerHistory = await _consumerRepository
+              .getListConsumerByPhoneNumber(_consumer.phoneNumber,
+                  offset: 0, limit: 2);
         }
         AttendanceModel _attendanceLastTime =
             await _userRepository.getAttendanceLastTimeLocally();
@@ -93,16 +106,18 @@ class ConsumerBloc extends Bloc<ConsumerEvent, ConsumerState> {
         return;
       }
       if (currentState.currentStep == 3) {
-        bool hasSampled = currentState.consumer.additionalData.samples
-            .any((item) => item.value != null && int.tryParse(item.value) > 0);
-        bool hasPurchased = currentState.consumer.additionalData.purchases
-            .any((item) => item.value != null && int.tryParse(item.value) > 0);
+        bool hasSampled = currentState.consumer.additionalData.samples.any(
+            (item) =>
+                item.value != null && int.tryParse(item.value.toString()) > 0);
+        bool hasPurchased = currentState.consumer.additionalData.purchases.any(
+            (item) =>
+                item.value != null && int.tryParse(item.value.toString()) > 0);
         if (!hasSampled && !hasPurchased) {
           yield Stepped(
             3,
             consumer: event.consumer,
             error:
-                'Không tin khách hàng không hợp lệ. Khách hàng cần phải mua hàng khi không nhận samping và ngược lại',
+                'Thông tin khách hàng không hợp lệ. Khách hàng cần phải mua hàng khi không nhận samping và ngược lại',
           );
           return;
         }

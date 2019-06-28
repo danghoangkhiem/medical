@@ -40,6 +40,22 @@ class ConsumerApiProvider extends ApiProvider {
     return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 
+  Future<ConsumerListModel> getConsumerList(
+      {int offset = 0, int limit = 10, int idGreaterThan, String sort}) async {
+    Map<String, dynamic> _queryParameters = {
+      'offset': offset,
+      'limit': limit,
+      'idGreaterThan': idGreaterThan,
+      'sort': sort,
+    };
+    Response _resp =
+    await httpClient.get('/consumers', queryParameters: _queryParameters);
+    if (_resp.statusCode == 200) {
+      return ConsumerListModel.fromJson(_resp.data['data']);
+    }
+    return Future.error(ApiResponseError.fromJson(_resp.data));
+  }
+
   Future<AdditionalDataModel> getAdditionalFields() async {
     Response _resp = await httpClient.get('/consumers/additional-fields');
     if (_resp.statusCode == 200) {

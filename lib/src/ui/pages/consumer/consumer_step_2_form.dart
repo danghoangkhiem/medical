@@ -61,11 +61,13 @@ class _ConsumerStepTwoFormState extends State<ConsumerStepTwoForm> {
               itemBuilder: (BuildContext context, int index) {
                 return CheckboxListTile(
                   value: _boolean(_fields[index].value),
+                  /* // show image
                   secondary: CachedNetworkImage(
                     imageUrl: _fields[index]?.image ?? '',
                     placeholder: (context, url) => CircularProgressIndicator(),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
+                  */
                   onChanged: (bool value) {
                     setState(() {
                       _fields[index].value = value ? 1 : 0;

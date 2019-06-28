@@ -11,8 +11,8 @@ class DbProvider {
       `_id` INTEGER PRIMARY KEY AUTOINCREMENT,
       `id` INTEGER NULL DEFAULT NULL,
       `type` varchar(255) NOT NULL,
-      `name` varchar(255) NOT NULL,
-      `email` varchar(255) NOT NULL,
+      `name` varchar(255) NULL DEFAULT NULL,
+      `email` varchar(255) NULL DEFAULT NULL,
       `phoneNumber` varchar(13) NOT NULL,
       `locationId` int(10) NOT NULL,
       `edob` timestamp NULL DEFAULT NULL,
@@ -33,7 +33,7 @@ class DbProvider {
   }
 
   Future<Database> database() async {
-    String dbFilename = '1a_medical.db';
+    String dbFilename = '1b_medical.db';
     String dbPath = await getDatabasesPath();
     return openDatabase(join(dbPath, dbFilename),
         onCreate: _onDatabaseCreate, version: 1);
