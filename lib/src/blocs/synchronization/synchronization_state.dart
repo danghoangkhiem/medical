@@ -34,8 +34,7 @@ class SynchronizationState extends Equatable {
         total: total,
       );
 
-  factory SynchronizationState.synchronizing() =>
-      SynchronizationState(
+  factory SynchronizationState.synchronizing() => SynchronizationState(
         isSynchronized: false,
         isSynchronizing: true,
         isDownloading: true,
@@ -59,6 +58,15 @@ class SynchronizationState extends Equatable {
         total: total,
       );
 
-  factory SynchronizationState.synchronized() =>
-      SynchronizationState(isSynchronized: true);
+  factory SynchronizationState.synchronized({
+    int downloaded = 0,
+    int uploaded = 0,
+    int total = 0,
+  }) =>
+      SynchronizationState(
+        isSynchronized: true,
+        downloaded: downloaded,
+        uploaded: uploaded,
+        total: total,
+      );
 }
