@@ -63,8 +63,8 @@ class ScheduleCoachingApiProvider extends ApiProvider {
     Map<String, dynamic> _requestBody = {
       'realHours': realHours.toJson(),
       'description': description,
-      'description': evaluation,
-      'description': feedback,
+      'evaluation': evaluation,
+      'feedback': feedback,
     };
     Response _resp = await httpClient.post(
         '/users/$userId/schedules-coaching/$scheduleCoachingId/update',
