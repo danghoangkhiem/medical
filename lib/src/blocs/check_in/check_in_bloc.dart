@@ -18,11 +18,17 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
   final SynchronizationBloc _synchronizationBloc;
 
   bool _isSynchronizing = false;
+  StreamSubscription<SynchronizationState> _synchronizationBlocSubscription;
+
+  void dispose() {
+    _synchronizationBlocSubscription?.cancel();
+    super.dispose();
+  }
 
   CheckInBloc({@required synchronizationBloc})
       : assert(synchronizationBloc != null),
         _synchronizationBloc = synchronizationBloc {
-    _synchronizationBloc.state.listen((SynchronizationState state) {
+    _synchronizationBlocSubscription = _synchronizationBloc.state.listen((SynchronizationState state) {
       print('SynchronizationState...................');
       print(state);
       if (state.isSynchronized && _isSynchronizing) {
