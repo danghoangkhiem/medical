@@ -41,8 +41,8 @@ class DayScheduleMedRepProvider extends ApiProvider {
     Map<String, dynamic> _queryParameters = {
       'offset': offset,
       'limit': limit,
-      'startDate': DateTime(date.year, date.month, 18, 00, 00, 00).millisecondsSinceEpoch ~/ 1000,
-      'endDate': DateTime(date.year, date.month, 18, 00, 00, 00).millisecondsSinceEpoch ~/ 1000
+      'startDate': DateTime(date.year, date.month, date.day, 00, 00, 00).millisecondsSinceEpoch ~/ 1000,
+      'endDate': DateTime(date.year, date.month, date.day, 00, 00, 00).millisecondsSinceEpoch ~/ 1000
 
 //      'startDate': DateTime(date.year, date.month, date.day, 00, 00, 00)
 //              .millisecondsSinceEpoch ~/
