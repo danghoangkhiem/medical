@@ -436,32 +436,10 @@ class _CheckInPage extends State<CheckInPage> {
                             _isCheckInPressed = true;
                           });
                           userLocation = await _getLocation();
-                          if (userLocation['latitude'] == null || userLocation["longitude"] == null) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text("Thông báo"),
-                                    content: Text(
-                                        "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CheckInPage()));
-                                          },
-                                          child: Text("OK"))
-                                    ],
-                                  );
-                                });
-                            setState(() {
-                              _isCheckInPressed = false;
-                            });
-                            return;
-                          }
                           CheckInModel newCheckInModel = CheckInModel(
                               locationId: currentLocation,
-                              lat: userLocation["latitude"],
-                              lon: userLocation["longitude"],
+                              lat: null,
+                              lon: null,
                               images: _image);
                           _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
                         },
@@ -605,32 +583,9 @@ class _CheckInPage extends State<CheckInPage> {
                           });
 
                           userLocation = await _getLocation();
-                          if (userLocation['latitude'] == null || userLocation["longitude"] == null) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text("Thông báo"),
-                                    content: Text(
-                                        "Có lỗi trong việc xác định vị trí, vui lòng thử lại!"),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => CheckInPage()));
-                                          },
-                                          child: Text("OK"))
-                                    ],
-                                  );
-                                });
-                            setState(() {
-                              _isCheckOutPressed = false;
-                            });
-                            return;
-                          }
-
                           CheckOutModel newCheckOut = CheckOutModel(
-                              latitude: userLocation['latitude'],
-                              longitude: userLocation['longitude']);
+                              latitude: null,
+                              longitude: null);
                           _checkInBloc.dispatch(AddCheckOut(newCheckOut));
                         },
                         child: new Row(
