@@ -31,54 +31,80 @@ class SynchronizationBloc
       }
     }
     if (event.type == SynchronizationEventType.sync) {
-      //TODO: Sửa lại
-      yield SynchronizationState.synchronizing(
-          currentState.process, currentState.total);
-      Map<String, dynamic> _consumerRawData =
-          await _syncRepository.getNotSynchronizedByUserId(event.userId);
-      ConsumerModel _consumerLocally;
-      ConsumerModel _consumer;
-      while (_consumerRawData != null &&
-          currentState.process < currentState.total) {
-        yield SynchronizationState.synchronizing(
-            currentState.process + 1, currentState.total);
-        _consumerLocally = ConsumerModel.fromJson(_consumerRawData);
-        try {
-          _consumer = await _consumerRepository.addConsumer(_consumerLocally);
-          await _consumerRepository.setConsumerLocally(
-              _consumerRawData['_id'], _consumer);
-        } catch (error, trace) {
-          print(error);
-          print(trace);
-        }
-        _consumerRawData =
-            await _syncRepository.getNotSynchronizedByUserId(event.userId);
+      yield* _downloading(event);
+      yield* _uploading(event);
+      yield SynchronizationState.synchronized();
+    }
+    if (event.type == SynchronizationEventType.download) {
+      yield* _downloading(event);
+      if (currentState.isDownloading) {
+        dispatch(SynchronizationEvent.download());
       }
-      try {
-        _consumer = await _consumerRepository.getLastLocally();
-        ConsumerListModel _consumers =
-            await _consumerRepository.getConsumerAccordingToOffset(
-                offset: _consumer?.id ?? 0, limit: 20);
-        while (_consumers != null && _consumers.length > 0) {
-          yield SynchronizationState.synchronizing(
-              currentState.process, currentState.total);
-          for (_consumer in _consumers) {
-            print(_consumer);
-            await _consumerRepository.insertConsumerLocally(_consumer);
-          }
-          _consumers = await _consumerRepository.getConsumerAccordingToOffset(
-              offset: _consumer.id, limit: 20);
-        }
-      } catch (error, trace) {
-        print(error);
-        print(trace);
-      }
-      await _consumerRepository.setAdditionalFieldsLocally(
-          await _consumerRepository.getAdditionalFields());
+    }
+    if (event.type == SynchronizationEventType.compact) {
+      yield SynchronizationState.synchronizing();
+      await _consumerRepository.truncateTable();
+      yield* _downloading(event);
       yield SynchronizationState.synchronized();
     }
     if (event.type == SynchronizationEventType.hasData) {
       yield SynchronizationState.notSynchronized(currentState.total + 1);
+    }
+  }
+
+  Stream<SynchronizationState> _downloading(SynchronizationEvent event) async* {
+    yield SynchronizationState.downloading(0);
+    try {
+      ConsumerModel _consumer = await _consumerRepository.getLastLocally();
+      ConsumerListModel _consumers;
+      int limit = 20;
+      do {
+        _consumers = await _consumerRepository.getConsumerList(
+          offset: 0,
+          limit: limit,
+          idGreaterThan: _consumer?.id ?? 0,
+          sort: 'asc',
+        );
+        for (_consumer in _consumers) {
+          await _consumerRepository.insertConsumerLocally(_consumer);
+        }
+        yield SynchronizationState.downloading(
+          currentState.downloaded + _consumers?.length,
+        );
+      } while (_consumers != null && _consumers.length == limit);
+    } catch (error, trace) {
+      print(error);
+      print(trace);
+    }
+  }
+
+  Stream<SynchronizationState> _uploading(SynchronizationEvent event) async* {
+    try {
+      ConsumerModel _consumerLocally;
+      ConsumerModel _consumer;
+      Map<String, dynamic> _consumerRawDataLocally =
+          await _syncRepository.getNotSynchronizedByUserId(event.userId);
+      while (_consumerRawDataLocally != null &&
+          currentState.uploaded < currentState.total) {
+        _consumerLocally = ConsumerModel.fromJson(_consumerRawDataLocally);
+        try {
+          _consumer = await _consumerRepository.addConsumer(_consumerLocally);
+          await _consumerRepository.setConsumerLocally(
+              _consumerRawDataLocally['_id'], _consumer);
+          yield SynchronizationState.uploading(
+            currentState.uploaded + 1,
+            currentState.total,
+          );
+        } catch (error, trace) {
+          print(error);
+          print(trace);
+        }
+        _consumerRawDataLocally =
+            await _syncRepository.getNotSynchronizedByUserId(event.userId);
+      }
+    } catch (error, trace) {
+      print(error);
+      print(trace);
     }
   }
 }

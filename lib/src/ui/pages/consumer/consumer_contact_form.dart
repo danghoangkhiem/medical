@@ -17,17 +17,6 @@ class ConsumerContactForm extends StatefulWidget {
 }
 
 class _ConsumerContactFormState extends State<ConsumerContactForm> {
-  //thong
-
-  int _selected = 0;
-
-  _setRadio(int value) {
-    setState(() {
-      _selected = value;
-    });
-    print(_selected);
-  }
-
   ConsumerBloc get _consumerBloc => widget.consumerBloc;
 
   @override
@@ -74,6 +63,7 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                 onSaved: (String value) {
                   _consumerBloc.currentState.consumer.name = value;
                 },
+                enabled: !_consumerBloc.hasFound,
                 initialValue: consumer?.name,
                 style: TextStyle(
                     fontSize: 16,
@@ -94,125 +84,8 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
         SizedBox(
           height: 17,
         ),
-        new Container(
-          width: double.infinity,
-          height: 50,
-          child: Row(
-            children: <Widget>[
-              Flexible(
-                child: RadioListTile(
-                    title: Text(
-                      "Ngày sự sinh",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    value: 0,
-                    groupValue: _selected,
-                    onChanged: (int value) {
-                      _setRadio(value);
-                    }),
-              ),
-              Flexible(
-                child: RadioListTile(
-                    title: Text(
-                      "Tuần thai",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    value: 1,
-                    groupValue: _selected,
-                    onChanged: (int value) {
-                      _setRadio(value);
-                    }),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 17,
-        ),
-        _selected == 0 ? Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text(
-                    "Ngày dự sinh",
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              DateTimePickerFormField(
-                inputType: InputType.date,
-                format: DateFormat('dd/MM/yyyy'),
-                initialValue: consumer?.expectedDateOfBirth,
-                validator: (DateTime selectedDate) {
-                  if (selectedDate == null) {
-                    return 'Ngày dự sinh không hợp lệ';
-                  }
-                },
-                onSaved: (DateTime value) {
-                  _consumerBloc.currentState.consumer.expectedDateOfBirth =
-                      value;
-                },
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.grey[350], width: 1)),
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                ),
-              )
-            ],
-          ),
-        ) : Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text(
-                    "Tuần thai",
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              TextFormField(
-                onSaved: (String value) {
-
-                },
-                keyboardType: TextInputType.number,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.grey[350], width: 1)),
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                ),
-              )
-            ],
-          ),
+        _ExpectedDateOfBirthFormField(
+          consumerBloc: _consumerBloc,
         ),
         SizedBox(
           height: 17,
@@ -236,6 +109,7 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
                 height: 5,
               ),
               TextFormField(
+                enabled: !_consumerBloc.hasFound,
                 initialValue: consumer?.email,
                 keyboardType: TextInputType.emailAddress,
                 validator: (String value) {
@@ -269,3 +143,202 @@ class _ConsumerContactFormState extends State<ConsumerContactForm> {
     );
   }
 }
+
+class _ExpectedDateOfBirthFormField extends StatefulWidget {
+  final ConsumerBloc consumerBloc;
+
+  _ExpectedDateOfBirthFormField({Key key, @required this.consumerBloc})
+      : super(key: key);
+
+  @override
+  _ExpectedDateOfBirthFormFieldState createState() =>
+      _ExpectedDateOfBirthFormFieldState();
+}
+
+class _ExpectedDateOfBirthFormFieldState
+    extends State<_ExpectedDateOfBirthFormField> {
+  ConsumerBloc get _consumerBloc => widget.consumerBloc;
+
+  ExpectedDateOfBirthType _selectedType;
+
+  DateTime _expectedDateOfBirth;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedType = ExpectedDateOfBirthType.date;
+    _expectedDateOfBirth =
+        _consumerBloc.currentState.consumer?.expectedDateOfBirth;
+  }
+
+  void _onChanged(ExpectedDateOfBirthType value) {
+    setState(() {
+      _selectedType = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          width: double.infinity,
+          height: 50,
+          child: Row(
+            children: <Widget>[
+              Flexible(
+                child: RadioListTile(
+                  title: Text(
+                    "Ngày sự sinh",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  value: ExpectedDateOfBirthType.date,
+                  groupValue: _selectedType,
+                  onChanged: _onChanged,
+                ),
+              ),
+              Flexible(
+                child: RadioListTile(
+                  title: Text(
+                    "Tuần thai",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  value: ExpectedDateOfBirthType.week,
+                  groupValue: _selectedType,
+                  onChanged: _onChanged,
+                ),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 17,
+        ),
+        _selectedType == ExpectedDateOfBirthType.date
+            ? _buildDate()
+            : _buildWeek(),
+      ],
+    );
+  }
+
+  int _expectedDateOfBirthToPregnancyWeek(DateTime date) {
+    DateTime _now = DateTime.now();
+    if (date == null || date.compareTo(_now.subtract(Duration(days: 7))) <= 0) {
+      return null;
+    }
+    return 40 - (date.difference(_now).inDays / 7).floor();
+  }
+
+  DateTime _pregnancyWeekToExpectedDateOfBirth(int week) {
+    if (week == null || week > 40 || week < 1) {
+      return null;
+    }
+    return DateTime.now().add(Duration(days: ((40 - week) * 7) + 1));
+  }
+
+  Widget _buildDate() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Text(
+                "Ngày dự sinh",
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          DateTimePickerFormField(
+            enabled: !_consumerBloc.hasFound,
+            inputType: InputType.date,
+            format: DateFormat('dd/MM/yyyy'),
+            initialValue: _expectedDateOfBirth,
+            validator: (_) {
+              if (_expectedDateOfBirth == null) {
+                return 'Ngày dự sinh không hợp lệ';
+              }
+            },
+            onChanged: (DateTime value) {
+              _expectedDateOfBirth = value;
+            },
+            onSaved: (_) {
+              _consumerBloc.currentState.consumer.expectedDateOfBirth =
+                  _expectedDateOfBirth;
+            },
+            style: TextStyle(
+                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[350], width: 1)),
+              border: OutlineInputBorder(),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWeek() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Text(
+                "Tuần thai",
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          TextFormField(
+            enabled: !_consumerBloc.hasFound,
+            initialValue:
+                _expectedDateOfBirthToPregnancyWeek(_expectedDateOfBirth)
+                    ?.toString(),
+            validator: (_) {
+              if (_expectedDateOfBirth == null) {
+                return 'Tuần thai không hợp lệ';
+              }
+            },
+            onFieldSubmitted: (String value) {
+              _expectedDateOfBirth =
+                  _pregnancyWeekToExpectedDateOfBirth(int.tryParse(value));
+            },
+            onSaved: (_) {
+              _consumerBloc.currentState.consumer.expectedDateOfBirth =
+                  _expectedDateOfBirth;
+            },
+            keyboardType: TextInputType.number,
+            style: TextStyle(
+                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[350], width: 1)),
+              border: OutlineInputBorder(),
+              contentPadding:
+                  EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 14),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+enum ExpectedDateOfBirthType { date, week }

@@ -35,22 +35,39 @@ class _SynchronizationPageState extends State<SynchronizationPage> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: Text("Đồng bộ dữ liệu"),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              _synchronizationBloc.dispatch(SynchronizationEvent.compact());
+            },
+            child: Icon(
+              Icons.settings_backup_restore,
+              color: Colors.white,
+              size: 32,
+            ),
+          ),
+        ],
       ),
-      body: BlocBuilder(
-          bloc: _synchronizationBloc,
-          builder: (BuildContext context, SynchronizationState state) {
-            if (state.isSynchronizing && state.process == state.total) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        SynchronizationResultPage()));
-              });
-            }
-            if (state.isSynchronizing) {
-              return LoadingIndicator();
-            }
-            return _buildPage();
-          }),
+      body: BlocListener(
+        bloc: _synchronizationBloc,
+        listener: (BuildContext context, SynchronizationState state) {
+          if (state.isSynchronizing &&
+              state.isUploading &&
+              state.uploaded == state.total) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    SynchronizationResultPage()));
+          }
+        },
+        child: BlocBuilder(
+            bloc: _synchronizationBloc,
+            builder: (BuildContext context, SynchronizationState state) {
+              if (state.isSynchronizing) {
+                return LoadingIndicator();
+              }
+              return _buildPage();
+            }),
+      ),
     );
   }
 
@@ -98,24 +115,25 @@ class _SynchronizationPageState extends State<SynchronizationPage> {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                      child: Container(
-                        margin: EdgeInsets.only(left: 5),
-                        decoration: BoxDecoration(
-                            color: Colors.blueAccent,
-                            borderRadius: BorderRadius.circular(4)),
-                        child: FlatButton(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            onPressed: () {
-                              _synchronizationBloc.dispatch(
-                                  SynchronizationEvent.synchronize(
-                                      userId: widget.user.id));
-                            },
-                            child: Text(
-                              "Đồng bộ dữ liệu",
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.white),
-                            )),
-                      ))
+                    child: Container(
+                      margin: EdgeInsets.only(left: 5),
+                      decoration: BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(4)),
+                      child: FlatButton(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        onPressed: () {
+                          _synchronizationBloc.dispatch(
+                              SynchronizationEvent.synchronize(
+                                  userId: widget.user.id));
+                        },
+                        child: Text(
+                          "Đồng bộ dữ liệu",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -125,6 +143,3 @@ class _SynchronizationPageState extends State<SynchronizationPage> {
     );
   }
 }
-
-
-

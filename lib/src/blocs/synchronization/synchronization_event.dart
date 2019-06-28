@@ -19,8 +19,11 @@ class SynchronizationEvent extends Equatable {
   factory SynchronizationEvent.compact() =>
       SynchronizationEvent(type: SynchronizationEventType.compact);
 
+  factory SynchronizationEvent.download() =>
+      SynchronizationEvent(type: SynchronizationEventType.download);
+
   factory SynchronizationEvent.hasData() =>
       SynchronizationEvent(type: SynchronizationEventType.hasData);
 }
 
-enum SynchronizationEventType { check, sync, compact, hasData }
+enum SynchronizationEventType { check, sync, compact, download, hasData }

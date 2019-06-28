@@ -79,6 +79,29 @@ class ConsumerDbProvider extends DbProvider {
         .update('consumers', values, where: '_id = ?', whereArgs: [_id]);
   }
 
+  Future<ConsumerListModel> getListConsumerByPhoneNumber(
+    String phoneNumber, {
+    int offset = 0,
+    int limit = 20,
+  }) async {
+    final db = await database();
+    List<Map> maps = await db.query(
+      'consumers',
+      where: 'phoneNumber = ?',
+      whereArgs: [phoneNumber],
+      limit: limit,
+      offset: offset,
+    );
+    if (maps.length == 0) {
+      return ConsumerListModel.fromJson([]);
+    }
+    return ConsumerListModel.fromJson(maps.map((item) {
+      Map<String, dynamic> consumer = Map.from(item);
+      consumer['additionalData'] = json.decode(item['additionalData']);
+      return consumer;
+    }).toList());
+  }
+
   Future<List<ConsumerModel>> getAll() async {
     final db = await database();
     List<Map> maps = await db.query('consumers');
@@ -117,6 +140,6 @@ class ConsumerDbProvider extends DbProvider {
 
   Future<void> truncateTable() async {
     final db = await database();
-    await db.execute('TRUNCATE TABLE `consumers`');
+    await db.execute('DELETE FROM consumers');
   }
 }

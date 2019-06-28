@@ -27,6 +27,16 @@ class ConsumerRepository {
         offset: offset, limit: limit);
   }
 
+  Future<ConsumerListModel> getConsumerList(
+      {int offset = 0, int limit = 10, int idGreaterThan, String sort}) async {
+    return await _consumerApiProvider.getConsumerList(
+      offset: offset,
+      limit: limit,
+      idGreaterThan: idGreaterThan,
+      sort: sort,
+    );
+  }
+
   Future<AdditionalDataModel> getAdditionalFields() async {
     return await _consumerApiProvider.getAdditionalFields();
   }
@@ -95,6 +105,18 @@ class ConsumerRepository {
 
   Future<List<ConsumerModel>> getAll() async {
     return await _consumerDbProvider.getAll();
+  }
+
+  Future<ConsumerListModel> getListConsumerByPhoneNumber(
+    String phoneNumber, {
+    int offset = 0,
+    int limit = 20,
+  }) async {
+    return await _consumerDbProvider.getListConsumerByPhoneNumber(
+      phoneNumber,
+      offset: offset,
+      limit: limit,
+    );
   }
 
   Future<void> truncateTable() async {
