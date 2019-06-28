@@ -21,6 +21,15 @@ class DayScheduleMedRepProvider extends ApiProvider {
         "to" : to == null ? null : to.millisecondsSinceEpoch ~/ 1000
       },
     };
+
+    print("la la la");
+    print(userId);
+    print(scheduleId);
+    print(date);
+    print(from);
+    print(to);
+
+
     Response _resp = await httpClient.post('/users/$userId/schedules-coaching',
         data: _requestBody);
     if (_resp.statusCode == 200) {

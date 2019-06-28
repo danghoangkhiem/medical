@@ -6,6 +6,7 @@ import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_stat
 
 import 'package:medical/src/models/day_schedule_med_rep_model.dart';
 import 'package:medical/src/resources/day_schedule_med_rep_repository.dart';
+import 'package:medical/src/ui/pages/schedule_coaching/schedule_coaching_page.dart';
 
 import 'package:medical/src/ui/widgets/loading_indicator.dart';
 import 'package:medical/src/utils.dart';
@@ -58,9 +59,10 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
   void initState() {
     super.initState();
 
-//    print("thongthong");
+
 //    print(userId);
-//    print(date);
+    print("ola ola ola");
+    print(date);
 
     dayScheduleMedRepModel = DayScheduleMedRepModel.fromJson([]);
     _blocDayScheduleMedRep = DayScheduleMedRepBloc(
@@ -219,7 +221,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
               child: new Text("Đồng ý"),
               onPressed: () {
                 print("đồng ý copy lịch");
-                Navigator.of(context).pop();
+
 
                 _blocDayScheduleMedRep.dispatch(AddSchedule(
                     date: date,
@@ -227,6 +229,10 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                     userId: userId,
                     from: from,
                     to: to));
+
+                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ScheduleCoachingPage()));
               },
             ),
           ],
@@ -297,6 +303,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                           color: Colors.blueAccent,
                         ),
                         onPressed: () {
+                          print("copy thong");
                           _showDialog(date, item.id, userId, item.startTime, item.endTime);
 
 //                          _blocDayScheduleMedRep.dispatch(AddSchedule(
