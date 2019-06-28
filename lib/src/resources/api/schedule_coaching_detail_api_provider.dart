@@ -13,8 +13,8 @@ class ScheduleCoachingDetailApiProvider extends ApiProvider {
         String feedback,}) async {
     Map<String, dynamic> _requestBody = {
       'realHours': {
-        'from': startTime.millisecondsSinceEpoch,
-        'to': endTime.millisecondsSinceEpoch,
+        'from': startTime.millisecondsSinceEpoch ~/ 1000,
+        'to': endTime.millisecondsSinceEpoch ~/1000,
       },
       'description': description,
       'evaluation': evaluation,

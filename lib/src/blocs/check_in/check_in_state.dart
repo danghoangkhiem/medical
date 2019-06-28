@@ -6,41 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:medical/src/models/attendance_model.dart';
 import 'package:medical/src/models/location_list_model.dart';
 
-abstract class CheckInState extends Equatable {
-  CheckInState([List props = const []]) : super(props);
-}
-
-//start state checkIn
-class CheckInInitial extends CheckInState {
-  @override
-  String toString() => 'CheckInInitial';
-}
-
-class CheckInLoading extends CheckInState {
-  @override
-  String toString() => 'CheckInLoading';
-}
-
-class CheckInLoaded extends CheckInState {
-  final String message;
-
-  CheckInLoaded({this.message}) : super([message]);
-
-  @override
-  String toString() => 'CheckInLoaded';
-}
-
-class CheckInFailure extends CheckInState {
-  final String error;
-
-  CheckInFailure({@required this.error}) : super([error]);
-
-  @override
-  String toString() => 'CheckInFailure { error: $error }';
-}
-//end state checkIn
-
-//start state checkIO
+//start check IO
 class CheckIOInitial extends CheckInState {
   @override
   String toString() => 'CheckIOInitial';
@@ -69,7 +35,39 @@ class CheckIOFailure extends CheckInState {
   @override
   String toString() => 'CheckIOFailure { error: $error }';
 }
-//end state checkIO
+//end check IO
+abstract class CheckInState extends Equatable {
+  CheckInState([List props = const []]) : super(props);
+}
+
+class CheckInInitial extends CheckInState {
+  @override
+  String toString() => 'CheckInInitial';
+}
+
+class CheckInLoading extends CheckInState {
+  @override
+  String toString() => 'CheckInLoading';
+}
+
+class CheckInLoaded extends CheckInState {
+  final String message;
+
+  CheckInLoaded({this.message}) : super([message]);
+
+  @override
+  String toString() => 'CheckInLoaded';
+}
+
+class CheckInFailure extends CheckInState {
+  final String error;
+
+  CheckInFailure({@required this.error}) : super([error]);
+
+  @override
+  String toString() => 'CheckInFailure { error: $error }';
+}
+//end state checkIn
 
 
 //start state checkIn
@@ -126,9 +124,14 @@ class CheckInLocationFailure extends CheckInState {
   String toString() => 'CheckInFailure { error: $error }';
 }
 
+//checkIn error
 class CheckInError extends CheckInState {}
 
+//checkOut error
 class CheckOutError extends CheckInState {}
+
+//not sync
+class CheckOutNotSync extends CheckInState {}
 
 class Synchronizing extends CheckInState {}
 
