@@ -21,6 +21,7 @@ class ConsumerApiProvider extends ApiProvider {
     Map<String, dynamic> _requestBody = _prepareConsumerData(consumer);
     Response _resp = await httpClient.post('/consumers', data: _requestBody);
     if (_resp.statusCode == 200) {
+      print(_resp.data);
       return ConsumerModel.fromJson(_resp.data);
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));
@@ -34,6 +35,22 @@ class ConsumerApiProvider extends ApiProvider {
     };
     Response _resp =
         await httpClient.get('/consumers', queryParameters: _queryParameters);
+    if (_resp.statusCode == 200) {
+      return ConsumerListModel.fromJson(_resp.data['data']);
+    }
+    return Future.error(ApiResponseError.fromJson(_resp.data));
+  }
+
+  Future<ConsumerListModel> getConsumerList(
+      {int offset = 0, int limit = 10, int idGreaterThan, String sort}) async {
+    Map<String, dynamic> _queryParameters = {
+      'offset': offset,
+      'limit': limit,
+      'idGreaterThan': idGreaterThan,
+      'sort': sort,
+    };
+    Response _resp =
+    await httpClient.get('/consumers', queryParameters: _queryParameters);
     if (_resp.statusCode == 200) {
       return ConsumerListModel.fromJson(_resp.data['data']);
     }

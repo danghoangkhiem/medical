@@ -17,8 +17,8 @@ class ScheduleWorkDetailApiProvider extends ApiProvider {
       String description}) async {
     Map<String, dynamic> _requestBody = {
       'realHours': {
-        'from': startTime.millisecondsSinceEpoch,
-        'to': endTime.millisecondsSinceEpoch,
+        'from': startTime.millisecondsSinceEpoch ~/ 1000,
+        'to': endTime.millisecondsSinceEpoch ~/ 1000,
       },
       'status': status.value,
       'purpose': purpose,

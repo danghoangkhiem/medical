@@ -12,10 +12,10 @@ class HoursModel extends Equatable {
     return HoursModel(
       from: json['from'] == null
           ? null
-          : DateTime.fromMillisecondsSinceEpoch(json['from'] + 1000),
+          : DateTime.fromMillisecondsSinceEpoch(json['from'] * 1000),
       to: json['to'] == null
           ? null
-          : DateTime.fromMillisecondsSinceEpoch(json['to'] + 1000),
+          : DateTime.fromMillisecondsSinceEpoch(json['to'] * 1000),
     );
   }
 

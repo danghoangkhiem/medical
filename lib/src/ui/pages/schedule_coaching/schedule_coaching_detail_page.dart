@@ -128,7 +128,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
                 ).then((_) {
                   _scheduleCoachingBloc.dispatch(RefreshEventList());
                   Navigator.of(context)
-                      .popUntil(ModalRoute.withName('/schedule_work_page'));
+                      .popUntil(ModalRoute.withName('/schedule_coaching_page'));
                 });
               }
             },
@@ -534,9 +534,9 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Thành công'),
+                          title: Text('Thông báo'),
                           content: Container(
-                            child: Text('Thời gian bắt đầu sau thời gian kết thúc!'),
+                            child: Text('Thời gian bắt đầu không được lớn hơn thời gian kết thúc!'),
                           ),
                           actions: <Widget>[
                             FlatButton(
