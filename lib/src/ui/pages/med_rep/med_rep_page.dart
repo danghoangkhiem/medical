@@ -156,6 +156,7 @@ class MedRepPageState extends State<MedRepPage>{
   Widget _buildRow(MedRepItem item) {
     return InkWell(
       onTap: (){
+        //print(date.millisecondsSinceEpoch);
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => DayScheduleMedRep(date: date,userId: item.userId,)));
       },
