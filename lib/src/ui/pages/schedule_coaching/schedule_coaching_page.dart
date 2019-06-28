@@ -274,7 +274,7 @@ class _ScheduleCoachingPageState extends State<ScheduleCoachingPage>
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(''),
+                        Text(event.partner.name),
                       ],
                     ),
                     onTap: () =>  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ScheduleCoachingDetailPage(scheduleCoaching: event, scheduleCoachingBloc: _scheduleCoachingBloc,))),
