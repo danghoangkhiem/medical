@@ -30,3 +30,8 @@ class AddCheckOut extends CheckInEvent {
   String toString() => 'AddCheckOut';
 }
 
+class Synchronize extends CheckInEvent {
+  final bool isSynchronized;
+
+  Synchronize({this.isSynchronized: false});
+}

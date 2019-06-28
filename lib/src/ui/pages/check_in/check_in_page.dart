@@ -11,6 +11,7 @@ import 'package:medical/src/ui/widgets/loading_indicator.dart';
 //bloc
 import 'package:medical/src/blocs/check_in/check_in.dart';
 import 'package:medical/src/blocs/authentication/authentication.dart';
+import 'package:medical/src/blocs/synchronization/synchronization.dart';
 
 //model
 import 'package:medical/src/models/attendance_model.dart';
@@ -73,15 +74,21 @@ class _CheckInPage extends State<CheckInPage> {
     });
   }
 
+  SynchronizationBloc _synchronizationBloc;
+
   @override
   void initState() {
-    _checkInBloc = CheckInBloc();
-    _checkInBloc.dispatch(CheckIO());
-
     currentLocation = null;
-
     initPlatformState();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _synchronizationBloc = BlocProvider.of<SynchronizationBloc>(context);
+    _checkInBloc = CheckInBloc(synchronizationBloc: _synchronizationBloc);
+    _checkInBloc.dispatch(CheckIO());
+    super.didChangeDependencies();
   }
 
   @override
@@ -123,8 +130,11 @@ class _CheckInPage extends State<CheckInPage> {
                 target: LatLng(result.latitude, result.longitude), zoom: 16);
 
             final GoogleMapController controller = await _controller.future;
-            controller.animateCamera(
-                CameraUpdate.newCameraPosition(_currentCameraPosition));
+            try {
+              controller.animateCamera(
+                  CameraUpdate.newCameraPosition(_currentCameraPosition));
+            } catch (_) {}
+
 
             if (mounted) {
               setState(() {
@@ -201,6 +211,33 @@ class _CheckInPage extends State<CheckInPage> {
               opacity: 0,
             );
           }
+          if (state is Synchronizing) {
+            return Container(
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    SizedBox(height: 15),
+                    Text('Đang đồng bộ dữ liệu máy chủ'),
+                  ],
+                ),
+              ),
+            );
+          }
+          if (state is Synchronized) {
+            return Container(
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    Icon(Icons.cloud_done),
+                    SizedBox(height: 15),
+                    Text('Đang đồng bộ dữ liệu máy chủ'),
+                  ],
+                ),
+              ),
+            );
+          }
+          if (state is CheckInError) {
           if (state is CheckInFailure) {
             setState(() {
               _isCheckInPressed = false;

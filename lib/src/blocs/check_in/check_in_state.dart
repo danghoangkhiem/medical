@@ -132,3 +132,7 @@ class CheckOutError extends CheckInState {}
 
 //not sync
 class CheckOutNotSync extends CheckInState {}
+
+class Synchronizing extends CheckInState {}
+
+class Synchronized extends CheckInState {}
