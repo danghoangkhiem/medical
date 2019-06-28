@@ -174,55 +174,60 @@ class _CheckInPage extends State<CheckInPage> {
       body: BlocBuilder(
         bloc: _checkInBloc,
         builder: (BuildContext context, CheckInState state) {
+          _locationSubscription?.cancel();
+          //start check IO
+          //loading
           if (state is CheckIOLoading) {
             return LoadingIndicator();
           }
-          if (state is CheckIOFailure || state is CheckInFailure || state is CheckOutFailure) {
-            WidgetsBinding.instance.addPostFrameCallback((_){
-              AuthenticationBloc auth = BlocProvider.of<AuthenticationBloc>(context);
-              auth.dispatch(AuthenticationEvent.loggedOut());
-            });
-            return notificationError();
-          }
+          //loaded
           if (state is CheckIOLoaded && state.isCheckIn == false) {
             return checkIn(state.locationList);
           }
           if (state is CheckIOLoaded && state.isCheckIn == true) {
             return checkOut(state.attendanceModel);
           }
+          //fail
+          if (state is CheckIOFailure || state is CheckInError || state is CheckOutError) {
+            WidgetsBinding.instance.addPostFrameCallback((_){
+              AuthenticationBloc auth = BlocProvider.of<AuthenticationBloc>(context);
+              auth.dispatch(AuthenticationEvent.loggedOut());
+            });
+            return notificationError();
+          }
+          //end check IO
           if (state is CheckInLoading) {
             return LoadingIndicator(
               opacity: 0,
             );
           }
-          if (state is CheckInError) {
+          if (state is CheckInFailure) {
             setState(() {
               _isCheckInPressed = false;
             });
-            _locationSubscription?.cancel();
             return checkInNotificationError();
           }
           if (state is CheckInLoaded) {
-            _locationSubscription?.cancel();
             return checkInNotification();
           }
+          //start check out
+          //loading
           if (state is CheckOutLoading) {
             return LoadingIndicator(
               opacity: 0,
             );
           }
-          if (state is CheckOutError) {
-            setState(() {
-              _isCheckOutPressed = false;
-            });
-            _locationSubscription?.cancel();
-            return checkOutNotification();
+          //not sync
+          if (state is CheckOutNotSync) {
+            return notificationCheckOutNotSync();
+          }
+          if (state is CheckOutFailure) {
+            return notificationCheckOutFailure();
           }
           if (state is CheckOutLoaded) {
-            _locationSubscription?.cancel();
             return checkOutNotification();
           }
-          _locationSubscription?.cancel();
+          //end check out
           return Container();
         },
       ),
@@ -260,6 +265,7 @@ class _CheckInPage extends State<CheckInPage> {
       ),
     );
   }
+
 
   Widget checkIn(LocationListModel locationList) {
     return Container(
@@ -437,9 +443,10 @@ class _CheckInPage extends State<CheckInPage> {
                           });
                           userLocation = await _getLocation();
                           CheckInModel newCheckInModel = CheckInModel(
+
                               locationId: currentLocation,
-                              lat: null,
-                              lon: null,
+                              lat: userLocation['latitude'],
+                              lon: userLocation['longitude'],
                               images: _image);
                           _checkInBloc.dispatch(AddCheckIn(newCheckInModel));
                         },
@@ -584,8 +591,8 @@ class _CheckInPage extends State<CheckInPage> {
 
                           userLocation = await _getLocation();
                           CheckOutModel newCheckOut = CheckOutModel(
-                              latitude: null,
-                              longitude: null);
+                              latitude: userLocation['latitude'],
+                              longitude: userLocation['longitude']);
                           _checkInBloc.dispatch(AddCheckOut(newCheckOut));
                         },
                         child: new Row(
@@ -622,11 +629,88 @@ class _CheckInPage extends State<CheckInPage> {
     );
   }
 
+  //notification
+  //not sync
+  Widget notificationCheckOutNotSync() {
+    return Container(
+        child: AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new Icon(
+                Icons.remove_circle,
+                color: Colors.redAccent,
+                size: 50,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text("Vui lòng đồng bộ trước khi checkout!")
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => CheckInPage()));
+                },
+                child: Text("OK"))
+          ],
+        ));
+  }
+
+
+  Widget notificationCheckOutFailure() {
+    return Container(
+        child: AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new Icon(
+                Icons.remove_circle,
+                color: Colors.redAccent,
+                size: 50,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text("Có lỗi xảy ra, vui lòng thử lại!")
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => CheckInPage()));
+                },
+                child: Text("OK"))
+          ],
+        ));
+  }
+
   Widget notificationError() {
     return Container(
         child: AlertDialog(
-          title: Text("Thông báo"),
-          content: Text("Có lỗi xảy ra, vui lòng đăng nhập lại!"),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new Icon(
+                Icons.remove_circle,
+                color: Colors.redAccent,
+                size: 50,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text("Lỗi từ máy chủ, vui lòng đăng nhập lại!")
+            ],
+          ),
           actions: <Widget>[
             FlatButton(
                 onPressed: () {

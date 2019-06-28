@@ -56,9 +56,7 @@ class CheckInApiProvider extends ApiProvider {
       } catch (_) {
         return false;
       }
-    }/*else{
-      return false;
-    }*/
+    }
     return Future.error(ApiResponseError.fromJson(_resp.data));
   }
 }

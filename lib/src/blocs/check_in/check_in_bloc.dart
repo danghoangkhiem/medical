@@ -22,13 +22,12 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
 
   @override
   Stream<CheckInState> mapEventToState(CheckInEvent event) async* {
+    //checkIn
     if (event is AddCheckIn) {
       yield CheckInLoading();
       try {
-        bool checkIOModel =
-            await _checkInRepository.addCheckIn(event.newCheckInModel);
-        await _userRepository.setAttendanceLastTimeLocally(
-            await _userRepository.getAttendanceLastTime());
+        bool checkIOModel = await _checkInRepository.addCheckIn(event.newCheckInModel);
+        await _userRepository.setAttendanceLastTimeLocally(await _userRepository.getAttendanceLastTime());
         if (checkIOModel == false) {
           yield CheckInError();
         } else {
@@ -38,21 +37,8 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
         yield CheckInFailure(error: error.toString());
       }
     }
-    if (event is CheckIO) {
-      yield CheckIOLoading();
-      try {
-        final locationList = await _locationRepository.getLocations();
-        bool isCheckIn = await _userRepository.isAttendanceTimeInLocally();
-        AttendanceModel attendanceModel =
-            await _userRepository.getAttendanceLastTimeLocally();
-        yield CheckIOLoaded(
-            isCheckIn: isCheckIn,
-            attendanceModel: attendanceModel,
-            locationList: locationList);
-      } catch (error) {
-        yield CheckIOFailure(error: error.toString());
-      }
-    }
+
+    //checkOut
     if (event is AddCheckOut) {
       yield CheckOutLoading();
       try {
@@ -60,13 +46,12 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
         final quantitySync =
             await _syncRepository.quantityNotSynchronizedByUserId(user.id);
         if (quantitySync > 0) {
-          yield CheckOutError();
-        } else {
-          bool checkIOModel =
-              await _checkInRepository.addCheckOut(event.newCheckOutModel);
-          await _userRepository.setAttendanceLastTimeLocally(
-              await _userRepository.getAttendanceLastTime());
-          if (checkIOModel == false) {
+          yield CheckOutNotSync();
+        }
+        else {
+          bool checkOut = await _checkInRepository.addCheckOut(event.newCheckOutModel);
+          await _userRepository.setAttendanceLastTimeLocally(await _userRepository.getAttendanceLastTime());
+          if (checkOut == false) {
             yield CheckOutError();
           } else {
             yield CheckOutLoaded();
@@ -76,5 +61,22 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
         yield CheckOutFailure(error: error.toString());
       }
     }
+
+    //check IO
+    if (event is CheckIO) {
+      yield CheckIOLoading();
+      try {
+        final locationList = await _locationRepository.getLocations();
+        bool isCheckIn = await _userRepository.isAttendanceTimeInLocally();
+        AttendanceModel attendanceModel = await _userRepository.getAttendanceLastTimeLocally();
+        yield CheckIOLoaded(
+            isCheckIn: isCheckIn,
+            attendanceModel: attendanceModel,
+            locationList: locationList);
+      } catch (error) {
+        yield CheckIOFailure(error: error.toString());
+      }
+    }
+
   }
 }
