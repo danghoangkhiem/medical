@@ -21,6 +21,7 @@ class ConsumerApiProvider extends ApiProvider {
     Map<String, dynamic> _requestBody = _prepareConsumerData(consumer);
     Response _resp = await httpClient.post('/consumers', data: _requestBody);
     if (_resp.statusCode == 200) {
+      print(_resp.data);
       return ConsumerModel.fromJson(_resp.data);
     }
     return Future.error(ApiResponseError.fromJson(_resp.data));

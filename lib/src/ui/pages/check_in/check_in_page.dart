@@ -216,6 +216,8 @@ class _CheckInPage extends State<CheckInPage> {
             return Container(
               child: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     CircularProgressIndicator(),
                     SizedBox(height: 15),
@@ -229,10 +231,16 @@ class _CheckInPage extends State<CheckInPage> {
             return Container(
               child: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.cloud_done),
+                    Icon(
+                      Icons.cloud_done,
+                      size: 60,
+                      color: Colors.green,
+                    ),
                     SizedBox(height: 15),
-                    Text('Đang đồng bộ dữ liệu máy chủ'),
+                    Text('Đã đồng bộ dữ liệu máy chủ thành công'),
                   ],
                 ),
               ),

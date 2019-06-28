@@ -82,11 +82,11 @@ class SynchronizationBloc
       ConsumerModel _consumer;
       Map<String, dynamic> _consumerRawDataLocally =
           await _syncRepository.getNotSynchronizedByUserId(event.userId);
-      while (_consumerRawDataLocally != null &&
-          currentState.uploaded < currentState.total) {
+      while (_consumerRawDataLocally != null) {
         _consumerLocally = ConsumerModel.fromJson(_consumerRawDataLocally);
         try {
           _consumer = await _consumerRepository.addConsumer(_consumerLocally);
+          print(_consumer);
           await _consumerRepository.setConsumerLocally(
               _consumerRawDataLocally['_id'], _consumer);
           yield SynchronizationState.uploading(
