@@ -23,6 +23,9 @@ class ScheduleWorkCreateBloc
     if (event is Schedule) {
       yield Loading();
       try {
+        if (event.schedules.length == 0) {
+          throw 'Không có ngày nào được lên lịch. Vui lòng kiểm tra lại';
+        }
         final userInfo = await _userRepository.getInfoLocally();
         await Future.forEach(event.schedules.entries, (entry) async {
           await _scheduleWorkRepository.createScheduleWork(

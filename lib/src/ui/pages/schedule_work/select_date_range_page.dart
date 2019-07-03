@@ -59,21 +59,21 @@ class _SelectDateRangePageState extends State<SelectDateRangePage> {
     var length = to.difference(from).inHours ~/ 24 + 1;
     var generator = (int index) {
       var _date = from.add(Duration(days: index));
-      _schedules[_date] = <String, dynamic>{
-        'date': _date,
-        'partnerId': widget.selectedPartner.id,
-        'hours': HoursModel(
-          from: _date,
-          to: _date.add(Duration(hours: 21)),
-        ),
-      };
       return TimeRangeSlider(
         date: _date,
-        onChanged: (DateTime startTime, DateTime endTime) {
-          _schedules[_date]['hours'] = HoursModel(
-            from: startTime,
-            to: endTime,
-          );
+        onChanged: (DateTime startTime, DateTime endTime, bool isDisabled) {
+          if (!isDisabled) {
+            _schedules[_date] = <String, dynamic>{
+              'date': _date,
+              'partnerId': widget.selectedPartner.id,
+              'hours': HoursModel(
+                from: _date,
+                to: _date.add(Duration(hours: 21)),
+              ),
+            };
+          } else if (_schedules.containsKey(_date)) {
+            _schedules.remove(_date);
+          }
         },
       );
     };
@@ -102,7 +102,7 @@ class _SelectDateRangePageState extends State<SelectDateRangePage> {
             ).then((_) => _isOverlapping = false);
             _isOverlapping = true;
           }
-          if (state is Success && _isOverlapping) {
+          if (state is! Loading && _isOverlapping) {
             Navigator.of(context, rootNavigator: true).pop();
           }
           if (state is Success) {
@@ -134,6 +134,7 @@ class _SelectDateRangePageState extends State<SelectDateRangePage> {
             Scaffold.of(context).showSnackBar(SnackBar(
               content: Text(state.error),
               backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 2),
             ));
           }
           if (state is DateRangePicked) {

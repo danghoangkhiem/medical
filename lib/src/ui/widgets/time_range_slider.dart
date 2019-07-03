@@ -3,20 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_range_slider/flutter_range_slider.dart';
 
 typedef TimeRangeSliderCallback = void Function(
-    DateTime startTime, DateTime endTime);
+    DateTime startTime, DateTime endTime, bool isDisabled);
 
 class TimeRangeSlider extends StatefulWidget {
   final DateTime date;
   final TimeRangeSliderCallback onChanged;
+  final double min;
+  final double max;
+  final double lowerValue;
+  final double upperValue;
 
-  TimeRangeSlider({Key key, @required this.date, @required this.onChanged})
-      : super(key: key);
+  TimeRangeSlider({
+    Key key,
+    @required this.date,
+    @required this.onChanged,
+    this.min = 6.0,
+    this.max = 21.0,
+    this.lowerValue,
+    this.upperValue,
+  }) : super(key: key);
 
   @override
   _TimeRangeSliderState createState() => _TimeRangeSliderState();
 }
 
 class _TimeRangeSliderState extends State<TimeRangeSlider> {
+  double get _minExceeded => widget.min - 0.5;
+  double get _maxExceeded => widget.max + 0.5;
+
   double _lowerValue;
   double _upperValue;
 
@@ -25,13 +39,23 @@ class _TimeRangeSliderState extends State<TimeRangeSlider> {
 
   TimeRangeSliderCallback get _onChanged => widget.onChanged;
 
+  bool get _isDisabled => _lowerValue < widget.min || _upperValue > widget.max;
+
+  _TimeRangeSliderState();
+
   @override
   void initState() {
     super.initState();
-    _lowerValue = 0.0;
-    _upperValue = 21.0;
+    _lowerValue = widget.lowerValue ?? _minExceeded;
+    _upperValue = widget.upperValue ?? _maxExceeded;
     _startTime = _generateTimeFromValue(_lowerValue);
     _endTime = _generateTimeFromValue(_upperValue);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _onChanged(_startTime, _endTime, _isDisabled);
   }
 
   DateTime _generateTimeFromValue(double value) {
@@ -58,6 +82,8 @@ class _TimeRangeSliderState extends State<TimeRangeSlider> {
                 padding: const EdgeInsets.only(left: 20),
                 child: Text(
                   '${DateFormat('EEEE', 'vi_VN').format(widget.date)}',
+                  style: TextStyle(
+                      color: _isDisabled ? Colors.grey : Colors.black),
                   textAlign: TextAlign.start,
                 ),
               ),
@@ -67,6 +93,8 @@ class _TimeRangeSliderState extends State<TimeRangeSlider> {
                 padding: const EdgeInsets.only(right: 20),
                 child: Text(
                   '${DateFormat('dd/MM/y').format(widget.date)}',
+                  style: TextStyle(
+                      color: _isDisabled ? Colors.grey : Colors.black),
                   textAlign: TextAlign.end,
                 ),
               ),
@@ -80,19 +108,26 @@ class _TimeRangeSliderState extends State<TimeRangeSlider> {
               Container(
                 alignment: Alignment.centerLeft,
                 width: 45,
-                child: Text(DateFormat('Hm').format(_startTime)),
+                child: Text(
+                  _isDisabled ? '__ : __' : DateFormat('Hm').format(_startTime),
+                  style: TextStyle(
+                      color: _isDisabled ? Colors.grey : Colors.black),
+                ),
               ),
               Expanded(
                 child: RangeSlider(
                   valueIndicatorFormatter: (int index, double value) {
+                    if (value > widget.max || value < widget.min) {
+                      return 'Không chọn giờ';
+                    }
                     DateTime _date = _generateTimeFromValue(value);
                     return DateFormat('jm').format(_date);
                   },
-                  min: 0.0,
-                  max: 21.0,
+                  min: _minExceeded,
+                  max: _maxExceeded,
                   lowerValue: _lowerValue,
                   upperValue: _upperValue,
-                  divisions: 42,
+                  divisions: (_maxExceeded - _minExceeded).abs().ceil() * 2,
                   showValueIndicator: true,
                   onChanged: (double newLowerValue, double newUpperValue) {
                     setState(() {
@@ -100,7 +135,7 @@ class _TimeRangeSliderState extends State<TimeRangeSlider> {
                       _upperValue = newUpperValue;
                       _startTime = _generateTimeFromValue(_lowerValue);
                       _endTime = _generateTimeFromValue(_upperValue);
-                      _onChanged(_startTime, _endTime);
+                      _onChanged(_startTime, _endTime, _isDisabled);
                     });
                   },
                 ),
@@ -108,7 +143,11 @@ class _TimeRangeSliderState extends State<TimeRangeSlider> {
               Container(
                 alignment: Alignment.centerRight,
                 width: 45,
-                child: Text(DateFormat('Hm').format(_endTime)),
+                child: Text(
+                  _isDisabled ? '__ : __' : DateFormat('Hm').format(_endTime),
+                  style: TextStyle(
+                      color: _isDisabled ? Colors.grey : Colors.black),
+                ),
               ),
             ],
           ),
