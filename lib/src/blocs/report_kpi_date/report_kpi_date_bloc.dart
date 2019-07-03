@@ -10,7 +10,7 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
 
   final ReportKpiDateRepository _reportKpiDateRepository;
 
-  int count = 0;
+
 
   ReportKpiDateBloc({
     @required reportKpiDateRepository,
@@ -35,6 +35,7 @@ class ReportKpiDateBloc extends Bloc<ReportKpiDayEvent, ReportKpiDayState> {
           );
 
           if(listKpiDate.listKpiDateItem.length > 0){
+            int count = 0;
 
             listKpiDate.listKpiDateItem.forEach((item){
               count += item.countVisit;

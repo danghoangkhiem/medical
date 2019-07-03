@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medical/src/blocs/med_rep/med_rep_event.dart';
 import 'package:medical/src/blocs/med_rep/med_rep_bloc.dart';
 import 'package:medical/src/blocs/med_rep/med_rep_state.dart';
+import 'package:medical/src/blocs/schedule_coaching/schedule_coaching_bloc.dart';
 import 'package:medical/src/models/medrep_of_medsup_model.dart';
 import 'package:medical/src/resources/med_rep_repository.dart';
 import 'package:medical/src/ui/pages/day_schedule/day_schedule_med_rep_page.dart';
@@ -14,8 +15,9 @@ import 'package:medical/src/utils.dart';
 class MedRepPage extends StatefulWidget{
 
   DateTime date;
+  final ScheduleCoachingBloc scheduleCoachingBloc;
 
-  MedRepPage(this.date);
+  MedRepPage(this.date, this.scheduleCoachingBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,6 +26,9 @@ class MedRepPage extends StatefulWidget{
   }
 }
 class MedRepPageState extends State<MedRepPage>{
+
+  ScheduleCoachingBloc get _scheduleCoachingBloc => widget.scheduleCoachingBloc;
+
 
   DateTime date;
 
@@ -158,7 +163,7 @@ class MedRepPageState extends State<MedRepPage>{
       onTap: (){
         //print(date.millisecondsSinceEpoch);
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => DayScheduleMedRep(date: date,userId: item.userId,)));
+            builder: (BuildContext context) => DayScheduleMedRep(date: date,userId: item.userId, scheduleCoachingBloc: _scheduleCoachingBloc)));
       },
       child: ListTile(
         title: new Text(item.name != null ? item.name : 'N/A'),

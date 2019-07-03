@@ -222,6 +222,7 @@ class InventoriesState extends State<Inventories> {
                                                 onChanged: (int newVal) {
                                                   setState(() {
                                                     select = newVal;
+                                                    print("ok ok thong thong");
                                                     print(select);
                                                   });
                                                 },

@@ -25,6 +25,8 @@ class ReportKpiMonthItemModel {
 
   factory ReportKpiMonthItemModel.fromJson(Map<String, dynamic> json) {
     return ReportKpiMonthItemModel(
-        name: json["name"], type: json["type"], count: json["count"]);
+        name: json["partnerName"],
+        type: json["type"],
+        count: json["count"]);
   }
 }

@@ -26,7 +26,7 @@ class ReportKpiDateItemModel {
 
   factory ReportKpiDateItemModel.fromJson(Map<String, dynamic> json) {
     return ReportKpiDateItemModel(
-        date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
-        countVisit: json["countVisit"]);
+        date: DateTime.fromMillisecondsSinceEpoch(json["date"] * 1000) ,
+        countVisit: json["count"]);
   }
 }
