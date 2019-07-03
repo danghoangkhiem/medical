@@ -38,7 +38,7 @@ class SplashPage extends StatelessWidget {
                   alignment: Alignment.center,
                   width: double.infinity,
                   child: Text(
-                    'Version: 1.1',
+                    'Version: 1.0.0',
                     style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ))

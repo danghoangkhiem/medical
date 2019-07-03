@@ -10,7 +10,7 @@ class ReportKpiMonthBloc
     extends Bloc<ReportKpiMonthEvent, ReportKpiMonthState> {
   final ReportKpiMonthRepository _reportKpiMonthRepository;
 
-  int count;
+
 
   ReportKpiMonthBloc({
     @required reportKpiMonthRepository,
@@ -34,9 +34,11 @@ class ReportKpiMonthBloc
           );
 
           if (listKpiMonth.listKpiMonthItem.length > 0) {
+            int count = 0;
             listKpiMonth.listKpiMonthItem.forEach((item) {
               count += item.count;
             });
+
             yield ReportKpiMonthLoaded(
                 reportKpiMonthModel: listKpiMonth, countKpi: count);
           } else {

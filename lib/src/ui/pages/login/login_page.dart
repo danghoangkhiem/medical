@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_version/get_version.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medical/src/blocs/authentication/authentication.dart';
@@ -35,17 +35,9 @@ class _LoginPageState extends State<LoginPage> {
     String projectVersion;
     String projectCode;
 
-    try {
-      projectVersion = await GetVersion.projectVersion;
-    } on PlatformException {
-      projectVersion = 'Failed to get project version.';
-    }
 
-    try {
-      projectCode = await GetVersion.projectCode;
-    } on PlatformException {
-      projectCode = 'Failed to get build number.';
-    }
+
+
 
     if (!mounted) return;
 
@@ -98,9 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   width: double.infinity,
                   child: Text(
-                    _projectVersion != null
-                        ? 'Version: $_projectVersion'
-                        : 'Version: 1.0.0',
+                   "Version: 1.0.0",
                     style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ))

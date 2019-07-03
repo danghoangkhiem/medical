@@ -29,7 +29,7 @@ class DayScheduleMedRepBloc
       DayScheduleMedRepEvent event) async* {
     if (event is GetDayScheduleMedRep) {
 
-      print("ha ha ha");
+
       print(event.date);
       print(event.date.millisecondsSinceEpoch ~/1000);
 
@@ -39,6 +39,7 @@ class DayScheduleMedRepBloc
           throw 'Phải có thời gian';
         }
 
+        print("hakathong........................");
         final dayScheduleMedRep =
             await _dayScheduleMedRepRepository.getDayScheduleMedRep(
                 offset: _currentOffset = event.offset,

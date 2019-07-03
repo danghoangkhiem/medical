@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_bloc.dart';
 import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_event.dart';
 import 'package:medical/src/blocs/day_schedule_med_rep/day_schedule_med_rep_state.dart';
+import 'package:medical/src/blocs/schedule_coaching/schedule_coaching_bloc.dart';
+import 'package:medical/src/blocs/schedule_coaching/schedule_coaching_event.dart';
 
 import 'package:medical/src/models/day_schedule_med_rep_model.dart';
 import 'package:medical/src/resources/day_schedule_med_rep_repository.dart';
@@ -15,8 +17,9 @@ import 'package:medical/src/utils.dart';
 class DayScheduleMedRep extends StatefulWidget {
   final DateTime date;
   final int userId;
+  final ScheduleCoachingBloc scheduleCoachingBloc;
 
-  DayScheduleMedRep({this.date, this.userId});
+  DayScheduleMedRep({this.date, this.userId, this.scheduleCoachingBloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -25,6 +28,9 @@ class DayScheduleMedRep extends StatefulWidget {
 }
 
 class DayScheduleMedRepState extends State<DayScheduleMedRep> {
+
+  ScheduleCoachingBloc get _scheduleCoachingBloc => widget.scheduleCoachingBloc;
+
   final DateTime date;
   final int userId;
 
@@ -58,7 +64,6 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
   @override
   void initState() {
     super.initState();
-
 
 //    print(userId);
     print("ola ola ola");
@@ -95,8 +100,8 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
 
   String convertTime(DateTime time) {
     return time.hour > 12
-        ? "${time.hour - 12}:${time.minute}PM"
-        : "${time.hour}:${time.minute.toString()}AM";
+        ? "${time.hour - 12}:${time.minute} PM"
+        : "${time.hour}:${time.minute.toString()} AM";
   }
 
   @override
@@ -135,19 +140,25 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
               ));
             }
 
-            if(state is AddScheduleLoading){
-              return LoadingIndicator(opacity: 0.3, progressIndicatorColor: Colors.white.withOpacity(0.3),);
-            }
 
-            if(state is AddScheduleSuccess){
+
+            if (state is AddScheduleSuccess) {
+
               Scaffold.of(context).removeCurrentSnackBar();
               Scaffold.of(context).showSnackBar(SnackBar(
                 content: Text("Copy thành công."),
                 backgroundColor: Colors.green,
               ));
+
+              _scheduleCoachingBloc.dispatch(RefreshEventList());
+
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (BuildContext context) => DayScheduleMedRep(date: widget.date, userId: widget.userId,)));
+
             }
 
-            if(state is AddScheduleFailure){
+            if (state is AddScheduleFailure) {
               Scaffold.of(context).removeCurrentSnackBar();
               Scaffold.of(context).showSnackBar(SnackBar(
                 content: Text("Copy thất bại"),
@@ -172,6 +183,7 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                 if (state is DayScheduleMedRepLoading && !state.isLoadMore) {
                   return LoadingIndicator(
                     opacity: 0,
+                    progressIndicatorColor: Colors.red,
                   );
                 }
                 return ListView.builder(
@@ -201,7 +213,8 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
     );
   }
 
-  void _showDialog(DateTime date, int id, int userId, DateTime from, DateTime to) {
+  void _showDialog(
+      DateTime date, int id, int userId, DateTime from, DateTime to) {
     // flutter defined function
     showDialog(
       context: context,
@@ -222,7 +235,6 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
               onPressed: () {
                 print("đồng ý copy lịch");
 
-
                 _blocDayScheduleMedRep.dispatch(AddSchedule(
                     date: date,
                     scheduleId: id,
@@ -230,9 +242,9 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                     from: from,
                     to: to));
 
-                Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => ScheduleCoachingPage()));
+
+
+
               },
             ),
           ],
@@ -240,7 +252,6 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
       },
     );
   }
-
 
   Widget _buildRow(DayScheduleMedRepItem item) {
     return Container(
@@ -304,7 +315,8 @@ class DayScheduleMedRepState extends State<DayScheduleMedRep> {
                         ),
                         onPressed: () {
                           print("copy thong");
-                          _showDialog(date, item.id, userId, item.startTime, item.endTime);
+                          _showDialog(date, item.id, userId, item.startTime,
+                              item.endTime);
 
 //                          _blocDayScheduleMedRep.dispatch(AddSchedule(
 //                              date: date,
