@@ -103,6 +103,8 @@ class _ScheduleCoachingPageState extends State<ScheduleCoachingPage>
               }
               _visibleEvents[dateKey].add(state.schedules[i]);
             }
+            // reset selected events
+            _selectedEvents = [];
           }
           if (state.isLoading && !_isOverlapping) {
             showDialog(
