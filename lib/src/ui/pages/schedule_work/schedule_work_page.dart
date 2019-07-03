@@ -260,28 +260,81 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
     );
   }
 
+  String convertTime(DateTime time) {
+    return time.hour > 12
+        ? "${time.hour - 12}:${time.minute} PM"
+        : "${time.hour}:${time.minute.toString()} AM";
+  }
+
   Widget _buildEventList() {
     return Material(
       color: Colors.grey[200],
       child: ListView(
         children: _selectedEvents
-            .map((ScheduleWorkModel event) => Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0.8),
-                    borderRadius: BorderRadius.circular(12.0),
+            .map((ScheduleWorkModel event) => GestureDetector(
+          onTap: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ScheduleWorkDetailPage(scheduleWork: event, scheduleWorkBloc: _scheduleWorkBloc,)));
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      width: 1,
+                      style: BorderStyle.solid,
+                      color: Colors.grey[300])),
+              color: Colors.white,
+            ),
+            height: 80,
+            child: new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Container(
+                        child: new Text(
+                          convertTime(event.realHours.from == null ? event.hours.from : event.realHours.from) + ' đến ' +  convertTime(event.realHours.to == null ? event.hours.to : event.realHours.to),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      new SizedBox(
+                        height: 7,
+                      ),
+                      new Container(
+                        margin: EdgeInsets.only(left: 20),
+                        child: new Text(
+                          event.partner.role + ' ' + event.partner.name,
+                          style: new TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      new SizedBox(
+                        height: 2,
+                      ),
+                      new Container(
+                        margin: EdgeInsets.only(left: 20),
+                        child: new Text(
+                          event.partner.place.name.toString(),
+                          style: new TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
                   ),
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 4.0),
-                  child: ListTile(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(event.partner?.place?.name ?? ''),
-                      ],
-                    ),
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ScheduleWorkDetailPage(scheduleWork: event, scheduleWorkBloc: _scheduleWorkBloc,))),
-                  ),
-                ))
+                ),
+
+              ],
+            ),
+          ),
+        )
+        )
             .toList(),
       ),
     );
