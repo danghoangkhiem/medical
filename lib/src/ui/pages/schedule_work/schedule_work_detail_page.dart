@@ -567,6 +567,8 @@ class _ScheduleWorkDetailPageState extends State<ScheduleWorkDetailPage> {
               child: new FlatButton(
                   padding: EdgeInsets.symmetric(vertical: 13),
                   onPressed: () {
+                    print(_realStartDay);
+                    print(_realEndDate);
                     if (!_realEndDate.isAfter(_realStartDay)) {
                       showDialog(
                         context: context,
