@@ -67,8 +67,8 @@ class _SelectDateRangePageState extends State<SelectDateRangePage> {
               'date': _date,
               'partnerId': widget.selectedPartner.id,
               'hours': HoursModel(
-                from: _date,
-                to: _date.add(Duration(hours: 21)),
+                from: startTime,
+                to: endTime,
               ),
             };
           } else if (_schedules.containsKey(_date)) {

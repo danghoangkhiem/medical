@@ -104,6 +104,8 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage>
               }
               _visibleEvents[dateKey].add(state.schedules[i]);
             }
+            // reset selected events
+            _selectedEvents = [];
           }
           if (state.isLoading && !_isOverlapping) {
             showDialog(
