@@ -31,9 +31,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
   DateTime time;
   bool isLonHon12 = false;
 
-  final now = new DateTime.now();
-
-  Future<Null> _selectTime(BuildContext context, bool isStartDate) async {
+  Future<Null> _selectTime(BuildContext context, bool isStartDate, DateTime now) async {
     final TimeOfDay picked =
         await showTimePicker(context: context, initialTime: _time);
     //&& picked != _time
@@ -341,7 +339,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
                       padding: EdgeInsets.only(right: 5),
                       child: InkWell(
                         onTap: () {
-                          _selectTime(context, isStartDate = true);
+                          _selectTime(context, isStartDate = true,_realStartDay);
                         },
                         child: new Container(
                           alignment: Alignment.center,
@@ -375,7 +373,7 @@ class _ScheduleCoachingDetailPageState extends State<ScheduleCoachingDetailPage>
                     padding: EdgeInsets.only(left: 5),
                     child: InkWell(
                       onTap: () {
-                        _selectTime(context, isStartDate = false);
+                        _selectTime(context, isStartDate = false,_realEndDate);
                       },
                       child: new Container(
                         alignment: Alignment.center,
